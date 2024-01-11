@@ -80,8 +80,9 @@ int main(int argc, char** argv) {
     { // copy contents
         size_t fread_return = fread(file_contents, 1, file_length_bytes, source_file); 
 
-        if(fread_return != file_length_bytes) { // handle error
-            printf("ERROR: error while reading file. fread return: %d", fread_return); 
+        if(fread_return != file_length_bytes && feof(source_file) == 0) { // handle error
+            printf("ERROR: error while reading file. fread return: %d\tfile length: %d bytes\n", fread_return, file_length_bytes); 
+            printf("feof(file) = %d\n", feof(source_file)); 
             fclose(source_file); 
             return 1; 
         }
@@ -129,6 +130,6 @@ int main(int argc, char** argv) {
 
 gcc main.c -o main
 
-
+./main SampleText_00.txt
 
 */
