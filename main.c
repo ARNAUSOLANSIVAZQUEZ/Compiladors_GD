@@ -1,6 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "handle_backslash.h"
+#include "handle_comments.h"
+#include "handle_constants.h"
+#include "handle_includes.h"
+#include "handle_macros.h"
+
 
 /*
     Escriviu aquí els vostres noms, U i NIA per si acas: 
@@ -17,18 +23,18 @@
 
 int main(int argc, char** argv) {
 
-    printf("Test"); 
 
     // argv[1] is the file to pre-process
 
     if(argc < 2) {
-        printf("ERROR: To few arguments. (incude file to preprocess)"); 
-        printf("Usage: %s ./{name of the program to pre-process} -{flags}", argv[0]); 
+        printf("ERROR: To few arguments. (incude file to preprocess)\n"); 
+        printf("Usage: ./%s {name of the program to pre-process} -{flags}", argv[0]); 
         return 1; // return error
     }
     
+    //TODO: check that everything else in argv is correct
 
-    FILE* source_file = fopen(argv[1], 'r'); // we cannot modify original file
+    FILE* source_file = fopen(argv[1], "r"); // we cannot modify original file
 
     if(source_file == NULL) {
         printf("ERROR: Could not open file: %s", argv[1]); 
@@ -86,9 +92,43 @@ int main(int argc, char** argv) {
 
     //file_contents = 
 
-
+    printf("Readed file: \n\n%s\n\n", file_contents); 
 
 
     free(file_contents); 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+gcc main.c -o main
+
+
+
+*/
