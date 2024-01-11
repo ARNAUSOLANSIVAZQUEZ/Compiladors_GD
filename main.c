@@ -103,7 +103,6 @@ int main(int argc, char** argv) {
         //return 0; // finish execution ?
     }
 
-    return 0; 
     //TODO: check that everything else in argv is correct
 
     FILE* source_file = fopen(argv[1], "r"); // we cannot modify original file
