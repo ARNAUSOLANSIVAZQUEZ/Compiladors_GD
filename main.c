@@ -161,11 +161,26 @@ int main(int argc, char** argv) {
     }
     fclose(source_file); // no need to keep file open
 
+    printf("Readed file: \n\n%s\n\n", file_contents); 
+
     //call every function to preprocess: 
 
-    //file_contents = 
+    if(replace_all_directives) {
+        file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
+        file_contents = handle_include_compiler_files(file_contents, &file_length_bytes); 
+    }
 
-    printf("Readed file: \n\n%s\n\n", file_contents); 
+    file_contents = handle_backslash(file_contents, &file_length_bytes); 
+    file_contents = handle_constants(file_contents, &file_length_bytes); 
+    file_contents = handle_macros(file_contents, &file_length_bytes); 
+
+
+    if(eliminate_comments_flag) {
+        file_contents = remove_single_line_comments(file_contents, &file_length_bytes); 
+        file_contents = remove_multi_line_comments(file_contents, &file_length_bytes); 
+    }
+
+    printf("Final pre-processing: \n\n%s\n\n", file_contents); 
 
 
     free(file_contents); 
