@@ -1,3 +1,7 @@
+#ifndef HEADER_HANDLE_CONSTANTS
+#define HEADER_HANDLE_CONSTANTS
+
+
 #include <stdio.h>
 
 
@@ -16,3 +20,6 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 char* handle_constants(char* source_code, size_t* size_source_code); 
 
 
+
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef HEADER_HANDLE_BACKSLASH
+#define HEADER_HANDLE_BACKSLASH
+
 #include <stdio.h>
 
 
@@ -14,3 +17,6 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 */
 
 char* handle_backslash(char* source_code, size_t* size_source_code); 
+
+
+#endif

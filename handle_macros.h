@@ -1,3 +1,7 @@
+#ifndef HEADER_HANDLE_MACROS
+#define HEADER_HANDLE_MACROS
+
+
 #include <stdio.h>
 
 
@@ -13,3 +17,10 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 */
 
 char* handle_macros(char* source_code, size_t* size_source_code); 
+
+
+
+
+
+
+#endif

@@ -1,3 +1,7 @@
+#ifndef HEADER_HANDLE_COMMENTS
+#define HEADER_HANDLE_COMMENTS
+
+
 #include <stdio.h>
 
 
@@ -30,3 +34,6 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 */
 
 char* remove_multi_line_comments(char* source_code, size_t* size_source_code); 
+
+
+#endif

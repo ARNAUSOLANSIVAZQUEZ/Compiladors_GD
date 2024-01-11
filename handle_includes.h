@@ -1,3 +1,7 @@
+#ifndef HEADER_HANDLE_INCLUDES
+#define HEADER_HANDLE_INCLUDES
+
+
 #include <stdio.h>
 
 /*
@@ -31,3 +35,4 @@ char* handle_include_compiler_files(char* source_code, size_t* size_source_code)
 
 
 
+#endif
