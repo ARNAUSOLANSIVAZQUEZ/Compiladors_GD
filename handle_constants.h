@@ -13,6 +13,6 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 
 */
 
-char* handle_include_program_files(char* source_code, size_t* size_source_code); 
+char* handle_constants(char* source_code, size_t* size_source_code); 
 
 
