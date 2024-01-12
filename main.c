@@ -56,7 +56,6 @@ int main(int argc, char** argv) {
 
             switch (argv[i][1]) {
             case 'c': // -c
-                //TODO: I dont fully inderstand what this flag has to do. Someome please fix this
                 if(strcmp(argv[i], "-c") != 0) { 
                     // the input is not what we expected. Handle error and abort. 
                     printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
@@ -65,7 +64,7 @@ int main(int argc, char** argv) {
                     abort = true; 
                     break; 
                 } 
-                eliminate_comments_flag = true; //?
+                eliminate_comments_flag = true; 
                 break;
             case 'd': //-d
                 if(strcmp(argv[i], "-d") != 0) { 
@@ -166,6 +165,7 @@ int main(int argc, char** argv) {
 
     char* file_contents = (char*)calloc(file_length_bytes, 1); 
 
+
     if(file_contents == NULL) { // error requesting memory
         printf("ERROR: error while requesting memory. \nMemory asked: %d Bytes\t = %d MB", file_length_bytes, (int) file_length_bytes * BYTES_TO_MB_CONVERSION_FACTOR); 
         fclose(source_file); 
@@ -188,22 +188,22 @@ int main(int argc, char** argv) {
 
     //call every function to preprocess: 
 
-    if(false) { // debbuging, remove later
+    if(false) { // debbuging, TODO: remove later
 
-    if(replace_all_directives) {
-        file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
-        file_contents = handle_include_compiler_files(file_contents, &file_length_bytes); 
-    }
+        if(replace_all_directives) {
+            file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
+            file_contents = handle_include_compiler_files(file_contents, &file_length_bytes); 
+        }
 
-    file_contents = handle_backslash(file_contents, &file_length_bytes); 
-    file_contents = handle_constants(file_contents, &file_length_bytes); 
-    file_contents = handle_macros(file_contents, &file_length_bytes); 
+        file_contents = handle_backslash(file_contents, &file_length_bytes); 
+        file_contents = handle_constants(file_contents, &file_length_bytes); 
+        file_contents = handle_macros(file_contents, &file_length_bytes); 
 
 
-    if(eliminate_comments_flag) {
-        file_contents = remove_single_line_comments(file_contents, &file_length_bytes); 
-        file_contents = remove_multi_line_comments(file_contents, &file_length_bytes); 
-    }
+        if(eliminate_comments_flag) {
+            file_contents = remove_single_line_comments(file_contents, &file_length_bytes); 
+            file_contents = remove_multi_line_comments(file_contents, &file_length_bytes); 
+        }
 
     }    
 
@@ -214,26 +214,29 @@ int main(int argc, char** argv) {
     int original_file_len = strlen(argv[argc - 1]) + 1; // +\0
     int preprocessed_file_name_length = original_file_len + 3;  // + "_pp"
 
-    char* preprocessed_file_name = malloc(preprocessed_file_name_length); 
+    char* preprocessed_file_name = calloc(preprocessed_file_name_length, 1); 
 
+    {
+        // NOTE: this code assumes only 1 letter is used as extension (prm.c, file.h, smtng.p, but NOT inc.asd)
 
-    errno_t error_ret = memcpy_s(preprocessed_file_name, preprocessed_file_name_length, argv[argc - 1], original_file_len - 3); 
+        errno_t error_ret = memcpy_s(preprocessed_file_name, preprocessed_file_name_length, argv[argc - 1], original_file_len - 3); 
 
-    if(error_ret != 0) {
-        printf("ERROR: error while moving data (memcpy_s). \n"); 
-        return 1; 
+        if(error_ret != 0) {
+            printf("ERROR: error while moving data (memcpy_s). \n"); 
+            return 1; 
+        }
+
+        int bytes_to_copy = preprocessed_file_name_length - (original_file_len - 3); 
+
+        error_ret = memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
+
+        if(error_ret != 0) {
+            printf("ERROR: error while moving data (strcat_s). %d\n", error_ret); 
+            return 1; 
+        }
+
+        printf("New file name: \n\t%s\n", preprocessed_file_name); 
     }
-
-    int bytes_to_copy = preprocessed_file_name_length - (original_file_len - 3); 
-
-    error_ret = memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
-
-    if(error_ret != 0) {
-        printf("ERROR: error while moving data (strcat_s). %d\n", error_ret); 
-        //return 1; 
-    }
-
-    printf("New file name: \n\t%s\n", preprocessed_file_name); 
 
     FILE* preprocessed_file = fopen(preprocessed_file_name, "wb"); //create new file
 
