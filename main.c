@@ -16,7 +16,6 @@
 
 
     Marcel Aranich, U185166, NIA: 251453
-    Ariadna Prat, U15150, NIA:251281
 
 
 */
