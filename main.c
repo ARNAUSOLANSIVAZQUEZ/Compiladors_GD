@@ -42,6 +42,10 @@ int main(int argc, char** argv) {
     bool eliminate_comments_flag = true; // -c flag (true by deafult)
     bool replace_all_directives = false; // -d flag
     bool user_needs_help = false; // -help flag
+    bool abort = false; 
+
+    /*Note: if the same valid flag is used more than once, the other 
+    instances will be effectively ignored*/
 
     for(int i = 2; i < argc; i++) { //handle flags
 
@@ -49,11 +53,12 @@ int main(int argc, char** argv) {
         case 'c': // -c
             //TODO: I dont fully inderstand what this flag has to do. Someome please fix this
             if(strcmp(argv[i], "-c") != 0) { 
-                // not what we expected
+                // the input is not what we expected. Handle error and abort. 
                 printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
 
                 printf("Tip: maybe you intended to use: \"-c\" ? \n"); 
-                return 1; 
+                abort = true; 
+                break; 
             } 
             eliminate_comments_flag = true; //?
             break;
@@ -63,36 +68,37 @@ int main(int argc, char** argv) {
                 printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
                 
                 printf("Tip: maybe you intended to use: \"-d\" ? \n"); 
-                return 1; 
+                abort = true; 
+                break; 
             } 
             replace_all_directives = true; 
             break;
         case 'h': //-help
             if(strcmp(argv[i], "-help") != 0) { 
-                // not what we expected
                 printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
                 
                 printf("Tip: maybe you intended to use: \"-help\" ? \n"); 
-                return 1; 
+                abort = true; 
+                break; 
             } 
             user_needs_help = true; 
             break;
         case 'a': //-all
             if(strcmp(argv[i], "-a") != 0) { 
-                // not what we expected
                 printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
                 
                 printf("Tip: maybe you intended to use: \"-a\" ? \n"); 
-                return 1; 
+                abort = true; 
+                break; 
             } 
             eliminate_comments_flag = true; 
             replace_all_directives = true; 
             break;
         default: 
-            
+            // unexpected flag
             printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
 
-            return 1; 
+            abort = true; 
 
             break;
         }
@@ -101,6 +107,10 @@ int main(int argc, char** argv) {
     if(user_needs_help) {
         PrintHelp(); 
         //return 0; // finish execution ?
+    }
+
+    if(abort == true){
+        return 1; 
     }
 
     //TODO: check that everything else in argv is correct
