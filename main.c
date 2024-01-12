@@ -240,7 +240,7 @@ int main(int argc, char** argv) {
     
     fwrite(file_contents, 1, file_length_bytes, preprocessed_file); //write everything
 
-
+    free(preprocessed_file_name); 
     free(file_contents); 
 
     fclose(preprocessed_file); 
