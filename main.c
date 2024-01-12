@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h> 
 #include <string.h>
+#include <memory.h>
 
 #include "handle_backslash.h"
 #include "handle_comments.h"
@@ -106,7 +107,7 @@ int main(int argc, char** argv) {
 
                 break;
             }
-        }
+        } 
 
         if(user_needs_help) {
             PrintHelp(); 
@@ -117,6 +118,11 @@ int main(int argc, char** argv) {
             return 1; 
         }
 
+
+    } else if(strcmp(argv[1], "-help") == 0) {
+
+        PrintHelp(); 
+        return 0; 
 
     }
 
@@ -182,7 +188,7 @@ int main(int argc, char** argv) {
 
     //call every function to preprocess: 
 
-    
+    if(false) { // debbuging, remove later
 
     if(replace_all_directives) {
         file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
@@ -199,11 +205,47 @@ int main(int argc, char** argv) {
         file_contents = remove_multi_line_comments(file_contents, &file_length_bytes); 
     }
 
-    printf("Final pre-processing: \n\n%s\n\n", file_contents); 
+    }    
+
+
+
+    // printf("Final pre-processing: \n\n%s\n\n", file_contents); 
+
+    int original_file_len = strlen(argv[argc - 1]) + 1; // +\0
+    int preprocessed_file_name_length = original_file_len + 3;  // + "_pp"
+
+    char* preprocessed_file_name = malloc(preprocessed_file_name_length); 
+
+
+    errno_t error_ret = memcpy_s(preprocessed_file_name, preprocessed_file_name_length, argv[argc - 1], original_file_len - 3); 
+
+    if(error_ret != 0) {
+        printf("ERROR: error while moving data (memcpy_s). \n"); 
+        return 1; 
+    }
+
+    int bytes_to_copy = preprocessed_file_name_length - (original_file_len - 3); 
+
+    error_ret = memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
+
+    if(error_ret != 0) {
+        printf("ERROR: error while moving data (strcat_s). %d\n", error_ret); 
+        //return 1; 
+    }
+
+    printf("New file name: \n\t%s\n", preprocessed_file_name); 
+
+    FILE* preprocessed_file = fopen(preprocessed_file_name, "w"); //create new file
+
+    
+    fwrite(file_contents, 1, file_length_bytes, preprocessed_file); //write everything
 
 
     free(file_contents); 
 
+    fclose(preprocessed_file); 
+    
+    return 0; 
 }
 
 void PrintHelp() {
