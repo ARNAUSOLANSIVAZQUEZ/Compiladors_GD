@@ -28,100 +28,109 @@ void PrintHelp();
 
 int main(int argc, char** argv) {
 
+    //2
 
     // argv[1] is the file to pre-process
 
-    if(argc < 2) {
-        printf("ERROR: To few arguments. (incude file to preprocess)\n"); 
-        printf("Usage: ./%s {name of the program to pre-process} \n", argv[0]); 
-        printf("Use the flag \"-help\" to get help. \n"); 
-        return 1; // return error
-    }
-
     bool eliminate_comments_flag = true; // -c flag (true by deafult)
     bool replace_all_directives = false; // -d flag
-    bool user_needs_help = false; // -help flag
-    bool abort = false; 
 
-    /*Note: if the same valid flag is used more than once, the other 
-    instances will be effectively ignored*/
 
-    for(int i = 2; i < argc; i++) { //handle flags
+    if(argc < 2) {
+        printf("ERROR: To few arguments. (incude file to preprocess)\n"); 
+        printf("Usage: ./%s {flags} {name of the program to pre-process} \n", argv[0]); 
+        printf("Use the flag \"-help\" to get help. \n"); 
+        return 1; // return error
+    } else if(2 < argc) {
 
-        switch (argv[i][1]) {
-        case 'c': // -c
-            //TODO: I dont fully inderstand what this flag has to do. Someome please fix this
-            if(strcmp(argv[i], "-c") != 0) { 
-                // the input is not what we expected. Handle error and abort. 
+        // handle flags
+        /*Note: if the same valid flag is used more than once, the other 
+        instances will be effectively ignored (acording to instructions)*/
+
+        bool user_needs_help = false; // -help flag
+        bool abort = false; 
+        eliminate_comments_flag = false; 
+
+        for(int i = 1; i < argc - 1; i++) { //handle flags
+
+            switch (argv[i][1]) {
+            case 'c': // -c
+                //TODO: I dont fully inderstand what this flag has to do. Someome please fix this
+                if(strcmp(argv[i], "-c") != 0) { 
+                    // the input is not what we expected. Handle error and abort. 
+                    printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
+
+                    printf("Tip: maybe you intended to use: \"-c\" ? \n"); 
+                    abort = true; 
+                    break; 
+                } 
+                eliminate_comments_flag = true; //?
+                break;
+            case 'd': //-d
+                if(strcmp(argv[i], "-d") != 0) { 
+                    // not what we expected
+                    printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
+                    
+                    printf("Tip: maybe you intended to use: \"-d\" ? \n"); 
+                    abort = true; 
+                    break; 
+                } 
+                replace_all_directives = true; 
+                break;
+            case 'h': //-help
+                if(strcmp(argv[i], "-help") != 0) { 
+                    printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
+                    
+                    printf("Tip: maybe you intended to use: \"-help\" ? \n"); 
+                    abort = true; 
+                    break; 
+                } 
+                user_needs_help = true; 
+                break;
+            case 'a': //-all
+                if(strcmp(argv[i], "-all") != 0) { 
+                    printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
+                    
+                    printf("Tip: maybe you intended to use: \"-all\" ? \n"); 
+                    abort = true; 
+                    break; 
+                } 
+                eliminate_comments_flag = true; 
+                replace_all_directives = true; 
+                break;
+            default: 
+                // unexpected flag
                 printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
 
-                printf("Tip: maybe you intended to use: \"-c\" ? \n"); 
                 abort = true; 
-                break; 
-            } 
-            eliminate_comments_flag = true; //?
-            break;
-        case 'd': //-d
-            if(strcmp(argv[i], "-d") != 0) { 
-                // not what we expected
-                printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
-                
-                printf("Tip: maybe you intended to use: \"-d\" ? \n"); 
-                abort = true; 
-                break; 
-            } 
-            replace_all_directives = true; 
-            break;
-        case 'h': //-help
-            if(strcmp(argv[i], "-help") != 0) { 
-                printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
-                
-                printf("Tip: maybe you intended to use: \"-help\" ? \n"); 
-                abort = true; 
-                break; 
-            } 
-            user_needs_help = true; 
-            break;
-        case 'a': //-all
-            if(strcmp(argv[i], "-a") != 0) { 
-                printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
-                
-                printf("Tip: maybe you intended to use: \"-a\" ? \n"); 
-                abort = true; 
-                break; 
-            } 
-            eliminate_comments_flag = true; 
-            replace_all_directives = true; 
-            break;
-        default: 
-            // unexpected flag
-            printf("ERROR: unknown flag: \"%s\" \n", argv[i]); 
 
-            abort = true; 
-
-            break;
+                break;
+            }
         }
+
+        if(user_needs_help) {
+            PrintHelp(); 
+            //return 0; // finish execution ?
+        }
+
+        if(abort){
+            return 1; 
+        }
+
+
     }
 
-    if(user_needs_help) {
-        PrintHelp(); 
-        //return 0; // finish execution ?
-    }
 
-    if(abort == true){
+
+    FILE* source_file = fopen(argv[argc - 1], "r"); // r because we cannot modify original file
+
+    if(source_file == NULL) {
+        printf("ERROR: Could not open file: %s", argv[argc - 1]); 
         return 1; 
     }
 
-    //TODO: check that everything else in argv is correct
 
-    FILE* source_file = fopen(argv[1], "r"); // we cannot modify original file
-
-    if(source_file == NULL) {
-        printf("ERROR: Could not open file: %s", argv[1]); 
-    }
-
-
-    int file_length_bytes = -1; 
+    size_t file_length_bytes = -1; 
 
     { // find size of file
         int fseek_return = fseek(source_file, 0L, SEEK_END); 
@@ -172,6 +181,8 @@ int main(int argc, char** argv) {
     printf("Readed file: \n\n%s\n\n", file_contents); 
 
     //call every function to preprocess: 
+
+    
 
     if(replace_all_directives) {
         file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
