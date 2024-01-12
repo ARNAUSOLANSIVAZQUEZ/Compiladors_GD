@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
 
 
 
-    FILE* source_file = fopen(argv[argc - 1], "r"); // r because we cannot modify original file
+    FILE* source_file = fopen(argv[argc - 1], "rb"); // r because we cannot modify original file
 
     if(source_file == NULL) {
         printf("ERROR: Could not open file: %s", argv[argc - 1]); 
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    char* file_contents = (char*)malloc(file_length_bytes); 
+    char* file_contents = (char*)calloc(file_length_bytes, 1); 
 
     if(file_contents == NULL) { // error requesting memory
         printf("ERROR: error while requesting memory. \nMemory asked: %d Bytes\t = %d MB", file_length_bytes, (int) file_length_bytes * BYTES_TO_MB_CONVERSION_FACTOR); 
@@ -235,7 +235,7 @@ int main(int argc, char** argv) {
 
     printf("New file name: \n\t%s\n", preprocessed_file_name); 
 
-    FILE* preprocessed_file = fopen(preprocessed_file_name, "w"); //create new file
+    FILE* preprocessed_file = fopen(preprocessed_file_name, "wb"); //create new file
 
     
     fwrite(file_contents, 1, file_length_bytes, preprocessed_file); //write everything
