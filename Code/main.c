@@ -17,6 +17,7 @@
 
 
     Marcel Aranich, U185166, NIA: 251453
+    David Garcia Lozano, u198629, 251587
 
 
 */
