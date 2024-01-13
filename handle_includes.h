@@ -27,17 +27,24 @@ char* handle_include_compiler_files(char* source_code, size_t* size_source_code)
 
 
 /*
-Handles the handle ifdef endif of the source code. source code is the string 
+Handles the ifdef-endif of the source code. source code is the string 
 of the code to be pre-processed. And size_source_code is the length of source_code. 
 handle_ifdef_endif() is now the owner (and responsible) of source_code. 
 
 Returns a (possibly new) string and size_source_code is updated to the new size. 
 
 */
-char* handle_ifdef_endif(char* source_code);
+char* handle_ifdef_endif(char* source_code, size_t* size_source_code);
 
+/*
+Handles the define of the source code. source code is the string 
+of the code to be pre-processed. And size_source_code is the length of source_code. 
+handle_define() is now the owner (and responsible) of source_code. 
 
+Returns a (possibly new) string and size_source_code is updated to the new size. 
 
+*/
+char* handle_define(char* source_code, size_t* size_source_code);
 
 
 
