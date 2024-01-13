@@ -6,19 +6,17 @@
 
 
 /*
-Handles the constants in the code. It must substitute every constant in the code 
-by it's corresponding value and remove the definition of all constants. 
+The handle_constants function handles the constants in the code. It will substitute all the constants by their 
+corresponding value. It will also remove the definition of all the constants.
 
-source code is the string 
-of the code to be pre-processed. And size_source_code is the length of source_code. 
-handle_constants() is now the owner (and responsable) of source_code. 
+The source_code parameter is the string of the code to be processed, and changed. Size_source_code is the size 
+of the source_code parameter. 
 
-Returns a (possibly new) string and size_source_code is updated to the new size. 
-
+The function returns the updated source_code and the size_source_code will be updated to the size of this returned
+new code. 
 */
 
 char* handle_constants(char* source_code, size_t* size_source_code); 
-
 
 
 

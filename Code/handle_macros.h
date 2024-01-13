@@ -6,14 +6,13 @@
 
 
 /*
-Handles the macros. Substitutes the macro by the definition and then removes the definition. 
+The handle_macros function will handle the macros of the code. It will substitute the macros by their definition
+and, eventually, remove the definitions. 
 
-source code is the string 
-of the code to be pre-processed. And size_source_code is the length of source_code. 
-handle_macros() is now the owner (and responsable) of source_code. 
+The source_code parameter is the code to be pre-processed (a string), and the size_source_code paraemter is the size
+the source_code parameter.
 
-Returns a (possibly new) string and size_source_code is updated to the new size. 
-
+The function returns an string and, size_source_code will end by being the size of this new string.
 */
 
 char* handle_macros(char* source_code, size_t* size_source_code); 
