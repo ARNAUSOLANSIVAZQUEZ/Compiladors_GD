@@ -5,7 +5,7 @@ We are group GD composed by:
   - Quera, Claudia    :
   - Solans, Arnau     : 216530
   - Villarino, Jorge  :
-  - 
+    
 This is the submission for P1Preprocessor.
 
 The submission is divided in:
