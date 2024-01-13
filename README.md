@@ -1,6 +1,6 @@
 We are group GD composed by:
   - Aranich, Marcel   : 
-  - García, David     :
+  - García, David     : 251587
   - Prat, Ariadna     :
   - Quera, Claudia    :
   - Solans, Arnau     : 216530
