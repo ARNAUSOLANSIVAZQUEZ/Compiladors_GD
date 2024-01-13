@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 
-char* handle_define(char* source_code);
-char* handle_ifdef_endif(char* source_code);
+char* handle_ifdef_endif(char* source_code, size_t* size_source_code);
 
 #endif
