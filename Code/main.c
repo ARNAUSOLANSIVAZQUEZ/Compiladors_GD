@@ -9,6 +9,7 @@
 #include "handle_constants.h"
 #include "handle_includes.h"
 #include "handle_macros.h"
+#include "handle_ifdef_endif.h"
 
 
 /*
@@ -194,6 +195,7 @@ int main(int argc, char** argv) {
         if(replace_all_directives) {
             file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
             file_contents = handle_include_compiler_files(file_contents, &file_length_bytes); 
+            file_contents = handle_ifdef_endif(file_contents, &file_length_bytes);
         }
 
         file_contents = handle_backslash(file_contents, &file_length_bytes); 
