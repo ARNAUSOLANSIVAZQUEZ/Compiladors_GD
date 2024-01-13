@@ -219,7 +219,7 @@ int main(int argc, char** argv) {
     {
         // NOTE: this code assumes only 1 letter is used as extension (prm.c, file.h, smtng.p, but NOT inc.asd)
 
-        errno_t error_ret = memcpy_s(preprocessed_file_name, preprocessed_file_name_length, argv[argc - 1], original_file_len - 3); 
+        int error_ret = (int)memcpy_s(preprocessed_file_name, preprocessed_file_name_length, argv[argc - 1], original_file_len - 3); 
 
         if(error_ret != 0) {
             printf("ERROR: error while moving data (memcpy_s). \n"); 
@@ -228,7 +228,7 @@ int main(int argc, char** argv) {
 
         int bytes_to_copy = preprocessed_file_name_length - (original_file_len - 3); 
 
-        error_ret = memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
+        error_ret = (int)memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
 
         if(error_ret != 0) {
             printf("ERROR: error while moving data (strcat_s). %d\n", error_ret); 
