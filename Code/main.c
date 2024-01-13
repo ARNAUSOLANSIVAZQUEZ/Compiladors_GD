@@ -284,9 +284,14 @@ void PrintHelp() {
 
 
 /*
+./preprocessor SampleText_00.txt
 
-gcc main.c -o main
 
-./main SampleText_00.txt
+
+cd .\Code\
+gcc main.c -o preprocessor
+
+
+./preprocessor -all ./../SampleText_00.c
 
 */
