@@ -274,7 +274,8 @@ void PrintHelp() {
     
     printf("\t-help: display this cool message. \n\n"); 
 
-    printf("Using no flags is equivalent to using only the \"-c\" flag. The order of the flags or amount used is irrelevant. using an invalid flag will abort the process. \n\n"); 
+    printf("Using no flags is equivalent to using only the \"-c\" flag. The order of the flags or amount used is irrelevant. using an invalid flag will abort the process. "); 
+    printf("Keep in mind that the file to preprocess needs to be in the last position. \n\n"); 
     
     printf("Note that this preprocessor only supports properly files with .c extention (or other extentions with just 1 letter). Otherwise, the name of the new file may not be properly generated. "); 
     printf("After executing the preprocessor, a new file should appear in the same directory as the old one. "); 
