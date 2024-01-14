@@ -3,7 +3,7 @@
 
 
 #include <stdio.h>
-
+#include <dirent.h>
 
 /*
  Allows to open and search directories searching for a file.
