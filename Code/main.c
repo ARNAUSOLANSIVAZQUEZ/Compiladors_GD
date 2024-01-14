@@ -234,7 +234,7 @@ int main(int argc, char** argv) {
         error_ret = (int)memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
 
         if(error_ret != 0) {
-            printf("ERROR: error while moving data (strcat_s). %d\n", error_ret); 
+            printf("ERROR: error while moving data (memcpy_s 2). %d\n", error_ret); 
             return 1; 
         }
 
@@ -258,8 +258,36 @@ void PrintHelp() {
 
     //TODO: debug all information
 
-    printf("\n\nHere all the help needed should be printed. \n\n"); 
-    printf("Since its not currenly implemented, you can have a happy face: \n\n\t:)\n\n"); 
+    //printf("\n\nHere all the help needed should be printed. \n\n"); 
+    //printf("Since its not currenly implemented, you can have a happy face: \n\n\t:)\n\n"); 
+    
+    
+    
+    printf("\n\n\nUsage: ./preprocessor {flags} {name of the program to pre-process} \n"); 
+    printf("Behaviour of the flags: \n\n"); 
+    
+    printf("\t-c: deletes all comments (// comment and /*comment*/). \n\n"); 
+    
+    printf("\t-d: Replaces all directives starting with # (#define, #include, etc. ). \n\n"); 
+    
+    printf("\t-all: shortcut for \"-c -d\" (uses both flags). \n\n"); 
+    
+    printf("\t-help: display this cool message. \n\n"); 
+
+    printf("Using no flags is equivalent to using only the \"-c\" flag. The order of the flags or amount used is irrelevant. using an invalid flag will abort the process. \n\n"); 
+    
+    printf("Note that this preprocessor only supports properly files with .c extention (or other extentions with just 1 letter). Otherwise, the name of the new file may not be properly generated. "); 
+    printf("After executing the preprocessor, a new file should appear in the same directory as the old one. "); 
+    printf("If the old file was named \"my_program.c\" then the new file will be named \"my_program_pp.c\". "); 
+    
+    printf("\n\nIMPORTANT: if there already was a file with the same name, it will be overwrited. Be careful with the files you wish to keep. \n\n"); 
+
+
+
+
+
+
+
 }
 
 
