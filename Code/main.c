@@ -11,6 +11,8 @@
 #include "handle_macros.h"
 #include "handle_ifdef_endif.h"
 
+#include "Utils.h"
+
 
 /*
     Escriviu aquí els vostres noms, U i NIA per si acas: 
@@ -18,7 +20,7 @@
 
 
     Marcel Aranich, U185166, NIA: 251453
-    David Garcia Lozano, u198629, 251587
+    David Garcia Lozano, U198629, NIA: 251587
 
 
 */
