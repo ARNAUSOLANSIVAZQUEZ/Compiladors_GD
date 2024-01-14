@@ -19,6 +19,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
         return NULL; 
     }
 
+    free(directory); 
 
     { // find size of file
         int fseek_return = fseek(source_file, 0L, SEEK_END); 
@@ -36,7 +37,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
             return NULL; 
         }
 
-        size_source_code = (size_t) ftell_return; 
+        size_source_code = (size_t)ftell_return; 
         fseek_return = fseek(source_file, 0L, SEEK_SET); 
 
         if(fseek_return != 0) { //error
@@ -68,7 +69,8 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
             return NULL; 
         }
     }
-    fclose(source_file); // no need to keep file open
+
+    fclose(source_file); 
 
     return file_contents; 
 
