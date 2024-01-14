@@ -18,7 +18,7 @@ char* handle_ifdef_endif(char* source_code, size_t* size_source_code) {
         if (strncmp(line, "#ifdef", 6) == 0) {
             //We detect #ifdef <str> where str is a word.
             while (line != NULL) {
-                if (strncmp(line, "#define", 5) == 0) {
+                if (strncmp(line, "#define", 7) == 0) {
                     //We detect #define <str> where str is a word.
                 } else if (strncmp(line, "#endif", 6) == 0) {
                     //If exists #endif we compare the two <str>.
