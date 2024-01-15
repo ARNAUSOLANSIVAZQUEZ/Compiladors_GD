@@ -353,9 +353,16 @@ void PrintHelp() {
 
 
 cd .\Code\
+// ^enter the Code sub-folder
+
 gcc main.c -o preprocessor
+// ^just compile the main file
 
 gcc main.c Utils.c -o preprocessor
+// ^also compile the utils.c file
+
+gcc main.c Utils.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_macros.c -o preprocessor
+// ^compile using everything
 
 ./preprocessor -all ./../SampleText_00.c
 

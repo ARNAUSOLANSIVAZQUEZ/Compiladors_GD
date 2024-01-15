@@ -79,7 +79,38 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
 
 
 
+char** string_tonenizer(char* source_str, size_t str_len, int* out_str_len, int* str_len_arr_len) {
 
+    out_str_len = NULL; 
+    str_len_arr_len = calloc(1, sizeof(int)); 
+
+    //Uncoplete
+    return NULL; 
+}
+
+int count_ocurrences(char* source_str, size_t str_len, char* element, int element_len) {
+
+    int ret = 0; 
+    int current_word_count = 0; 
+
+    for(int i = 0; i < str_len; i++){
+
+        if(source_str[i] == element[current_word_count]) {
+            current_word_count++; 
+
+            if(element_len <= current_word_count) {
+                current_word_count = 0; 
+                ret++; 
+            }
+        }
+
+
+    }
+
+
+    return ret; 
+
+}
 
 
 
