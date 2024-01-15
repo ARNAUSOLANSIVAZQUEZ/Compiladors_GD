@@ -1,11 +1,12 @@
 #include <stdlib.h>
+#include <string.h>
+#include <memory.h>
 /*
 #include <stdio.h>
 #include <stdbool.h> 
-#include <string.h>
-#include <memory.h>
+
 */
-#include <dirent.h>
+#include <dirent.h> // <- this gives me an error
 #include "Utils.h" 
 
 void fetch_directory(char* directory_path) {
@@ -45,12 +46,35 @@ void fetch_directory(char* directory_path) {
 char* handle_include_program_files(char* source_code, size_t* size_source_code) {
     // TODO: implement handle_include_program_files()
 
-    // strtok()
+    char delimiter[11] = "#include \""; 
+    MultiString* Mstr = string_tonenizer(source_str, str_len, delimiter, strlen(delimiter)); 
 
+    // Pseudocode explanation
 
+    size_t reserved_len = size_source_code; 
 
+    char* ret = (char*)malloc(size_source_code * sizeof(char)); 
 
-    return source_code; 
+    strcpy(ret, Mstr->string_arr[0]); 
+
+    for(int i = 1; i < Mstr->length; i++){
+
+        char include_str[MAX_LENGTH_INCUDE] = NULL; 
+
+        sscanf("%s\"", Mstr->string_arr[i], include_str); 
+
+        // Get the contents of the file of include_str
+        char* include_source_code = NULL; 
+        
+        // ret = ret + include_source_code
+
+        //also realloc() and keep count of the size when necessary
+
+    }
+
+    // TODO: free       free       free       free       free       free       free       
+
+    return ret; 
 }
 
 char* handle_include_compiler_files(char* source_code, size_t* size_source_code) { 

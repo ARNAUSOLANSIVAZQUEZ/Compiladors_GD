@@ -3,7 +3,10 @@
 
 #include <stdio.h>
 
+#define ARRAY_GROWTH_FACTOR 3/2 // 1.5 ~= phi = (1+sqrt(5))/2
+// ^for mathematical reasons, this constant is better than 2
 
+#define MAX_LENGTH_INCUDE 100 //the max length of #incude<{HERE}>
 
 
 /*Structure that holds multiple strings in MultiString.string_arr. 
@@ -36,6 +39,10 @@ prits error messages if the function fails.
 char* GetFileContents(char* directory, size_t* size_source_code, bool debug_error_messages); 
 
 
+/*
+Prints the MultiString structure. Used only for debugging. 
+*/
+void print_multistring(MultiString* ms); 
 
 
 /*
@@ -47,7 +54,7 @@ Element is an string and element_len is it's lenght.
 Returns the MultiString struct (for more info, check it's definition). 
 
 */
-MultiString* string_tonenizer(char* source_str, size_t str_len, size_t str_len, char* element, int element_len); 
+MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, int element_len); 
 
 
 

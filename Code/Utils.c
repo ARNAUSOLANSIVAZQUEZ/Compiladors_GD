@@ -8,11 +8,7 @@
 
 #define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
 
-#define ARRAY_GROWTH_FACTOR 3/2 // 1.5 ~= phi = (1+sqrt(5))/2
-// ^for mathematical reasons, this constant is better than 2
-// ^also currenly unused, found a better way to do the thing :P
 
-#define MAX_LENGTH_INCUDE 100 //the max length of #incude<{HERE}>
 
 
 char* GetFileContents(char* directory, size_t* size_source_code, bool debug_error_messages) {
