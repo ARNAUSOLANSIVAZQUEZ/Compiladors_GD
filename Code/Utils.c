@@ -4,9 +4,15 @@
 #include <string.h>
 #include <memory.h>
 
+#include "Utils.h"
 
 #define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
 
+#define ARRAY_GROWTH_FACTOR 3/2 // 1.5 ~= phi = (1+sqrt(5))/2
+// ^for mathematical reasons, this constant is better than 2
+// ^also currenly unused, found a better way to do the thing :P
+
+#define MAX_LENGTH_INCUDE 100 //the max length of #incude<{HERE}>
 
 
 char* GetFileContents(char* directory, size_t* size_source_code, bool debug_error_messages) {
@@ -79,13 +85,107 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
 
 
 
-char** string_tonenizer(char* source_str, size_t str_len, int* out_str_len, int* str_len_arr_len) {
+MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, int element_len) {
 
-    out_str_len = NULL; 
-    str_len_arr_len = calloc(1, sizeof(int)); 
+    
+    int num_elements = count_ocurrences(source_str, str_len, element, element_len); 
+    
+    MultiString* ret = (MultiString*)malloc(sizeof(MultiString)); 
 
+    ret->length = num_elements + 1; //initialize structure
+    ret->string_arr = (char**)malloc(ret->length * sizeof(char*)); 
+    ret->string_len = (int*)calloc(ret->length, sizeof(int)); 
+    
+    int curr_char = 0; 
+
+    //int batch_size = 256; 
+    //int current_string_capacity = batch_size; 
+    char* current_str = NULL; // auxiliar variable to simplify code and reduce redirection
+
+    int element_count = 0; 
+    int current_array_len = 0; 
+    int index_start = 0; 
+
+    for(int i = 0; i < num_elements + 1; i++) {
+
+
+        element_count = 0; 
+        current_array_len = 0; 
+
+        while(curr_char < str_len) { 
+            
+            //current_str[curr_char] = source_str[curr_char]; 
+            current_array_len += 1; 
+
+
+            if(source_str[curr_char] == element[element_count]) {
+
+                element_count++; 
+
+                if(element_count == element_len) { 
+
+                    //current_str[curr_char - element_len + 1] = '\0'; 
+                    current_array_len += -element_len; 
+                    current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
+
+                    // printf("EQUALITY: %d (%d, %d)\n", curr_char - index_start + 1 == current_array_len + element_len, curr_char - index_start + 1, current_array_len + element_len); 
+
+                    int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len); 
+                    if(mem_ret != 0) {
+                        printf("memcpy_s error\n"); 
+                    }
+                    
+                    current_str[current_array_len] = '\0'; 
+                    //printf(current_str); 
+                    //printf("\n\n"); 
+                    index_start = curr_char; 
+                    curr_char++; 
+
+                    ret->string_arr[i] = current_str; 
+                    ret->string_len[i] = current_array_len; 
+
+                    index_start = curr_char; 
+
+                    break; 
+
+                }
+
+            } else {
+                element_count = 0; 
+            }
+
+            curr_char++; 
+
+        }
+        if(curr_char >= str_len) 
+        {
+            if(source_str[curr_char + 1] == '\0') { //handle last bit of data (it didn't have the delimiter at the end)
+
+                current_array_len += -element_len; 
+                current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
+
+                // printf("EQUALITY: %d (%d, %d)\n", curr_char - index_start + 1 == current_array_len + element_len, curr_char - index_start + 1, current_array_len + element_len); 
+
+                int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len); 
+                if(mem_ret != 0) {
+                    printf("memcpy_s error\n"); 
+                }
+                
+                current_str[current_array_len] = '\0'; 
+                //printf(current_str); 
+                //printf("\n\n"); 
+
+                ret->string_arr[i] = current_str; 
+                ret->string_len[i] = current_array_len; 
+
+            } else { //should never happen
+                printf("Error while processing data. \n"); 
+            }
+        }
+    }
+    
     //Uncoplete
-    return NULL; 
+    return ret; 
 }
 
 int count_ocurrences(char* source_str, size_t str_len, char* element, int element_len) {
@@ -102,7 +202,7 @@ int count_ocurrences(char* source_str, size_t str_len, char* element, int elemen
                 current_word_count = 0; 
                 ret++; 
             }
-        }
+        } else current_word_count = 0; 
 
 
     }

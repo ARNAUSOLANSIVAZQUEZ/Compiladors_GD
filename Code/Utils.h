@@ -6,6 +6,25 @@
 
 
 
+/*Structure that holds multiple strings in MultiString.string_arr. 
+The length of MultiString.string_arr[x] is MultiString.string_len[x] 
+and there are a total of MultiString.length elements. 
+
+char** string_arr; 
+int* string_len; 
+int length; 
+*/
+typedef struct struct_MultiString {
+
+    char** string_arr; 
+    int* string_len; 
+    int length; 
+
+} MultiString; 
+
+
+
+
 /*
 Returns the contents of the file located in directory. If an error happens, GetFileContents()
 will return NULL. size_sorce_code is an out value and may be anything; it will be overwritted
@@ -25,15 +44,10 @@ element appears. (element itself is removed). str_len is the length of source_st
 Element is an string and element_len is it's lenght. 
 
 
-Returns an array of strings wich result of spliting the source_str. 
-out_str_len is an out parameter. The position that this points to will be set to an array of 
-integers. The integers represent the length of each sub_string in source_str. The function caller 
-is now the owner of the array. 
-out_str_len_arr_len will be written the number of elements of source_str and out_str_len. 
-
+Returns the MultiString struct (for more info, check it's definition). 
 
 */
-char** string_tonenizer(char* source_str, size_t str_len, size_t str_len, char* element, int element_len, int** out_str_len, int* out_str_len_arr_len); 
+MultiString* string_tonenizer(char* source_str, size_t str_len, size_t str_len, char* element, int element_len); 
 
 
 
