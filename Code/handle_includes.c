@@ -14,7 +14,7 @@ void fetch_directory(char* directory_path) {
     // Open directory from path input
     DIR* d = opendir(directory_path);
     // Return error if unable to open specified path
-    if(d==NULL) {
+    if(d == NULL) {
         return;
     }
     // Initialize directory entries from reading the directory opened

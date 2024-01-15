@@ -37,7 +37,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
             return NULL; 
         }
 
-        size_source_code = (size_t)ftell_return; 
+        *size_source_code = (size_t)ftell_return; 
         fseek_return = fseek(source_file, 0L, SEEK_SET); 
 
         if(fseek_return != 0) { //error
@@ -47,19 +47,19 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
         }
     }
 
-    char* file_contents = (char*)calloc(size_source_code, 1); 
+    char* file_contents = (char*)calloc(*size_source_code, 1); 
 
 
     if(file_contents == NULL) { // error requesting memory
-        if(debug_error_messages) printf("ERROR: error while requesting memory. \nMemory asked: %d Bytes\t = %d MB", size_source_code, (int) size_source_code * BYTES_TO_MB_CONVERSION_FACTOR); 
+        if(debug_error_messages) printf("ERROR: error while requesting memory. \nMemory asked: %d Bytes\t = %d MB", size_source_code, (int) *size_source_code * BYTES_TO_MB_CONVERSION_FACTOR); 
         fclose(source_file); 
         return NULL; 
     }
 
     { // copy contents
-        size_t fread_return = fread(file_contents, 1, size_source_code, source_file); 
+        size_t fread_return = fread(file_contents, 1, *size_source_code, source_file); 
 
-        if(fread_return != size_source_code && feof(source_file) == 0) { // handle error
+        if(fread_return != *size_source_code && feof(source_file) == 0) { // handle error
             if(debug_error_messages) {
                 printf("ERROR: error while reading file. fread return: %d\tfile length: %d bytes\n", fread_return, size_source_code); 
                 printf("feof(file) = %d\n", feof(source_file)); 

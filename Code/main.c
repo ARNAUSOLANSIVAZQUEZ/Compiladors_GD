@@ -325,6 +325,7 @@ void PrintHelp() {
 cd .\Code\
 gcc main.c -o preprocessor
 
+gcc main.c Utils.c -o preprocessor
 
 ./preprocessor -all ./../SampleText_00.c
 
