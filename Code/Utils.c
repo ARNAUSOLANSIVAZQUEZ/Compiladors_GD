@@ -85,6 +85,21 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
 
 
 
+void print_multistring(MultiString* ms){
+
+    //for debugging pruposes
+    printf("\n\nMultiString: \n\n\t\t%d elements: \n\n", ms->length); 
+
+    for(int i = 0; i < ms->length; i++) {
+
+        printf("\t%d (%d = %d chars): |%s|", i, ms->string_len[i], strlen(ms->string_arr[i]), ms->string_arr[i]); 
+        printf("\n\n"); 
+    } 
+
+
+}
+
+
 MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, int element_len) {
 
     
@@ -125,6 +140,7 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
                 if(element_count == element_len) { 
 
                     //current_str[curr_char - element_len + 1] = '\0'; 
+                    current_array_len = curr_char - index_start + 1; 
                     current_array_len += -element_len; 
                     current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
 
@@ -136,8 +152,6 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
                     }
                     
                     current_str[current_array_len] = '\0'; 
-                    //printf(current_str); 
-                    //printf("\n\n"); 
                     index_start = curr_char; 
                     curr_char++; 
 
@@ -157,30 +171,25 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
             curr_char++; 
 
         }
-        if(curr_char >= str_len) 
-        {
-            if(source_str[curr_char + 1] == '\0') { //handle last bit of data (it didn't have the delimiter at the end)
 
-                current_array_len += -element_len; 
-                current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
+        if(source_str[curr_char + 1] == '\0') {
+            //handle last bit of data (it didn't have the delimiter at the end)
 
-                // printf("EQUALITY: %d (%d, %d)\n", curr_char - index_start + 1 == current_array_len + element_len, curr_char - index_start + 1, current_array_len + element_len); 
+            current_array_len = curr_char - index_start + 1; 
 
-                int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len); 
-                if(mem_ret != 0) {
-                    printf("memcpy_s error\n"); 
-                }
-                
-                current_str[current_array_len] = '\0'; 
-                //printf(current_str); 
-                //printf("\n\n"); 
+            current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
 
-                ret->string_arr[i] = current_str; 
-                ret->string_len[i] = current_array_len; 
 
-            } else { //should never happen
-                printf("Error while processing data. \n"); 
+            int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len); 
+            if(mem_ret != 0) {
+                printf("memcpy_s error\n"); 
             }
+            
+            current_str[current_array_len] = '\0'; 
+
+            ret->string_arr[i] = current_str; 
+            ret->string_len[i] = current_array_len; 
+
         }
     }
     
@@ -211,10 +220,6 @@ int count_ocurrences(char* source_str, size_t str_len, char* element, int elemen
     return ret; 
 
 }
-
-
-
-
 
 
 
