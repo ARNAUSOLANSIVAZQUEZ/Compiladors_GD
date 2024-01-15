@@ -129,8 +129,15 @@ int main(int argc, char** argv) {
 
     }
 
+    //////////////////////////////////////////////////////
 
 
+
+
+    size_t file_length_bytes = -1; 
+
+
+    /*
     FILE* source_file = fopen(argv[argc - 1], "rb"); // r because we cannot modify original file
 
     if(source_file == NULL) {
@@ -139,7 +146,6 @@ int main(int argc, char** argv) {
     }
 
 
-    size_t file_length_bytes = -1; 
 
     { // find size of file
         int fseek_return = fseek(source_file, 0L, SEEK_END); 
@@ -187,6 +193,30 @@ int main(int argc, char** argv) {
         }
     }
     fclose(source_file); // no need to keep file open
+    */
+
+    char* file_contents = NULL; 
+
+    {
+
+        int directory_len = strlen(argv[argc - 1]); //copy directoty to another string
+        char* directory_copy = calloc(directory_len, 1); 
+        int memcpy_ret = memcpy_s(directory_copy, directory_len, argv[argc - 1], directory_len); 
+        if(memcpy_ret != 0) {
+            printf("There has been an error wile attempting to move data. err num: %d\n\n", memcpy_ret); 
+            return 1; 
+        }
+        
+        bool debug_error_messages = true; 
+        file_contents = GetFileContents(directory_copy, &file_length_bytes, debug_error_messages); 
+
+        if(file_contents == NULL) {
+            printf("There has been an error while accessing the contents of the file. "); 
+            return 1; 
+        }
+        
+    }
+
 
     printf("Readed file: \n\n%s\n\n", file_contents); 
 
