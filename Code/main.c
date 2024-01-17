@@ -371,10 +371,12 @@ int main(int argc, char** argv) {
                             // Simple comment case
                             case '/':
                                 printf("Simple comment\n");
+                                // TODO: handle simple comment
                                 break;
                             // Multiline comment case
                             case '*':
                                 printf("Multiline comment\n");
+                                // TODO: handle multiline comment
                                 break;
                             // Invalid case
                             default:
