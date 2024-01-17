@@ -332,11 +332,25 @@ int main(int argc, char** argv) {
                                printf("Define case\n");
                                // TODO: handle define (correct and errors)
                                break;
-                           // Include case
+                           // Include / Ifdef case
                            case 'i':
-                               printf("Include case\n");
-                               // TODO: handle include (correct and errors)
-                               break;
+                               char next_c2 = l[i+2];
+                               switch(next_c2){
+                                   // Include case
+                                   case 'n':
+                                       printf("Include case\n");
+                                       // TODO: handle include (correct and errors)
+                                       break;
+                                   // Ifdef case
+                                   case 'f':
+                                       printf("Ifdef case\n");
+                                       // TODO: handle ifdef (correct and errors)
+                                       break;
+                                   // Invalid case
+                                   default:
+                                       printf("Not correct");
+                                       break;
+                               }
                            // Invalid case
                            default:
                                printf("Not a hashtag\n");
