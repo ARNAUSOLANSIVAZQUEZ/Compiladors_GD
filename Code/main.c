@@ -20,7 +20,11 @@
 
 
     Marcel Aranich, U185166, NIA: 251453
+    Arnau Solans, U161668, NIA: 216530
     David Garcia Lozano, U198629, NIA: 251587
+    Ariadna Prat, , NIA: 251281
+    Clàudia Quera, , NIA: 231197
+    Jorge Villarino, , NIA: 231351
 
 
 */
@@ -133,11 +137,11 @@ int main(int argc, char** argv) {
 
 
 
-
+    /*
     size_t file_length_bytes = -1; 
 
 
-    /*
+    
     FILE* source_file = fopen(argv[argc - 1], "rb"); // r because we cannot modify original file
 
     if(source_file == NULL) {
@@ -193,7 +197,7 @@ int main(int argc, char** argv) {
         }
     }
     fclose(source_file); // no need to keep file open
-    */
+    
 
     char* file_contents = NULL; 
 
@@ -282,6 +286,98 @@ int main(int argc, char** argv) {
     free(file_contents); 
 
     fclose(preprocessed_file); 
+    */
+    
+    // Open the file read-only
+    FILE* fh = fopen(argv[2], "r");
+    // Obtain length of original file name (+"\0")
+    int original_file_len = strlen(argv[argc - 1]) + 1;
+    // Compute length of preprocessed file name (+"_pp")
+    int preprocessed_file_name_length = original_file_len + 3;
+    // Allocate space for preprocessed file name
+    char* preprocessed_file_name = calloc(preprocessed_file_name_length, 1);
+    // Create the preprocessed file to write
+    FILE* fhpp = fopen(preprocessed_file_name, "wb");
+    // Allocate space to read lines
+    char* line = malloc(MAX_LENGTH);
+    // Terminate if empty file
+    if(fh == NULL){
+        return 0;
+    }
+    else{
+        // Reading loop
+        while(true) {
+            // Obtain position before reading
+            int old_pos = ftell(fh);
+            // Reading a line
+            char* l = fgets(line, MAX_LENGTH,fh);
+            // Obtain position after reading
+            int new_pos = ftell(fh);
+            // Iterating over characters of line read
+            for(int i=0; i<strlen(l); i++) {
+                // Retrieve current character
+                char c = l[i];
+                // Define next_character
+                char next_c;
+                // Switch for current character
+                switch(c){
+                    // Starts with #
+                    case '#':
+                       printf("Hashtag case:");
+                       next_c = l[i+1];
+                       // Switch for next character
+                       switch(next_c){
+                           // Define case
+                           case 'd':
+                               printf("Define case\n");
+                               // TODO: handle define (correct and errors)
+                               break;
+                           // Include case
+                           case 'i':
+                               printf("Include case\n");
+                               // TODO: handle include (correct and errors)
+                               break;
+                           // Invalid case
+                           default:
+                               printf("Not a hashtag\n");
+                               break;
+                       }
+                       break;
+                   // Backslash case
+                    case '\\':
+                        printf("Bacslash case\n");
+                        // TODO: handle backlash (variations correct and errors)
+                        break;
+                    // Comment case
+                    case '/':
+                        printf("Comment case:");
+                        next_c = l[i+1];
+                        // Switch for next character
+                        switch(next_c){
+                            // Simple comment case
+                            case '/':
+                                printf("Simple comment\n");
+                                break;
+                            // Multiline comment case
+                            case '*':
+                                printf("Multiline comment\n");
+                                break;
+                            // Invalid case
+                            default:
+                                printf("Not a comment\n");
+                                break;
+                        }
+                        break;
+                }
+            }
+            // Break if we reached EOF
+            if(feof(fh)){break;}
+        }
+    }
+    // Close file handle for reading
+    fclose(fh);
+    // Close file handle for writing
+    fclose(fhpp);
     
     return 0; 
 }
