@@ -404,13 +404,15 @@ int main(int argc, char** argv) {
     char* writing_buffer = (char*)malloc(original_file_length * sizeof(char)); // will probably be increased in size
     
     PatternMatcher pattern_match_base; // see Utils.c
-    pattern_match_base.capacity = 5; 
+    pattern_match_base.capacity = 6; 
     pattern_match_base.num_patterns = 0; 
     pattern_match_base.patterns = (Pattern**)calloc(pattern_match_base.capacity, sizeof(Pattern*)); 
 
     int DEFINE_ID = 1; 
     int IFDEF_ID = 2; 
     int INCLUDE_ID = 3; 
+    int COMMENT_ID = 4; 
+    int MULTI_COMMENT_ID = 5; 
     {
         char* define_pattern = (char*)malloc(20 * sizeof(char)); 
         strcpy(define_pattern, "#define "); 
@@ -423,6 +425,14 @@ int main(int argc, char** argv) {
         char* include_pattern = (char*)malloc(20 * sizeof(char)); 
         strcpy(include_pattern, "#ifdef"); 
         add_pattern(&pattern_match_base, include_pattern, INCLUDE_ID); 
+
+        char* comment_pattern = (char*)malloc(20 * sizeof(char)); 
+        strcpy(comment_pattern, "//"); 
+        add_pattern(&pattern_match_base, comment_pattern, COMMENT_ID); 
+
+        char* ML_comment_pattern = (char*)malloc(20 * sizeof(char)); 
+        strcpy(ML_comment_pattern, "/*"); 
+        add_pattern(&pattern_match_base, ML_comment_pattern, MULTI_COMMENT_ID); 
 
     }
 

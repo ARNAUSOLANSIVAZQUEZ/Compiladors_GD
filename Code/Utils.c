@@ -273,7 +273,7 @@ void free_pattern_matcher(PatternMatcher* pattern_matcher){
     for(int i = 0; i < pattern_matcher->num_patterns; i++) {
         
         free(*(pattern_matcher->patterns[i])->str_pattern); // free string inside
-        free(pattern_matcher->patterns[i]) //free structure itself
+        free(pattern_matcher->patterns[i]);  //free structure itself
 
     }
 
