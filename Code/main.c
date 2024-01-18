@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
 
         for(int i = 1; i < argc - 1; i++) { //handle flags
 
+            // remove switch and use only strcmp()  ?
             switch (argv[i][1]) {
             case 'c': // -c
                 if(strcmp(argv[i], "-c") != 0) { 
@@ -404,6 +405,9 @@ int main(int argc, char** argv) {
     size_t writting_buffer_len = original_file_length; 
     char* writing_buffer = (char*)malloc(writting_buffer_len * sizeof(char)); // will probably be increased in size
     
+
+    /*This pattern matcher detects the things that our code needs to detect
+    */
     PatternMatcher pattern_match_base; // see Utils.c
     pattern_match_base.capacity = 6; 
     pattern_match_base.num_patterns = 0; 
@@ -444,6 +448,16 @@ int main(int argc, char** argv) {
 
     }
 
+    /*This pattern matcher detects the things that can be found again in the code 
+    i.e. defines*/
+    PatternMatcher pattern_match_dyn; // see Utils.c
+    pattern_match_dyn.capacity = 5; 
+    pattern_match_dyn.num_patterns = 0; 
+    pattern_match_dyn.patterns = (Pattern**)calloc(pattern_match_dyn.capacity, sizeof(Pattern*)); 
+
+    
+
+
     unsigned int writing_index = 0; 
 
     for(int i = 0; i < original_file_length; i++){
@@ -457,12 +471,54 @@ int main(int argc, char** argv) {
         case 0: // NO PATTERN
             writing_buffer[writing_index] = current_char; 
             //coninue writting normally
+
+            if(writting_buffer_len <= writing_index + 1 ) { // +1 for /0
+                // get more space
+                writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+                writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+            }
+
             break;
-        case DEFINE_ID: 
+        case DEFINE_ID: //#define
+
+            /*TODO: store all the information needed in a corresponding data structure
+            
+            Also use pattern_match_dyn to store the identifier of the constant/macro. 
+            When the pattern is detected bellow this switch, use he handle_macro() or 
+            handle_constant() accordingly. You may want to delete one of the 2 functions. 
+
+
+            */
+
+            //get the following using the reading buffer
+            char patten_definition[500] = "#define this_cool_stuff_i_found(x) (x + 3) "
+
+            //get somehow 
+            char pattern[500] = "this_cool_stuff_i_found" ; 
+
+            add_pattern(pattern_match_dyn, pattern, pattern_match_dyn.num_patterns); 
+            //^save pattern; 3rd argument should be an unique ID
+
+            //TODO: store the information as you can
+
+            writing_index += - 1; //update accordingly
 
 
             break;        
         case IFDEF_ID: 
+
+            int len = -1; 
+            char* if_def_text = handle_ifdef_endif(reading_buffer, i - 5, &len); 
+            //^should return direcly what needs to be inserted in the writing buffer
+
+            if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+                // get more space
+                writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+                writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+            }
+
+            memcpy(&writing_buffer[writing_index - 5], if_def_text, (size_t)len); 
+            writing_index += -5 + len - 1; 
 
 
             break;        
@@ -478,36 +534,95 @@ int main(int argc, char** argv) {
                 writing_buffer = realloc(writing_buffer, writting_buffer_len); 
             }
 
-            memcpy()
+            memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len); 
+            writing_index += -9 + len - 1; 
 
             break;        
         case INCLUDE_LOC_ID: 
 
+            int len = -1; 
+            char* include_text = handle_include_program_files(reading_buffer, i - 9, &len); 
+            //^should return direcly what needs to be inserted in the writing buffer
+
+            if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+                // get more space
+                writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+                writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+            }
+
+            memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len); 
+            writing_index += -9 + len - 1; 
 
             break;
         case COMMENT_ID: 
 
 
             int new_index = handle_comments_simple(reading_buffer, i); 
-            //^ should return the position
+            //^ should return the position of the next char to write (even if its /0)
 
-            i = new_index; // ignore the whole comment
+            i = new_index - 1; // ignore the whole comment
 
             writing_index += -2; //repcace the // in the writting buffer
             // -1 is for going back and the other -1 is to account the ++ at the end of the for
 
             break;        
         case MULTI_COMMENT_ID: 
+
+            int new_index = handle_comments_multi(reading_buffer, i); 
+            //^ should return the position of the next char to write (even if its /0)
+
+            i = new_index - 1; // ignore the whole comment
+
+            writing_index += -2; //repcace the / * in the writting buffer
+            // -1 is for going back and the other -1 is to account the ++ at the end of the for
+
+
             break;
         default:
+            // help
             break;
         }
 
-        if(writting_buffer_len <= writing_index + 1 ) { // +1 for /0
-            // get more space
-            writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
-            writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+        // =================================================================================
+        // =================================================================================
+        //dynamic pattern matching
+
+        pattern_return = pattern_scan(pattern_match_dyn, current_char); 
+
+
+        if ( pattern_return != 0) {
+
+            /*Do wathever you need to substitute everything as needed. I leave 
+            you with something basic you may want to change. */
+
+            struct SUPER_USCEFULL_DATA_STRUCTURE { // /s
+                int x; 
+            }; 
+
+            SUPER_USCEFULL_DATA_STRUCTURE data_structure; 
+            data_structue.x = 0; 
+
+            
+            int len = 0; 
+            char* define_text = handle_define(reading_buffer, i, &data_structure, pattern_return, &len); 
+
+            if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+                // get more space
+                writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+                writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+            }
+
+            memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len); 
+            writing_index += 0; //update acorfingly
+
+
         }
+
+
+
+
+
+        ///////////////////////////////////////////////
         writing_index++; // go to new index
 
     }

@@ -64,7 +64,7 @@ int pattern_scan(PatternMatcher* pattern_matcher, char c);
 
 /*
     adds a string (new_pattern) as a pattern to the pattern matcher. 
-    ID cannot be 0
+    ID cannot be 0 and will be tha value returned by pattern_scan
     new_pattern must be heap allocated, and now pattern_matcher owns it 
     (has the responsability to deallocate it)
 */
