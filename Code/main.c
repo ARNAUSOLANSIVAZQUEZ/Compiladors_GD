@@ -579,7 +579,7 @@ int main(int argc, char** argv) {
 
             break;
         default:
-            // help
+            // help, this should not happen
             break;
         }
 
