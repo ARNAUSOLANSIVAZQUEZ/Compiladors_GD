@@ -401,19 +401,23 @@ int main(int argc, char** argv) {
     char* reading_buffer = GetFileContents(argv[argc - 1], &original_file_length, true); 
     //^read gile contents and store them in the reading buffer. the reading buffer 
     // should not be altered
-    char* writing_buffer = (char*)malloc(original_file_length * sizeof(char)); // will probably be increased in size
+    size_t writting_buffer_len = original_file_length; 
+    char* writing_buffer = (char*)malloc(writting_buffer_len * sizeof(char)); // will probably be increased in size
     
     PatternMatcher pattern_match_base; // see Utils.c
     pattern_match_base.capacity = 6; 
     pattern_match_base.num_patterns = 0; 
     pattern_match_base.patterns = (Pattern**)calloc(pattern_match_base.capacity, sizeof(Pattern*)); 
 
+
     int DEFINE_ID = 1; 
     int IFDEF_ID = 2; 
-    int INCLUDE_ID = 3; 
+    int INCLUDE_COMP_ID = 3; 
+    int INCLUDE_LOC_ID = 6; //unsorted
     int COMMENT_ID = 4; 
     int MULTI_COMMENT_ID = 5; 
     {
+        //define basic patterns
         char* define_pattern = (char*)malloc(20 * sizeof(char)); 
         strcpy(define_pattern, "#define "); 
         add_pattern(&pattern_match_base, define_pattern, DEFINE_ID); 
@@ -423,8 +427,8 @@ int main(int argc, char** argv) {
         add_pattern(&pattern_match_base, ifdef_pattern, IFDEF_ID); 
 
         char* include_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(include_pattern, "#ifdef"); 
-        add_pattern(&pattern_match_base, include_pattern, INCLUDE_ID); 
+        strcpy(include_pattern, "#include <"); 
+        add_pattern(&pattern_match_base, include_pattern, INCLUDE_COMP_ID); 
 
         char* comment_pattern = (char*)malloc(20 * sizeof(char)); 
         strcpy(comment_pattern, "//"); 
@@ -434,14 +438,77 @@ int main(int argc, char** argv) {
         strcpy(ML_comment_pattern, "/*"); 
         add_pattern(&pattern_match_base, ML_comment_pattern, MULTI_COMMENT_ID); 
 
+        char* inlcude_local_pattern = (char*)malloc(20 * sizeof(char)); 
+        strcpy(inlcude_local_pattern, "#include \""); 
+        add_pattern(&pattern_match_base, inlcude_local_pattern, INCLUDE_LOC_ID); 
+
     }
+
+    unsigned int writing_index = 0; 
 
     for(int i = 0; i < original_file_length; i++){
 
+        char current_char = reading_buffer[i]; 
+
+        int pattern_return = pattern_scan(pattern_match_base, current_char); 
+
+        switch (pattern_return)
+        {
+        case 0: // NO PATTERN
+            writing_buffer[writing_index] = current_char; 
+            //coninue writting normally
+            break;
+        case DEFINE_ID: 
 
 
+            break;        
+        case IFDEF_ID: 
 
 
+            break;        
+        case INCLUDE_COMP_ID: 
+
+            int len = -1; 
+            char* include_text = handle_include_compiler_files(reading_buffer, i - 9, &len); 
+            //^should return direcly what needs to be inserted in the writing buffer
+
+            if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+                // get more space
+                writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+                writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+            }
+
+            memcpy()
+
+            break;        
+        case INCLUDE_LOC_ID: 
+
+
+            break;
+        case COMMENT_ID: 
+
+
+            int new_index = handle_comments_simple(reading_buffer, i); 
+            //^ should return the position
+
+            i = new_index; // ignore the whole comment
+
+            writing_index += -2; //repcace the // in the writting buffer
+            // -1 is for going back and the other -1 is to account the ++ at the end of the for
+
+            break;        
+        case MULTI_COMMENT_ID: 
+            break;
+        default:
+            break;
+        }
+
+        if(writting_buffer_len <= writing_index + 1 ) { // +1 for /0
+            // get more space
+            writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+            writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+        }
+        writing_index++; // go to new index
 
     }
 
