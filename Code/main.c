@@ -299,103 +299,117 @@ int main(int argc, char** argv) {
     // Create the preprocessed file to write
     FILE* fhpp = fopen(preprocessed_file_name, "wb");
     // Allocate space to read lines
-    char* line = malloc(MAX_LENGTH);
+    char* line = malloc(MAX_LENGTH); 
     // Terminate if empty file
     if(fh == NULL){
-        return 0;
+        return 1;
     }
-    else{
-        // Reading loop
-        while(true) {
-            // Obtain position before reading
-            int old_pos = ftell(fh);
-            // Reading a line
-            char* l = fgets(line, MAX_LENGTH,fh);
-            // Obtain position after reading
-            int new_pos = ftell(fh);
-            // Iterating over characters of line read
-            for(int i=0; i<strlen(l); i++) {
-                // Retrieve current character
-                char c = l[i];
-                // Define next_character
-                char next_c;
-                // Switch for current character
-                switch(c){
-                    // Starts with #
-                    case '#':
-                       printf("Hashtag case:");
-                       next_c = l[i+1];
-                       // Switch for next character
-                       switch(next_c){
-                           // Define case
-                           case 'd':
-                               printf("Define case\n");
-                               // TODO: handle define (correct and errors)
-                               break;
-                           // Include / Ifdef case
-                           case 'i':
-                               char next_c2 = l[i+2];
-                               switch(next_c2){
-                                   // Include case
-                                   case 'n':
-                                       printf("Include case\n");
-                                       // TODO: handle include (correct and errors)
-                                       break;
-                                   // Ifdef case
-                                   case 'f':
-                                       printf("Ifdef case\n");
-                                       // TODO: handle ifdef (correct and errors)
-                                       break;
-                                   // Invalid case
-                                   default:
-                                       printf("Not correct");
-                                       break;
-                               }
-                           // Invalid case
-                           default:
-                               printf("Not a hashtag\n");
-                               break;
-                       }
-                       break;
-                   // Backslash case
-                    case '\\':
-                        printf("Bacslash case\n");
-                        // TODO: handle backlash (variations correct and errors)
-                        break;
-                    // Comment case
-                    case '/':
-                        printf("Comment case:");
-                        next_c = l[i+1];
-                        // Switch for next character
-                        switch(next_c){
-                            // Simple comment case
-                            case '/':
-                                printf("Simple comment\n");
-                                // TODO: handle simple comment
-                                break;
-                            // Multiline comment case
-                            case '*':
-                                printf("Multiline comment\n");
-                                // TODO: handle multiline comment
-                                break;
-                            // Invalid case
-                            default:
-                                printf("Not a comment\n");
-                                break;
-                        }
-                        break;
-                }
+    // Reading loop
+    while(true) {
+        // Obtain position before reading
+        int old_pos = ftell(fh);
+        // Reading a line
+        char* l = fgets(line, MAX_LENGTH,fh); 
+        // Obtain position after reading
+        int new_pos = ftell(fh);
+        // Iterating over characters of line read
+        for(int i = 0; i < strlen(l); i++) {
+            // Retrieve current character
+            char c = l[i];
+            // Define next_character
+            char next_c;
+            // Switch for current character
+            switch(c) {
+                // Starts with #
+                case '#':
+                    printf("Hashtag case:");
+                    next_c = l[i+1]; ///////////////// <- bad idea, we dont know if it is out of bounds
+                    // Switch for next character
+                    switch(next_c){
+                        // Define case
+                        case 'd':
+                            printf("Define case\n");
+                            // TODO: handle define (correct and errors)
+                            break;
+                        // Include / Ifdef case
+                        case 'i':
+                            char next_c2 = l[i+2];  /////// <- also bad idea
+                            switch(next_c2){
+                                // Include case
+                                case 'n':
+                                    printf("Include case\n");
+                                    // TODO: handle include (correct and errors)
+                                    break;
+                                // Ifdef case
+                                case 'f':
+                                    printf("Ifdef case\n");
+                                    // TODO: handle ifdef (correct and errors)
+                                    break;
+                                // Invalid case
+                                default:
+                                    printf("Not correct");
+                                    break;
+                            }
+                        // Invalid case
+                        default:
+                            printf("Not a hashtag\n");
+                            break;
+                    }
+                    break; 
+                // Backslash case
+                case '\\':
+                    printf("Bacslash case\n");
+                    // TODO: handle backlash (variations correct and errors)
+                    break;
+                // Comment case
+                case '/':
+                    printf("Comment case:");
+                    next_c = l[i+1];
+                    // Switch for next character
+                    switch(next_c){
+                        // Simple comment case
+                        case '/':
+                            printf("Simple comment\n");
+                            // TODO: handle simple comment
+                            break;
+                        // Multiline comment case
+                        case '*':
+                            printf("Multiline comment\n");
+                            // TODO: handle multiline comment
+                            break;
+                        // Invalid case
+                        default:
+                            printf("Not a comment\n");
+                            break;
+                    }
+                    break;
             }
-            // Break if we reached EOF
-            if(feof(fh)){break;}
         }
+        // Break if we reached EOF
+        if(feof(fh)){break;}
     }
+
+    free(line); 
+
     // Close file handle for reading
     fclose(fh);
     // Close file handle for writing
     fclose(fhpp);
     
     return 0; 
+
+
+    /*
+    I think it t parse the document, it would be better to use a structure. 
+    The structure stores the string you want to see, the length, the identifier and 
+    the count of consecutive readed chars. 
+
+    This way you just need to call add_char(structure, char_readed) and it will return 0 
+    if it sees nothing or the identifier if it detects it. when we just do a switch to select
+    the corresponding handle_function
+
+    
+    */
 }
 
 void PrintHelp() {
