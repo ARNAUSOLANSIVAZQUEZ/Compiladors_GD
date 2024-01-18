@@ -287,9 +287,9 @@ int main(int argc, char** argv) {
 
     fclose(preprocessed_file); 
     */
-    
+    /*
     // Open the file read-only
-    FILE* fh = fopen(argv[2], "r");
+    // FILE* fh = fopen(argv[2], "r");
     // Obtain length of original file name (+"\0")
     int original_file_len = strlen(argv[argc - 1]) + 1;
     // Compute length of preprocessed file name (+"_pp")
@@ -297,7 +297,6 @@ int main(int argc, char** argv) {
     // Allocate space for preprocessed file name
     char* preprocessed_file_name = calloc(preprocessed_file_name_length, 1);
     // Create the preprocessed file to write
-    FILE* fhpp = fopen(preprocessed_file_name, "wb");
     // Allocate space to read lines
     char* line = malloc(MAX_LENGTH); 
     // Terminate if empty file
@@ -392,10 +391,59 @@ int main(int argc, char** argv) {
     free(line); 
 
     // Close file handle for reading
-    fclose(fh);
+
+    FILE* fhpp = fopen(preprocessed_file_name, "wb");
+
     // Close file handle for writing
-    fclose(fhpp);
+    fclose(fhpp);*/ 
+
+    size_t* original_file_length = 0; //NOT including /0 
+    char* reading_buffer = GetFileContents(argv[argc - 1], &original_file_length, true); 
+    //^read gile contents and store them in the reading buffer. the reading buffer 
+    // should not be altered
+    char* writing_buffer = (char*)malloc(original_file_length * sizeof(char)); // will probably be increased in size
     
+    PatternMatcher pattern_match_base; // see Utils.c
+    pattern_match_base.capacity = 5; 
+    pattern_match_base.num_patterns = 0; 
+    pattern_match_base.patterns = (Pattern**)calloc(pattern_match_base.capacity, sizeof(Pattern*)); 
+
+    int DEFINE_ID = 1; 
+    int IFDEF_ID = 2; 
+    int INCLUDE_ID = 3; 
+    {
+        char* define_pattern = (char*)malloc(20 * sizeof(char)); 
+        strcpy(define_pattern, "#define "); 
+        add_pattern(&pattern_match_base, define_pattern, DEFINE_ID); 
+
+        char* ifdef_pattern = (char*)malloc(20 * sizeof(char)); 
+        strcpy(ifdef_pattern, "#ifdef"); 
+        add_pattern(&pattern_match_base, ifdef_pattern, IFDEF_ID); 
+
+        char* include_pattern = (char*)malloc(20 * sizeof(char)); 
+        strcpy(include_pattern, "#ifdef"); 
+        add_pattern(&pattern_match_base, include_pattern, INCLUDE_ID); 
+
+    }
+
+    for(int i = 0; i < original_file_length; i++){
+
+
+
+
+
+
+    }
+
+
+
+    free(reading_buffer); 
+    free_pattern_matcher(&pattern_match_base); 
+
+    //TODO: put everything in new file
+
+    free(writing_buffer); 
+
     return 0; 
 
 
@@ -406,7 +454,9 @@ int main(int argc, char** argv) {
 
     This way you just need to call add_char(structure, char_readed) and it will return 0 
     if it sees nothing or the identifier if it detects it. when we just do a switch to select
-    the corresponding handle_function
+    the corresponding handle_function. 
+
+    also have a 2nd structure for the patterns adquired dinamically
 
     
     */

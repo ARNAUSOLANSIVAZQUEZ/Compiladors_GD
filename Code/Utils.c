@@ -220,4 +220,63 @@ int count_ocurrences(char* source_str, size_t str_len, char* element, int elemen
 
 
 
+int pattern_scan(PatternMatcher* pattern_matcher, char c){
+    //int x = 0; 
 
+    for(int i = 0 ; i < pattern_matcher->num_patterns; i++) { 
+
+        Pattern* pattern = pattern_matcher->patterns[i]; 
+
+        if(pattern->str_pattern[pattern->current_matches] == c) {
+            pattern->current_matches++; 
+            if(pattern->len >= pattern->current_matches) {
+                //PATTERN! 
+                pattern->current_matches = 0; 
+                return pattern->ID; 
+            }
+        } else {
+            pattern->current_matches = 0; 
+        }
+    }
+    return 0; 
+}
+
+
+void add_pattern(PatternMatcher* pattern_matcher, char* new_pattern, int id) {
+
+    if(pattern_matcher->num_patterns == pattern_matcher->capacity) {
+        // NOT enough space
+
+        int new_size = pattern_matcher->capacity * ARRAY_GROWTH_FACTOR; 
+        pattern_matcher->patterns = realloc(pattern_matcher->patterns, sizeof(Pattern*) * new_size); 
+        pattern_matcher->capacity = new_size; 
+    
+    }
+
+    //enough space for new patten
+
+    Pattern* pattern = (Pattern*)malloc(sizeof(Pattern)); 
+
+    pattern->str_pattern = new_pattern; 
+    pattern->ID = id; 
+    pattern->current_matches = 0; 
+    pattern->len = strlen(new_pattern); 
+
+    pattern_matcher->patterns[pattern_matcher->num_patterns] = pattern; 
+    pattern_matcher->num_patterns += 1; 
+
+}
+
+
+void free_pattern_matcher(PatternMatcher* pattern_matcher){
+
+    for(int i = 0; i < pattern_matcher->num_patterns; i++) {
+        
+        free(*(pattern_matcher->patterns[i])->str_pattern); // free string inside
+        free(pattern_matcher->patterns[i]) //free structure itself
+
+    }
+
+    free(pattern_matcher->patterns); 
+
+}

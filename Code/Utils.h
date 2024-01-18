@@ -25,6 +25,56 @@ typedef struct struct_MultiString {
 
 } MultiString; 
 
+/*
+ID: identifier for this pattern
+str_pattern: the string to identify
+len: length of the string
+current_matches: number of patterns currenly matched (must be in [0, len - 1])
+*/
+typedef struct struct_pattern {
+
+    int ID; // info extra
+    char* str_pattern; //"#define "
+    int len; 
+    int current_matches; //
+
+} Pattern; 
+
+/*
+patterns: the patterns itself (pointer to a list of pointers to the actual struct)
+len_patterns: the number of patterns currenly hold
+capacity: the maximum number of patterns tha could be holded
+*/
+typedef struct struct_patten_matcher {
+
+    Pattern** patterns; 
+    int num_patterns; 
+    int capacity; 
+
+} PatternMatcher; 
+
+
+/*
+Scans a single character with the given pattern matcher. 
+returns 0 iff there is no match, otherwise returns the ID of the 
+corresponding match. 
+*/
+int pattern_scan(PatternMatcher* pattern_matcher, char c); 
+
+
+/*
+    adds a string (new_pattern) as a pattern to the pattern matcher. 
+    ID cannot be 0
+    new_pattern must be heap allocated, and now pattern_matcher owns it 
+    (has the responsability to deallocate it)
+*/
+void add_pattern(PatternMatcher* pattern_matcher, char* new_pattern, int id); 
+
+/*
+    frees the contents of the patter matcher structure. If pattern_matcher is heap-allocated, 
+    must later call free on it. 
+*/
+void free_pattern_matcher(PatternMatcher* pattern_matcher); 
 
 
 
