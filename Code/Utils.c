@@ -95,6 +95,24 @@ void print_multistring(MultiString* ms){
 
 }
 
+void add_string(MultiString* ms, char* new_str) {
+
+    if(ms->length == ms->capacity){
+        //no space for new str
+        ms->capacity = ms->capacity * ARRAY_GROWTH_FACTOR; 
+        ms->string_arr = (char**)realloc(ms->string_arr, ms->capacity * sizeof(char*)); 
+        ms->string_len = (int*)realloc(ms->string_len, ms->capacity * sizeof(int)); 
+
+    }
+
+    ms->string_arr[ms->length] = new_str; 
+    ms->string_len[ms->length] = strlen(new_str); 
+    ms->length += 1; 
+
+
+}
+
+
 
 MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, int element_len) {
 
@@ -104,6 +122,7 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
     MultiString* ret = (MultiString*)malloc(sizeof(MultiString)); 
 
     ret->length = num_elements + 1; //initialize structure
+    ret->capacity = ret->length; 
     ret->string_arr = (char**)malloc(ret->length * sizeof(char*)); 
     ret->string_len = (int*)calloc(ret->length, sizeof(int)); 
     
