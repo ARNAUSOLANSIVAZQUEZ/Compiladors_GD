@@ -212,6 +212,17 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
     return ret; 
 }
 
+
+void free_multi_string(MultiString* ms) {
+
+    for(int i = 0; i < ms->length; i++){
+        free(ms->string_arr[i]); 
+    }
+    free(ms->string_arr); 
+    free(ms->string_len); 
+
+}
+
 int count_ocurrences(char* source_str, size_t str_len, char* element, int element_len) {
 
     int ret = 0; 

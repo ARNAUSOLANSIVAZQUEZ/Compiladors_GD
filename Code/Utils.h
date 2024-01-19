@@ -109,15 +109,7 @@ void add_string(MultiString* ms, char* new_str);
     frees the contents of the MultiString structure. If ms is heap-allocated, 
     must later call free on it. This function frees everything inside it. 
 */
-void free_multi_string(MultiString* ms){
-
-    for(int i = 0; i < ms->length; i++){
-        free(ms->string_arr[i]); 
-    }
-    free(ms->string_arr); 
-    free(ms->string_len); 
-
-}
+void free_multi_string(MultiString* ms); 
 
 /*
 Divides the source_str into multiple strings. The source string is divided where 
