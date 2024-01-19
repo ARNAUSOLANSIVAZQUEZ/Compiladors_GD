@@ -35,6 +35,14 @@
 void PrintHelp(); 
 
 
+/*
+preprocesses the given reading_buffer and returns a new str with the preprocessed file. 
+includes is a multistring (see utils.h) that contains all the currenly added includes. 
+_len points to the original size og reading buffer and will be overwritten to the final 
+size of the output
+*/
+char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes); 
+
 int main(int argc, char** argv) {
 
     //2
@@ -398,11 +406,43 @@ int main(int argc, char** argv) {
     // Close file handle for writing
     fclose(fhpp);*/ 
 
-    size_t* original_file_length = 0; //NOT including /0 
+    size_t original_file_length = 0; //NOT including /0 
     char* reading_buffer = GetFileContents(argv[argc - 1], &original_file_length, true); 
     //^read gile contents and store them in the reading buffer. the reading buffer 
     // should not be altered
+
+    MultiString includes; 
+    includes.capacity = 5; 
+    includes.string_arr = (char**)calloc(includes.capacity, sizeof(char*)); 
+    includes.string_len = (int*)calloc(includes.capacity, sizeof(int)); 
+    includes.length = 0; //no str currenly stored
+
+    {
+        //TODO: add include of the current file
+        //add_string(&includes, some_str_heap_allocated)
+
+    }
+
     size_t writting_buffer_len = original_file_length; 
+
+    char* preprocessed_file = preprocess(reading_buffer, &writting_buffer_len, &includes); 
+
+
+    free(reading_buffer); 
+
+    //TODO: put everything in new file
+
+    free(writing_buffer); 
+
+    return 0; 
+
+}
+
+
+char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
+
+
+    size_t writting_buffer_len = *_len; 
     char* writing_buffer = (char*)malloc(writting_buffer_len * sizeof(char)); // will probably be increased in size
     
 
@@ -420,6 +460,7 @@ int main(int argc, char** argv) {
     int INCLUDE_LOC_ID = 6; //unsorted
     int COMMENT_ID = 4; 
     int MULTI_COMMENT_ID = 5; 
+
     {
         //define basic patterns
         char* define_pattern = (char*)malloc(20 * sizeof(char)); 
@@ -590,7 +631,7 @@ int main(int argc, char** argv) {
         pattern_return = pattern_scan(pattern_match_dyn, current_char); 
 
 
-        if ( pattern_return != 0) {
+        if (pattern_return != 0) {
 
             /*Do wathever you need to substitute everything as needed. I leave 
             you with something basic you may want to change. */
@@ -627,32 +668,21 @@ int main(int argc, char** argv) {
 
     }
 
-
-
-    free(reading_buffer); 
     free_pattern_matcher(&pattern_match_base); 
-
-    //TODO: put everything in new file
-
-    free(writing_buffer); 
-
-    return 0; 
+    free_pattern_matcher(&pattern_match_dyn); 
 
 
-    /*
-    I think it t parse the document, it would be better to use a structure. 
-    The structure stores the string you want to see, the length, the identifier and 
-    the count of consecutive readed chars. 
 
-    This way you just need to call add_char(structure, char_readed) and it will return 0 
-    if it sees nothing or the identifier if it detects it. when we just do a switch to select
-    the corresponding handle_function. 
+    writting_buffer[writing_index] = '\0'; 
+    //set final char to /0, this can be done because we chave space
+    //(see realloc in switch(pattern_return) case 0)
 
-    also have a 2nd structure for the patterns adquired dinamically
+    *_len = writting_buffer_len; //return new length
+    return writing_buffer; 
 
-    
-    */
 }
+
+
 
 void PrintHelp() {
 
