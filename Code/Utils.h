@@ -75,7 +75,7 @@ void add_pattern(PatternMatcher* pattern_matcher, char* new_pattern, int id);
 
 /*
     frees the contents of the patter matcher structure. If pattern_matcher is heap-allocated, 
-    must later call free on it. 
+    must later call free on it. This function frees everything inside it. 
 */
 void free_pattern_matcher(PatternMatcher* pattern_matcher); 
 
@@ -104,6 +104,20 @@ new_stri is a heap allocated string. increases capacity of multistring if needed
 new_str must end in /0 and be valid. ms must be initialized and well-behaved
 */
 void add_string(MultiString* ms, char* new_str); 
+
+/*
+    frees the contents of the MultiString structure. If ms is heap-allocated, 
+    must later call free on it. This function frees everything inside it. 
+*/
+void free_multi_string(MultiString* ms){
+
+    for(int i = 0; i < ms->length; i++){
+        free(ms->string_arr[i]); 
+    }
+    free(ms->string_arr); 
+    free(ms->string_len); 
+
+}
 
 /*
 Divides the source_str into multiple strings. The source string is divided where 

@@ -423,16 +423,19 @@ int main(int argc, char** argv) {
 
     }
 
-    size_t writting_buffer_len = original_file_length; 
+    size_t writting_buffer_len = original_file_length; //copy contents
 
     char* preprocessed_file = preprocess(reading_buffer, &writting_buffer_len, &includes); 
-
 
     free(reading_buffer); 
 
     //TODO: put everything in new file
 
-    free(writing_buffer); 
+    //reuse code in 1st big comment (?)
+
+
+    free(preprocessed_file); 
+    free_multi_string(&includes); 
 
     return 0; 
 
