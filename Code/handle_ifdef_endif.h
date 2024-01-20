@@ -13,6 +13,6 @@ Returns a (possibly new) text and size_source_code is updated to the new size.
 
 */
 
-char* handle_ifdef_endif(char* source_code, size_t* size_source_code);
+char* handle_ifdef_endif(char* source_code, int num, size_t* size_source_code) ;
 
 #endif
