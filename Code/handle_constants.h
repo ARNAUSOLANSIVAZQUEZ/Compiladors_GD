@@ -4,6 +4,16 @@
 
 #include <stdio.h>
 
+/*
+The is_constant_valid function is an auxiliar function that checks, for each character of a string, if they are valid
+constants (alphanumeric characters or lower bars).
+
+It recieves an string as a parameter and returns 1 for each valid constant and 0 otherwise.
+*/
+
+
+int is_constant_valid(const char* string);
+
 
 /*
 The handle_constants function handles the constants in the code. It will substitute all the constants by their 

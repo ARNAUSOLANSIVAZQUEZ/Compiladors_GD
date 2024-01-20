@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
 
     // argv[1] is the file to pre-process
 
-    bool eliminate_comments_flag = true; // -c flag (true by deafult)
+    bool eliminate_comments_flag = true; // -c flag (true by default)
     bool replace_all_directives = false; // -d flag
 
 
