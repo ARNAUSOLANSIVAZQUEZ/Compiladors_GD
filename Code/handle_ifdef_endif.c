@@ -5,39 +5,54 @@
 
 // Ariadna Prat U185150, NIA:251281
 
-char* handle_ifdef_endif(char* source_code, size_t* size_source_code) {
-    //We create an output_code with the same memory
-    char *outputCode = (char *)malloc(strlen(source_code) * sizeof(char));
-
-    // Tokenize the source code by lines
-    char *line = strtok((char *)source_code, "\n");
-
-    //We create a while where we detect the string "#define <str>" and "#ifdef <str>".
-    while (line != NULL) {
-        // Check if the line contains #define
-        if (strncmp(line, "#ifdef", 6) == 0) {
-            //We detect #ifdef <str> where str is a word.
-            while (line != NULL) {
-                if (strncmp(line, "#define", 7) == 0) {
-                    //We detect #define <str> where str is a word.
-                } else if (strncmp(line, "#endif", 6) == 0) {
-                    //If exists #endif we compare the two <str>.
-                    //If we get the following four conditions: 
-                        //Exists #define <str>1
-                        //Exists #ifdef <str>2
-                        //<str>1 and <str>2 are the same.
-                        //Exists #endif
-                    //We put the structure ifdef-endif in the output version, otherwise not.
-                }
-                // Move to the next line
-                line = strtok(NULL, "\n");
-            }
-        }else{
-            //we keep the string in the output version.
-        }
-        // Move to the next line
-        line = strtok(NULL, "\n");
+#define MAX_LINE_LENGTH 256
+char* handle_ifdef_endif(char* source_code, int index, int* len) {
+    // Find the start of the #ifdef block
+    char* ifdef_start = strstr(source_code, "#ifdef");
+    if (!ifdef_start) {
+        *len = 0;
+        return NULL;  // No #ifdef found
     }
 
-    return source_code;
+    // Find the end of the #ifdef line
+    char* ifdef_line_end = strchr(ifdef_start, '\n');
+    if (!ifdef_line_end) {
+        *len = 0;
+        return NULL;  // Malformed #ifdef
+    }
+
+    // Find the start of the #define block
+    char* define_start = strstr(ifdef_line_end, "#define");
+    if (!define_start) {
+        *len = 0;
+        return NULL;  // No #define found
+    }
+
+    // Find the end of the #define line
+    char* define_line_end = strchr(define_start, '\n');
+    if (!define_line_end) {
+        *len = 0;
+        return NULL;  // Malformed #define
+    }
+
+    // Extract the strings after #ifdef and #define
+    char ifdef_str[MAX_LINE_LENGTH];
+    char define_str[MAX_LINE_LENGTH];
+    sscanf(ifdef_start, "#ifdef %s", ifdef_str);
+    sscanf(define_start, "#define %s", define_str);
+
+    // Compare the strings, if they match, process the block
+    if (strcmp(ifdef_str, define_str) == 0) {
+        // Find the #endif
+        
+        // Allocate memory for the processed block
+        
+
+        // Copy the processed block to the result string
+       
+        return result;
+    } else {
+        *len = 0;
+        return NULL;  // Strings after #ifdef and #define don't match
+    }
 }
