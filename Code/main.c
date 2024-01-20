@@ -31,6 +31,13 @@
 
 #define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
 
+#define DEFINE_ID 1 
+#define IFDEF_ID 2
+#define INCLUDE_COMP_ID 3 
+#define INCLUDE_LOC_ID 6 //unsorted
+#define COMMENT_ID 4
+#define MULTI_COMMENT_ID 5
+
 
 void PrintHelp(); 
 
@@ -425,6 +432,13 @@ int main(int argc, char** argv) {
 
     size_t writting_buffer_len = original_file_length; //copy contents
 
+
+
+
+
+
+
+
     char* preprocessed_file = preprocess(reading_buffer, &writting_buffer_len, &includes); 
 
     free(reading_buffer); 
@@ -457,12 +471,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
     pattern_match_base.patterns = (Pattern**)calloc(pattern_match_base.capacity, sizeof(Pattern*)); 
 
 
-    int DEFINE_ID = 1; 
-    int IFDEF_ID = 2; 
-    int INCLUDE_COMP_ID = 3; 
-    int INCLUDE_LOC_ID = 6; //unsorted
-    int COMMENT_ID = 4; 
-    int MULTI_COMMENT_ID = 5; 
+    //moved id as constants
 
     {
         //define basic patterns
@@ -503,12 +512,16 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
 
     unsigned int writing_index = 0; 
+    int len = -1; 
+    int new_index = 0; 
+    char* include_text = NULL; 
 
-    for(int i = 0; i < original_file_length; i++){
+
+    for(int i = 0; i < *_len; i++){
 
         char current_char = reading_buffer[i]; 
 
-        int pattern_return = pattern_scan(pattern_match_base, current_char); 
+        int pattern_return = pattern_scan(&pattern_match_base, current_char); 
 
         switch (pattern_return)
         {
@@ -534,13 +547,16 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
             */
 
+            ; // <- empty statement DO NOT REMOVE
+
+
             //get the following using the reading buffer
-            char patten_definition[500] = "#define this_cool_stuff_i_found(x) (x + 3) "
+            char patten_definition[500] = "#define this_cool_stuff_i_found(x) (x + 3) "; 
 
             //get somehow 
             char pattern[500] = "this_cool_stuff_i_found" ; 
 
-            add_pattern(pattern_match_dyn, pattern, pattern_match_dyn.num_patterns); 
+            add_pattern(&pattern_match_dyn, pattern, pattern_match_dyn.num_patterns); 
             //^save pattern; 3rd argument should be an unique ID
 
             //TODO: store the information as you can
@@ -551,7 +567,10 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             break;        
         case IFDEF_ID: 
 
-            int len = -1; 
+
+            ; // <- empty statement DO NOT REMOVE
+
+            len = -1; 
             char* if_def_text = handle_ifdef_endif(reading_buffer, i - 5, &len); 
             //^should return direcly what needs to be inserted in the writing buffer
 
@@ -568,8 +587,11 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             break;        
         case INCLUDE_COMP_ID: 
 
-            int len = -1; 
-            char* include_text = handle_include_compiler_files(reading_buffer, i - 9, &len); 
+
+            ; // <- empty statement DO NOT REMOVE
+
+            len = -1; 
+            include_text = handle_include_compiler_files(reading_buffer, i - 9, &len); 
             //^should return direcly what needs to be inserted in the writing buffer
 
             if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
@@ -584,8 +606,11 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             break;        
         case INCLUDE_LOC_ID: 
 
-            int len = -1; 
-            char* include_text = handle_include_program_files(reading_buffer, i - 9, &len); 
+
+            ; // <- empty statement DO NOT REMOVE
+
+            len = -1; 
+            include_text = handle_include_program_files(reading_buffer, i - 9, &len); 
             //^should return direcly what needs to be inserted in the writing buffer
 
             if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
@@ -600,8 +625,10 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             break;
         case COMMENT_ID: 
 
+            ; // <- empty statement DO NOT REMOVE
 
-            int new_index = handle_comments_simple(reading_buffer, i); 
+
+            new_index = handle_comments_simple(reading_buffer, i); 
             //^ should return the position of the next char to write (even if its /0)
 
             i = new_index - 1; // ignore the whole comment
@@ -612,7 +639,10 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             break;        
         case MULTI_COMMENT_ID: 
 
-            int new_index = handle_comments_multi(reading_buffer, i); 
+            ; // <- empty statement DO NOT REMOVE
+
+
+            new_index = handle_comments_multi(reading_buffer, i); 
             //^ should return the position of the next char to write (even if its /0)
 
             i = new_index - 1; // ignore the whole comment
@@ -643,8 +673,8 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
                 int x; 
             }; 
 
-            SUPER_USCEFULL_DATA_STRUCTURE data_structure; 
-            data_structue.x = 0; 
+            struct SUPER_USCEFULL_DATA_STRUCTURE data_structure; 
+            data_structure.x = 0; 
 
             
             int len = 0; 
@@ -676,7 +706,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
 
 
-    writting_buffer[writing_index] = '\0'; 
+    writing_buffer[writing_index] = '\0'; 
     //set final char to /0, this can be done because we chave space
     //(see realloc in switch(pattern_return) case 0)
 
