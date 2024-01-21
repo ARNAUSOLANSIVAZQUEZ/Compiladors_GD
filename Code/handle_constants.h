@@ -8,7 +8,7 @@
 The is_constant_valid function is an auxiliar function that checks, for each character of a string, if they are valid
 constants (alphanumeric characters or lower bars).
 
-It recieves an string as a parameter and returns 1 for each valid constant and 0 otherwise.
+It recieves an string as a parameter and returns 1 for each valid constant and 0 for each non valid.
 */
 
 
