@@ -44,12 +44,26 @@ char* handle_ifdef_endif(char* source_code, int index, int* len) {
     // Compare the strings, if they match, process the block
     if (strcmp(ifdef_str, define_str) == 0) {
         // Find the #endif
-        
+        char* endif_start = strstr(define_line_end, "#endif");
+        if (!endif_start) {
+            *len = 0;
+            return NULL;  // Malformed #endif
+        }
+
+        // Calculate the length of the processed block
+        *len = (int)(endif_start - ifdef_start) + strlen("#endif");
+
         // Allocate memory for the processed block
-        
+        char* result = (char*)malloc(*len + 1);  // +1 for null terminator
+        if (!result) {
+            perror("Memory allocation failed");
+            exit(EXIT_FAILURE);
+        }
 
         // Copy the processed block to the result string
-       
+        strncpy(result, ifdef_start, *len);
+        result[*len] = '\0';  // Null-terminate the result string
+
         return result;
     } else {
         *len = 0;
