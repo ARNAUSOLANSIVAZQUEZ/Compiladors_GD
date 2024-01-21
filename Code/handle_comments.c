@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-//Jorge Villarino Moruja, 231351
-
 char* handle_comments_simple(const char* source_code, size_t start_index, int* new_index) {
     size_t source_length = strlen(source_code);
     size_t i = start_index;
@@ -20,7 +18,7 @@ char* handle_comments_simple(const char* source_code, size_t start_index, int* n
     result = (char*)malloc((i - start_index + 1) * sizeof(char));
 
     // Copy characters from the source excluding the single-line comment
-    for (size_t j = start_index; j < i; j++) {
+    for (size_t j = start_index; j <= i; j++) {
         result[result_index++] = source_code[j];
     }
 
@@ -45,7 +43,7 @@ char* handle_comments_multi(const char* source_code, size_t start_index, int* ne
     result = (char*)malloc((i - start_index - 1) * sizeof(char));
 
     // Copy characters from the source excluding the multi-line comment
-    for (size_t j = start_index; j < i - 2; j++) {
+    for (size_t j = start_index; j < i; j++) {
         result[result_index++] = source_code[j];
     }
 
