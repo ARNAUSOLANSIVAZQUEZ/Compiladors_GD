@@ -1,69 +1,52 @@
 #include "handle_comments.h"
+#include <stdlib.h>
+#include <string.h>
 
-// Helper function to find the index of the next newline character '\n'
-size_t find_next_newline(char* str, size_t start) {
-    size_t index = start;
-    while (str[index] != '\0' && str[index] != '\n') {
-        ++index;
-    }
-    return index;
-}
+char* handle_comments_simple(const char* source_code, size_t start_index, int* new_index) {
+    size_t source_length = strlen(source_code);
+    size_t i = start_index;
+    char* result = NULL;
+    int result_index = 0;
 
-char* handle_comments_simple(char* source_code, size_t* size_source_code) {
-    size_t read_index = 0;
-    size_t write_index = 0;
-
-    while (source_code[read_index] != '\0') {
-        if (source_code[read_index] == '/' && source_code[read_index + 1] == '/') {
-            // Found the beginning of a single-line comment, skip until the next newline
-            read_index = find_next_newline(source_code, read_index);
-        } else {
-            // Copy character to the new buffer
-            source_code[write_index] = source_code[read_index];
-            ++write_index;
-        }
-
-        ++read_index;
+    while (i < source_length && source_code[i] != '\n') {
+        i++;
     }
 
-    source_code[write_index] = '\0'; // Null-terminate the new string
-    *size_source_code = write_index; // Update the new size
+    *new_index = i + 1;  // Set the new index after the end of the single-line comment
 
-    return source_code;
-}
+    // Allocate memory for the result string
+    result = (char*)malloc((i - start_index + 1) * sizeof(char));
 
-char* handle_comments_multi(char* source_code, size_t* size_source_code) {
-    size_t read_index = 0;
-    size_t write_index = 0;
-
-    while (source_code[read_index] != '\0') {
-        if (source_code[read_index] == '/' && source_code[read_index + 1] == '*') {
-            // Found the beginning of a multi-line comment, skip until the comment ends
-            while (!(source_code[read_index] == '*' && source_code[read_index + 1] == '/')) {
-                ++read_index;
-            }
-            read_index += 2; // Skip the closing '*/'
-        } else {
-            // Copy character to the new buffer
-            source_code[write_index] = source_code[read_index];
-            ++write_index;
-        }
-
-        ++read_index;
+    // Copy characters from the source excluding the single-line comment
+    for (size_t j = start_index; j < i; j++) {
+        result[result_index++] = source_code[j];
     }
 
-    source_code[write_index] = '\0'; // Null-terminate the new string
-    *size_source_code = write_index; // Update the new size
-
-    return source_code;
+    result[result_index] = '\0';  // Null-terminate the result string
+    return result;
 }
 
+char* handle_comments_multi(const char* source_code, size_t start_index, int* new_index) {
+    size_t source_length = strlen(source_code);
+    size_t i = start_index + 2;  // Move past the initial "/*"
+    char* result = NULL;
+    int result_index = 0;
 
+    while (i < source_length && !(source_code[i] == '*' && source_code[i + 1] == '/')) {
+        i++;
+    }
 
+    i += 2;  // Move past the closing "*/"
+    *new_index = i;
 
+    // Allocate memory for the result string
+    result = (char*)malloc((i - start_index - 1) * sizeof(char));
 
+    // Copy characters from the source excluding the multi-line comment
+    for (size_t j = start_index; j < i - 2; j++) {
+        result[result_index++] = source_code[j];
+    }
 
-
-
-
-
+    result[result_index] = '\0';  // Null-terminate the result string
+    return result;
+}
