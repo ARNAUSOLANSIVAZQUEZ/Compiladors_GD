@@ -3,16 +3,8 @@
 
 
 #include <stdio.h>
-#include <dirent.h>
 
-/*
- Allows to open and search directories searching for a file.
- directory_path is a string input that represents the path to the directory in 
- which the function will search for entries and subdirectories.
 
- Returns the path to desired file.
- */
-void fetch_directory(char* directory_path);
 
 
 /*
@@ -34,7 +26,7 @@ handle_include_compiler_files() is now the owner (and responsible) of source_cod
 Returns a (possibly new) string and size_source_code is updated to the new size. 
 
 */
-char* handle_include_compiler_files(char* source_code, size_t* size_source_code); 
+char* handle_include_compiler_files(char* source_code, int index, int* substitution_length);
 
 
 
