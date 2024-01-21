@@ -6,42 +6,24 @@
 #include <stdbool.h> 
 
 */
-#include <dirent.h> // <- this gives me an error
 #include "Utils.h" 
 
-void fetch_directory(char* directory_path) {
-    //Skeleton for opening subdirectories and entries
-    //TODO: make the function able to detect the correct file and retrieve it's path
-    // Open directory from path input
-    DIR* d = opendir(directory_path);
-    // Return error if unable to open specified path
-    if(d == NULL) {
-        return;
-    }
-    // Initialize directory entries from reading the directory opened
-    struct dirent* dir;
-    dir = readdir(d);
-    // While we can read something keep processing the entries
-    while(dir != NULL)
-    {
-        // Initialize entry name
-        char* entry;
-        entry = dir -> d_name;
-        // If the entry is not a directory
-        if(dir -> d_type != DT_DIR)
-        {
-            //printf(entry);
-        }
-        else
-        {
-            char new_path[256];
-            sprintf(new_path, "%s/%s", directory_path, entry);
-            fetch_directory(new_path);
-        }
-        printf("%s", entry);
-    }
-    closedir(d);
-}
+#if defined(__WIN32__)
+    #define SYSTEM_PATH ""
+#elif __linux__
+    #define SYSTEM_PATH "x86_64-linux-gnu/"
+#endif
+#if (__STDC_VERSION__ == 201112L)
+    #define COMPILER_VERSION "11/"
+#elif (__STDC_VERSION__ == 199901L)
+    #define COMPILER_VERSION "99/"
+#elif (__STDC_VERSION__ == 199409L)
+    #define COMPILER_VERSION "90/"
+    #define COMPILER_VERSION_2 "89/"
+#endif
+#define PATH1 "/usr/include/"
+#define PATH2 "/lib/gcc/include/"
+
 
 char* handle_include_program_files(char* source_code, size_t* size_source_code) {
     // TODO: implement handle_include_program_files()
@@ -77,8 +59,35 @@ char* handle_include_program_files(char* source_code, size_t* size_source_code) 
     return ret; 
 }
 
-char* handle_include_compiler_files(char* source_code, size_t* size_source_code) { 
+char* handle_include_compiler_files(char* source_code, int index, int* substitution_length) {
     // TODO: implement handle_include_compiler_files()
+    char* id = "#include <";
+    int id_length = strlen(id);
+    char* target_file;
+    char* current_char;
+    int start_index = index + id_length;
+    int current_index = start_index;
+    int filename_found = 0;
+    while(!filename_found){
+        current_char = &source_code[current_index];
+        if(strcmp(current_char, ">")){
+            filename_found = 1;
+        }
+        else{
+            current_index++;
+        }
+    }
+    strncpy(target_file, source_code + start_index, current_index - start_index);
+    char path1[100] = PATH1;
+    strcat(path1, target_file);
+    char path2[100] = PATH2;
+    strcat(path2, SYSTEM_PATH);
+    strcat(path2, "11/");
+    strcat(path2, "include/");
+    strcat(path2, target_file);
+    printf(path1);
+    printf(path2);
+    //char** possible_paths = ["/usr/local/include" , "lib/gcc/%s", "", ""];
     return source_code; 
 }
 
