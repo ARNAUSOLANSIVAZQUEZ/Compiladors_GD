@@ -628,7 +628,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             ; // <- empty statement DO NOT REMOVE
 
 
-            new_index = handle_comments_simple(reading_buffer, i); 
+            handle_comments_simple(reading_buffer, i, new_index); 
             //^ should return the position of the next char to write (even if its /0)
 
             i = new_index - 1; // ignore the whole comment
@@ -642,7 +642,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             ; // <- empty statement DO NOT REMOVE
 
 
-            new_index = handle_comments_multi(reading_buffer, i); 
+            handle_comments_multi(reading_buffer, i, new_index); 
             //^ should return the position of the next char to write (even if its /0)
 
             i = new_index - 1; // ignore the whole comment
