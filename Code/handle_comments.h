@@ -3,8 +3,6 @@
 
 
 #include <stdio.h>
-
-
 /*
 Removes all the "//" comments
 
@@ -17,7 +15,7 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 
 */
 
-char* remove_single_line_comments(char* source_code, size_t* size_source_code); 
+char* handle_comments_simple(char* source_code, size_t* size_source_code); 
 
 
 
@@ -33,7 +31,7 @@ Returns a (possibly new) string and size_source_code is updated to the new size.
 
 */
 
-char* remove_multi_line_comments(char* source_code, size_t* size_source_code); 
+char* handle_comments_multi(char* source_code, size_t* size_source_code); 
 
 
 #endif
