@@ -591,7 +591,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             ; // <- empty statement DO NOT REMOVE
 
             len = -1; 
-            include_text = handle_include_compiler_files(reading_buffer, i - 9, &len); 
+            include_text = handle_include_compiler_files(reading_buffer, &len); 
             //^should return direcly what needs to be inserted in the writing buffer
 
             if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
@@ -610,7 +610,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             ; // <- empty statement DO NOT REMOVE
 
             len = -1; 
-            include_text = handle_include_program_files(reading_buffer, i - 9, &len); 
+            include_text = handle_include_program_files(reading_buffer, &len); 
             //^should return direcly what needs to be inserted in the writing buffer
 
             if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0

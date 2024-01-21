@@ -20,11 +20,16 @@ int is_constant_valid(const char* string) {
 
 char* handle_constants(char* source_code, size_t* size_source_code) {
     
+    
     char* outputCode = (char *)malloc(*size_source_code * sizeof(char));
-    strcpy(outputCode, source_code);            //We copy the input source code into the outputCode variable
+    strcpy(outputCode, source_code);  // Copy the input source code into the outputCode variable
 
+    // Create a separate variable for tokenization
+    char* tokenizedCode = (char *)malloc(*size_source_code * sizeof(char));
+    strcpy(tokenizedCode, outputCode);
+    
     // We tokenize the source code by lines, and then iterate through these lines
-    char *line = strtok(outputCode, "\n");
+    char *line = strtok(tokenizedCode, "\n");
 
     while (line != NULL) {
 
@@ -70,5 +75,8 @@ char* handle_constants(char* source_code, size_t* size_source_code) {
         // Move to the next line
         line = strtok(NULL, "\n");
     }
+    free(tokenizedCode);
+
+    
     return outputCode;
 }
