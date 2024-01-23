@@ -51,25 +51,27 @@ char* handle_include_program_files(char* source_code, int index, MultiString* in
     strcpy(directory, base_directory); 
 
     {
-        // asume base directory has the form "[...].somefolder.mymain.c"
+        // asume base directory has the form "[...]/somefolder/mymain.c"
         //we need to delete everything after the second to last dot and append include_str
-        bool seen_dot = false; 
+        bool seen_delimiter = false; 
         int i = base_dir_len - 1; 
-        while(true) {
+        char delimiter = '/'; 
+        while(0 <= i) { // cond should always be true
 
-            if(directory[i] == '.') {
-                if(seen_dot) {
+            if(directory[i] == delimiter) {
+                if(seen_delimiter) {
                     break; 
                 }
-                seen_dot = true; 
+                seen_delimiter = true; 
             }
             directory[i] = '\0'; 
-
+            i += -1; 
         }
 
     }
 
-    //strcat ...
+    strcat(directory, new_include_str); 
+    // directory should now be complete
 
 
     // get file contents, preprocess (, free) and return 
@@ -78,7 +80,7 @@ char* handle_include_program_files(char* source_code, int index, MultiString* in
 
     char* raw_include = GetFileContents(directory, &size_include, false); 
 
-    char* ret = preprocess(raw_include, &size_include, MultiString* includes); 
+    char* ret = preprocess(raw_include, &size_include, includes); 
 
 
     // TODO: free       free       free       free       free       free       free       
@@ -86,6 +88,9 @@ char* handle_include_program_files(char* source_code, int index, MultiString* in
     free(directory); 
     //NOT free new_include_str
     free(raw_include); 
+
+    /* We do not have ownership over source_code, includes, base_directory; therefore we must 
+    NOT free them. */
 
     return ret; 
 }
