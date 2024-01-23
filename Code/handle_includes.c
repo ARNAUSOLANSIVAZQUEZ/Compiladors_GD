@@ -79,9 +79,9 @@ char* handle_include_program_files(char* source_code, int index, MultiString* in
     size_t size_include = -1; 
 
     char* raw_include = GetFileContents(directory, &size_include, false); 
+    if(raw_include == NULL) return NULL; 
 
     char* ret = preprocess(raw_include, &size_include, includes); 
-
 
     // TODO: free       free       free       free       free       free       free       
 
@@ -89,7 +89,7 @@ char* handle_include_program_files(char* source_code, int index, MultiString* in
     //NOT free new_include_str
     free(raw_include); 
 
-    /* We do not have ownership over source_code, includes, base_directory; therefore we must 
+    /* We do not have ownership over source_code, includes or base_directory; therefore we must 
     NOT free them. */
 
     return ret; 

@@ -464,8 +464,8 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
     //moved id as constants
 
-    {
-        //define basic patterns
+    { //define basic patterns
+        
         char* define_pattern = (char*)malloc(20 * sizeof(char)); 
         strcpy(define_pattern, "#define "); 
         add_pattern(&pattern_match_base, define_pattern, DEFINE_ID); 
@@ -499,8 +499,11 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
     pattern_match_dyn.num_patterns = 0; 
     pattern_match_dyn.patterns = (Pattern**)calloc(pattern_match_dyn.capacity, sizeof(Pattern*)); 
 
-    
-
+    MultiString includes; //see utils.c // this struct will remember all includes already added to avoid duplication or infinite recursion
+    includes.capacity = 5; 
+    includes.string_arr = (char**)malloc(includes.capacity * sizeof(char*)); 
+    includes.string_len = (int*)malloc(includes.capacity * sizeof(int)); 
+    includes.length = 0; 
 
     unsigned int writing_index = 0; 
     int len = -1; 
@@ -596,12 +599,12 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
             break;        
         case INCLUDE_LOC_ID: 
+            //patter: "#include \""
 
-
-            ; // <- empty statement DO NOT REMOVE
+            // ; empty statement should not be needes since len = -1 is not a declaration
 
             len = -1; 
-            include_text = handle_include_program_files(reading_buffer, &len); 
+            include_text = handle_include_program_files(source_code, i - 9, &includes, argv[0]); 
             //^should return direcly what needs to be inserted in the writing buffer
 
             if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
@@ -610,7 +613,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
                 writing_buffer = realloc(writing_buffer, writting_buffer_len); 
             }
 
-            memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len); 
+            memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)strlen(include_text)); 
             writing_index += -9 + len - 1; 
 
             break;
@@ -645,6 +648,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
             break;
         default:
             // help, this should not happen
+            printf("Unexpected pattern at index: %d", i); 
             break;
         }
 
@@ -695,6 +699,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
     free_pattern_matcher(&pattern_match_base); 
     free_pattern_matcher(&pattern_match_dyn); 
 
+    free_multi_string(&includes); 
 
 
     writing_buffer[writing_index] = '\0'; 
