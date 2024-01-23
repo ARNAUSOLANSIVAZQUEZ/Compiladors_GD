@@ -112,6 +112,20 @@ void add_string(MultiString* ms, char* new_str) {
 
 }
 
+bool multistring_contains(MultiString* ms, char* element) {
+
+    int ms_len = ms->length; 
+
+    for(int i = 0; i < ms_len; i++){
+        if(strcmp(ms->string_arr[i], elemnet) == 0){
+            return true; 
+        }
+    }
+    
+    return false; 
+
+}
+
 
 
 MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, int element_len) {

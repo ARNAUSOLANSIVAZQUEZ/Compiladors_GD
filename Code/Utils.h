@@ -2,6 +2,7 @@
 #define UTILS
 
 #include <stdio.h>
+#include <stdbool.h> 
 
 #define ARRAY_GROWTH_FACTOR 3/2 // 1.5 ~= phi = (1+sqrt(5))/2
 // ^for mathematical reasons, this constant is better than 2
@@ -100,10 +101,16 @@ void print_multistring(MultiString* ms);
 
 /*
 adds a new string to the multi_string structure
-new_stri is a heap allocated string. increases capacity of multistring if needed
+new_str is a heap allocated string. increases capacity of multistring if needed
 new_str must end in /0 and be valid. ms must be initialized and well-behaved
 */
 void add_string(MultiString* ms, char* new_str); 
+
+/*
+returns true/false iff element belongs to ms
+ms must be initialized and well-behaved
+*/
+bool multistring_contains(MultiString* ms, char* element); 
 
 /*
     frees the contents of the MultiString structure. If ms is heap-allocated, 

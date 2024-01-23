@@ -7,6 +7,7 @@
 
 */
 #include "Utils.h" 
+#include "main.h"
 
 #if defined(__WIN32__)
     #define SYSTEM_PATH ""
@@ -25,36 +26,66 @@
 #define PATH2 "/lib/gcc/include/"
 
 
-char* handle_include_program_files(char* source_code, size_t* size_source_code) {
+char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
     // TODO: implement handle_include_program_files()
 
-    char delimiter[11] = "#include \""; 
-    MultiString* Mstr = string_tonenizer(source_str, str_len, delimiter, strlen(delimiter)); 
 
-    // Pseudocode explanation
+    char include_str[MAX_LENGTH_INCUDE] = NULL; 
 
-    size_t reserved_len = size_source_code; 
+    sscanf("#include \"%s\"", &source_code[index], include_str); 
 
-    char* ret = (char*)malloc(size_source_code * sizeof(char)); 
+    if(multistring_contains(includes, include_str)) {
+        return NULL; //already added, add nothing to the file
+    }
 
-    strcpy(ret, Mstr->string_arr[0]); 
+    // add new include to ms 
+    char new_include_str = (char*)malloc(strlen(include_str) * sizeof(char)); 
+    strcpy(new_include_str, include_str); 
+    add_string(includes, new_include_str); 
 
-    for(int i = 1; i < Mstr->length; i++){
+    // get of header
+    int base_dir_len = strlen(base_directory); 
+    char* directory = malloc((base_dir_len + strlen(include_str)) * sizeof(char)); 
+    if(directory == NULL) return NULL; 
 
-        char include_str[MAX_LENGTH_INCUDE] = NULL; 
+    strcpy(directory, base_directory); 
 
-        sscanf("%s\"", Mstr->string_arr[i], include_str); 
+    {
+        // asume base directory has the form "[...].somefolder.mymain.c"
+        //we need to delete everything after the second to last dot and append include_str
+        bool seen_dot = false; 
+        int i = base_dir_len - 1; 
+        while(true) {
 
-        // Get the contents of the file of include_str
-        char* include_source_code = NULL; 
-        
-        // ret = ret + include_source_code
+            if(directory[i] == '.') {
+                if(seen_dot) {
+                    break; 
+                }
+                seen_dot = true; 
+            }
+            directory[i] = '\0'; 
 
-        //also realloc() and keep count of the size when necessary
+        }
 
     }
 
+    //strcat ...
+
+
+    // get file contents, preprocess (, free) and return 
+
+    size_t size_include = -1; 
+
+    char* raw_include = GetFileContents(directory, &size_include, false); 
+
+    char* ret = preprocess(raw_include, &size_include, MultiString* includes); 
+
+
     // TODO: free       free       free       free       free       free       free       
+
+    free(directory); 
+    //NOT free new_include_str
+    free(raw_include); 
 
     return ret; 
 }
