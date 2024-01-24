@@ -12,6 +12,7 @@
 #include "handle_ifdef_endif.h"
 
 #include "Utils.h"
+#include "datastructure.h"
 #include "main.h"
 
 
@@ -413,24 +414,45 @@ int main(int argc, char** argv) {
     //^read gile contents and store them in the reading buffer. the reading buffer 
     // should not be altered
 
-    MultiString includes; 
-    includes.capacity = 5; 
-    includes.string_arr = (char**)calloc(includes.capacity, sizeof(char*)); 
-    includes.string_len = (int*)calloc(includes.capacity, sizeof(int)); 
-    includes.length = 0; //no str currenly stored
 
-    {
-        //TODO: add include of the current file
-        //add_string(&includes, some_str_heap_allocated)
-
-    }
 
     size_t writting_buffer_len = original_file_length; //copy contents
 
 
+    PatternMatcher pattern_match_base; // see Utils.c
+    pattern_matcher_initialize(&pattern_match_base); 
 
 
-    char* preprocessed_file = preprocess(reading_buffer, &writting_buffer_len, &includes); 
+    { //define basic patterns
+        
+        char* define_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char)); 
+        strcpy(define_pattern, "#define "); 
+        add_pattern(&pattern_match_base, define_pattern, DEFINE_ID); 
+
+        char* ifdef_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char)); 
+        strcpy(ifdef_pattern, "#ifdef"); 
+        add_pattern(&pattern_match_base, ifdef_pattern, IFDEF_ID); 
+
+        char* include_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char)); 
+        strcpy(include_pattern, "#include <"); 
+        add_pattern(&pattern_match_base, include_pattern, INCLUDE_COMP_ID); 
+
+        char* comment_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char)); 
+        strcpy(comment_pattern, "//"); 
+        add_pattern(&pattern_match_base, comment_pattern, COMMENT_ID); 
+
+        char* ML_comment_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char)); 
+        strcpy(ML_comment_pattern, "/*"); 
+        add_pattern(&pattern_match_base, ML_comment_pattern, MULTI_COMMENT_ID); 
+
+        char* inlcude_local_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char)); 
+        strcpy(inlcude_local_pattern, "#include \""); 
+        add_pattern(&pattern_match_base, inlcude_local_pattern, INCLUDE_LOC_ID); 
+
+    }
+
+
+    char* preprocessed_file = preprocess(reading_buffer, &writting_buffer_len, &pattern_match_base); 
 
     free(reading_buffer); 
 
@@ -438,6 +460,7 @@ int main(int argc, char** argv) {
 
     //reuse code in 1st big comment (?)
 
+    free_pattern_matcher(&pattern_match_base); 
 
     free(preprocessed_file); 
     free_multi_string(&includes); 
@@ -447,64 +470,24 @@ int main(int argc, char** argv) {
 }
 
 
-char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
+char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_base) {
 
 
     size_t writting_buffer_len = *_len; 
     char* writing_buffer = (char*)malloc(writting_buffer_len * sizeof(char)); // will probably be increased in size
     
 
-    /*This pattern matcher detects the things that our code needs to detect
+    /*
+        This pattern matcher detects the things that our code needs to detect
     */
-    PatternMatcher pattern_match_base; // see Utils.c
-    pattern_match_base.capacity = 6; 
-    pattern_match_base.num_patterns = 0; 
-    pattern_match_base.patterns = (Pattern**)calloc(pattern_match_base.capacity, sizeof(Pattern*)); 
 
-
-    //moved id as constants
-
-    { //define basic patterns
-        
-        char* define_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(define_pattern, "#define "); 
-        add_pattern(&pattern_match_base, define_pattern, DEFINE_ID); 
-
-        char* ifdef_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(ifdef_pattern, "#ifdef"); 
-        add_pattern(&pattern_match_base, ifdef_pattern, IFDEF_ID); 
-
-        char* include_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(include_pattern, "#include <"); 
-        add_pattern(&pattern_match_base, include_pattern, INCLUDE_COMP_ID); 
-
-        char* comment_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(comment_pattern, "//"); 
-        add_pattern(&pattern_match_base, comment_pattern, COMMENT_ID); 
-
-        char* ML_comment_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(ML_comment_pattern, "/*"); 
-        add_pattern(&pattern_match_base, ML_comment_pattern, MULTI_COMMENT_ID); 
-
-        char* inlcude_local_pattern = (char*)malloc(20 * sizeof(char)); 
-        strcpy(inlcude_local_pattern, "#include \""); 
-        add_pattern(&pattern_match_base, inlcude_local_pattern, INCLUDE_LOC_ID); 
-
-    }
 
     /*This pattern matcher detects the things that can be found again in the code 
     i.e. defines*/
     PatternMatcher pattern_match_dyn; // see Utils.c
-    pattern_match_dyn.capacity = 5; 
-    pattern_match_dyn.num_patterns = 0; 
-    pattern_match_dyn.patterns = (Pattern**)calloc(pattern_match_dyn.capacity, sizeof(Pattern*)); 
-
-    MultiString includes; //see utils.c // this struct will remember all includes already added to avoid duplication or infinite recursion
-    includes.capacity = 5; 
-    includes.string_arr = (char**)malloc(includes.capacity * sizeof(char*)); 
-    includes.string_len = (int*)malloc(includes.capacity * sizeof(int)); 
-    includes.length = 0; 
-
+    pattern_matcher_initialize(&pattern_match_dyn); 
+    
+    //auxiliar variables
     unsigned int writing_index = 0; 
     int len = -1; 
     int new_index = 0; 
@@ -615,6 +598,7 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
             memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)strlen(include_text)); 
             writing_index += -9 + len - 1; 
+            ///
 
             break;
         case COMMENT_ID: 
@@ -696,10 +680,8 @@ char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes) {
 
     }
 
-    free_pattern_matcher(&pattern_match_base); 
     free_pattern_matcher(&pattern_match_dyn); 
 
-    free_multi_string(&includes); 
 
 
     writing_buffer[writing_index] = '\0'; 
