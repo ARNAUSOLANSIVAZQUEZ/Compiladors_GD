@@ -117,7 +117,7 @@ bool multistring_contains(MultiString* ms, char* element) {
     int ms_len = ms->length; 
 
     for(int i = 0; i < ms_len; i++){
-        if(strcmp(ms->string_arr[i], elemnet) == 0){
+        if(strcmp(ms->string_arr[i], element) == 0){
             return true; 
         }
     }
