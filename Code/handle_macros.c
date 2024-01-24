@@ -2,11 +2,23 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
+bool containsParenthesis(const char* str);
+char** handle_constant(const char* defineStatement);
 char*** handle_macro(char* source_code);
 
 int main() {
-    char*** result = handle_macro("#define AREA_CIRCLE(r, x, y) (3.14*r*r)");
+    char*** result;
+    char* source_code = "#define AREA_CIRCLE 3)";
+    char* modified_source_code = source_code + strlen("#define ");
+
+    //Check if we are dealing with a constant or a Macro
+    if (containsParenthesis(modified_source_code)){
+        handle_macro(source_code);
+    } else{
+        handle_constant(modified_source_code);
+    }
 
     // Print or use the result as needed
     if (result != NULL) {
@@ -34,6 +46,61 @@ int main() {
     }
 
     return 0;
+}
+
+bool containsParenthesis(const char* str) {
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == '(' || str[i] == ')') {
+            return true;
+        }
+    }
+    return false;
+}
+
+char** handle_constant(const char* defineStatement) {
+    
+    printf("Im in");
+    char** result = malloc(2 * sizeof(char*));
+    result[0] = NULL; // Name of the constant
+    result[1] = NULL; // Value of the constant
+
+    // Find the start of the constant name
+    const char* constantNameStart = defineStatement;
+    while (isspace((unsigned char)*constantNameStart)) {
+        constantNameStart++;
+    }
+
+    // Find the end of the constant name
+    const char* constantNameEnd = strchr(constantNameStart, ' ');
+    if (constantNameEnd != NULL) {
+        size_t constantNameLength = constantNameEnd - constantNameStart;
+        if (constantNameLength > 0) {
+            result[0] = malloc((constantNameLength + 1) * sizeof(char));
+            strncpy(result[0], constantNameStart, constantNameLength);
+            result[0][constantNameLength] = '\0';
+        }
+
+        // Find the start of the constant value
+        const char* constantValueStart = constantNameEnd + 1;
+        while (isspace((unsigned char)*constantValueStart)) {
+            constantValueStart++;
+        }
+
+        // Find the end of the constant value
+        const char* constantValueEnd = constantValueStart;
+        while (*constantValueEnd != '\0' && isdigit((unsigned char)*constantValueEnd)) {
+            constantValueEnd++;
+        }
+        size_t constantValueLength = constantValueEnd - constantValueStart;
+
+        if (constantValueLength > 0) {
+            result[1] = malloc((constantValueLength + 1) * sizeof(char));
+            strncpy(result[1], constantValueStart, constantValueLength);
+            result[1][constantValueLength] = '\0';
+        }
+    }
+
+    return result;
 }
 
 char*** handle_macro(char* source_code) {
