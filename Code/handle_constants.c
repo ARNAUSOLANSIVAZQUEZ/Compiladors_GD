@@ -11,7 +11,7 @@ int is_constant_valid(const char* string) {
 
         //For each character, we look if it is an alphanumeric character or a lower bar (_)
         if (!(isalnum(string[i]) || string[i] == '_')) {            
-            //The isalnum function will return 1 if the character in string[i] is an alphanumeric character, and 0 otherwise
+            //The isalnum function will return 1 if the character in string[i] is an alphanumeric character, or 0 otherwise.
             return 0; // Not a valid constant
         }
     }
@@ -77,7 +77,6 @@ char* handle_constants(char* source_code, size_t* size_source_code) {
         line = strtok(NULL, "\n");
     }
     free(tokenizedCode);
-
     
     return outputCode;
 }
