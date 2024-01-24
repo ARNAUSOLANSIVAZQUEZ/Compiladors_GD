@@ -43,11 +43,15 @@ char* handle_constants(char* source_code, size_t* size_source_code) {
             /*We check if the token extracted after the #define is not NULL (so there's an identifier after the #define) 
             and a valid constant, using the is_constant_valid function */
             if (token != NULL && is_constant_valid(token)) {
+                
                 // This makes that only the lines started with #define and a valid constant are processed 
                 char *constant_value = strtok(NULL, "\n");
 
                 // Then, we replace all occurrences of the valid constant in the code
                 if (constant_value != NULL) {
+
+                    /*The strstr function searches for the token in the outputCode string, if it finds it, it returns its 
+                    its position. Returns NULL if it the token doesn't appear */
                     char *occurrence = strstr(outputCode, token);
                     
                     // We iterate through the occurrences of each constant to replace them with their value
