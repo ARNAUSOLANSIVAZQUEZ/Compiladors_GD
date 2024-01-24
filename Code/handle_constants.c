@@ -11,7 +11,7 @@ int is_constant_valid(const char* string) {
 
         //For each character, we look if it is an alphanumeric character or a lower bar (_)
         if (!(isalnum(string[i]) || string[i] == '_')) {            
-            //The isalnum function will return 1 if the character in string[i] is an alphanumeric character, and 0 otherwise
+            //The isalnum function will return 1 if the character in string[i] is an alphanumeric character, or 0 otherwise
             return 0; // Not a valid constant
         }
     }
@@ -28,7 +28,8 @@ char* handle_constants(char* source_code, size_t* size_source_code) {
     char* tokenizedCode = (char *)malloc(*size_source_code * sizeof(char));
     strcpy(tokenizedCode, outputCode);
     
-    // We tokenize the source code by lines, and then iterate through these lines
+    /* We tokenize the source code by lines, and then iterate through these lines. The strtok function acts like a split function
+    in other programming languages, it separates the recieved array where the recieved character appears in this array. */
     char *line = strtok(tokenizedCode, "\n");
 
     while (line != NULL) {
@@ -77,6 +78,5 @@ char* handle_constants(char* source_code, size_t* size_source_code) {
     }
     free(tokenizedCode);
 
-    
     return outputCode;
 }

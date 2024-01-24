@@ -81,7 +81,6 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
 
 
 
-
 int count_ocurrences(char* source_str, size_t str_len, char* element, int element_len) {
 
     int ret = 0; 
