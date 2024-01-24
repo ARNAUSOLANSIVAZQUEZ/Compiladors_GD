@@ -299,115 +299,7 @@ int main(int argc, char** argv) {
 
     fclose(preprocessed_file); 
     */
-    /*
-    // Open the file read-only
-    // FILE* fh = fopen(argv[2], "r");
-    // Obtain length of original file name (+"\0")
-    int original_file_len = strlen(argv[argc - 1]) + 1;
-    // Compute length of preprocessed file name (+"_pp")
-    int preprocessed_file_name_length = original_file_len + 3;
-    // Allocate space for preprocessed file name
-    char* preprocessed_file_name = calloc(preprocessed_file_name_length, 1);
-    // Create the preprocessed file to write
-    // Allocate space to read lines
-    char* line = malloc(MAX_LENGTH); 
-    // Terminate if empty file
-    if(fh == NULL){
-        return 1;
-    }
-    // Reading loop
-    while(true) {
-        // Obtain position before reading
-        int old_pos = ftell(fh);
-        // Reading a line
-        char* l = fgets(line, MAX_LENGTH,fh); 
-        // Obtain position after reading
-        int new_pos = ftell(fh);
-        // Iterating over characters of line read
-        for(int i = 0; i < strlen(l); i++) {
-            // Retrieve current character
-            char c = l[i];
-            // Define next_character
-            char next_c;
-            // Switch for current character
-            switch(c) {
-                // Starts with #
-                case '#':
-                    printf("Hashtag case:");
-                    next_c = l[i+1]; ///////////////// <- bad idea, we dont know if it is out of bounds
-                    // Switch for next character
-                    switch(next_c){
-                        // Define case
-                        case 'd':
-                            printf("Define case\n");
-                            // TODO: handle define (correct and errors)
-                            break;
-                        // Include / Ifdef case
-                        case 'i':
-                            char next_c2 = l[i+2];  /////// <- also bad idea
-                            switch(next_c2){
-                                // Include case
-                                case 'n':
-                                    printf("Include case\n");
-                                    // TODO: handle include (correct and errors)
-                                    break;
-                                // Ifdef case
-                                case 'f':
-                                    printf("Ifdef case\n");
-                                    // TODO: handle ifdef (correct and errors)
-                                    break;
-                                // Invalid case
-                                default:
-                                    printf("Not correct");
-                                    break;
-                            }
-                        // Invalid case
-                        default:
-                            printf("Not a hashtag\n");
-                            break;
-                    }
-                    break; 
-                // Backslash case
-                case '\\':
-                    printf("Bacslash case\n");
-                    // TODO: handle backlash (variations correct and errors)
-                    break;
-                // Comment case
-                case '/':
-                    printf("Comment case:");
-                    next_c = l[i+1];
-                    // Switch for next character
-                    switch(next_c){
-                        // Simple comment case
-                        case '/':
-                            printf("Simple comment\n");
-                            // TODO: handle simple comment
-                            break;
-                        // Multiline comment case
-                        case '*':
-                            printf("Multiline comment\n");
-                            // TODO: handle multiline comment
-                            break;
-                        // Invalid case
-                        default:
-                            printf("Not a comment\n");
-                            break;
-                    }
-                    break;
-            }
-        }
-        // Break if we reached EOF
-        if(feof(fh)){break;}
-    }
 
-    free(line); 
-
-    // Close file handle for reading
-
-    FILE* fhpp = fopen(preprocessed_file_name, "wb");
-
-    // Close file handle for writing
-    fclose(fhpp);*/ 
 
     size_t original_file_length = 0; //NOT including /0 
     char* reading_buffer = GetFileContents(argv[argc - 1], &original_file_length, true); 
@@ -419,6 +311,9 @@ int main(int argc, char** argv) {
     size_t writting_buffer_len = original_file_length; //copy contents
 
 
+    /*
+        This pattern matcher detects the things that our code needs to detect
+    */
     PatternMatcher pattern_match_base; // see Utils.c
     pattern_matcher_initialize(&pattern_match_base); 
 
@@ -477,18 +372,15 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     char* writing_buffer = (char*)malloc(writting_buffer_len * sizeof(char)); // will probably be increased in size
     
 
-    /*
-        This pattern matcher detects the things that our code needs to detect
-    */
-
 
     /*This pattern matcher detects the things that can be found again in the code 
     i.e. defines*/
     PatternMatcher pattern_match_dyn; // see Utils.c
     pattern_matcher_initialize(&pattern_match_dyn); 
     
+
     //auxiliar variables
-    unsigned int writing_index = 0; 
+    int writing_index = 0; 
     int len = -1; 
     int new_index = 0; 
     char* include_text = NULL; 
@@ -564,21 +456,24 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             break;        
         case INCLUDE_COMP_ID: 
 
+            pre_handle_include_file(reading_buffer, writing_buffer, &writting_buffer_len, &writing_index); 
 
-            ; // <- empty statement DO NOT REMOVE
+            /*
+                ; // <- empty statement DO NOT REMOVE
 
-            len = -1; 
-            include_text = handle_include_compiler_files(reading_buffer, &len); 
-            //^should return direcly what needs to be inserted in the writing buffer
+                len = -1; 
+                include_text = handle_include_compiler_files(reading_buffer, &len); 
+                //^should return direcly what needs to be inserted in the writing buffer
 
-            if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
-                // get more space
-                writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
-                writing_buffer = realloc(writing_buffer, writting_buffer_len); 
-            }
+                if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+                    // get more space
+                    writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+                    writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+                }
 
-            memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len); 
-            writing_index += -9 + len - 1; 
+                memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len); 
+                writing_index += -9 + len - 1; 
+            */
 
             break;        
         case INCLUDE_LOC_ID: 
@@ -693,16 +588,30 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
 }
 
+void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index) {
+
+    int len = -1; //aux var
+    include_text = handle_include_compiler_files(reading_buffer, &len); 
+    //^should return direcly what needs to be inserted in the writing buffer
+
+    if(writting_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+        // get more space
+        writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR; 
+        writing_buffer = realloc(writing_buffer, writting_buffer_len); 
+    }
+
+    memcpy(&writing_buffer[writing_index], include_text, (size_t)len); 
+    writing_index += len - 1; 
+    //^ -1 is correct (???) <- check
+    // TODO: update reading index
+
+}
 
 
 void PrintHelp() {
 
-    //TODO: debug all information
-
     //printf("\n\nHere all the help needed should be printed. \n\n"); 
     //printf("Since its not currenly implemented, you can have a happy face: \n\n\t:)\n\n"); 
-    
-    
     
     printf("\n\n\nUsage: ./preprocessor {flags} {name of the program to pre-process} \n"); 
     printf("Behaviour of the flags: \n\n"); 
@@ -723,11 +632,6 @@ void PrintHelp() {
     printf("If the old file was named \"my_program.c\" then the new file will be named \"my_program_pp.c\". "); 
     
     printf("\n\nIMPORTANT: if there already was a file with the same name, it will be overwrited. Be careful with the files you wish to keep. \n\n"); 
-
-
-
-
-
 
 
 }

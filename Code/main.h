@@ -20,6 +20,11 @@ void PrintHelp();
 
 // int main(...); 
 
+/*
+    does everything needed to call handle_include_file() and handles its outputs
+*/
+void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
+
 
 
 #endif
