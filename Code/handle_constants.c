@@ -28,7 +28,8 @@ char* handle_constants(char* source_code, size_t* size_source_code) {
     char* tokenizedCode = (char *)malloc(*size_source_code * sizeof(char));
     strcpy(tokenizedCode, outputCode);
     
-    // We tokenize the source code by lines, and then iterate through these lines
+    /* We tokenize the source code by lines, and then iterate through these lines. The strtok function acts like a split function
+    in other programming languages, it separates the recieved array where the recieved character appears in this array. */
     char *line = strtok(tokenizedCode, "\n");
 
     while (line != NULL) {
