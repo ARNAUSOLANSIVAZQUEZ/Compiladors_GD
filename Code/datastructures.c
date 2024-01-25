@@ -12,21 +12,6 @@ void multistring_initialize(MultiString* multi_string){
     multi_string.length = 0; //no str currenly stored
 }
 
-
-void print_multistring(MultiString* ms){
-
-    //for debugging pruposes
-    printf("\n\nMultiString: \n\n\t\t%d elements: \n\n", ms->length); 
-
-    for(int i = 0; i < ms->length; i++) {
-
-        printf("\t%d (%d = %d chars): |%s|", i, ms->string_len[i], strlen(ms->string_arr[i]), ms->string_arr[i]); 
-        printf("\n\n"); 
-    } 
-
-
-}
-
 void add_string(MultiString* ms, char* new_str) {
 
     if(ms->length == ms->capacity){
@@ -156,6 +141,19 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
     return ret; 
 }
 
+void print_multistring(MultiString* ms){
+
+    //for debugging pruposes
+    printf("\n\nMultiString: \n\n\t\t%d elements: \n\n", ms->length); 
+
+    for(int i = 0; i < ms->length; i++) {
+
+        printf("\t%d (%d = %d chars): |%s|", i, ms->string_len[i], strlen(ms->string_arr[i]), ms->string_arr[i]); 
+        printf("\n\n"); 
+    } 
+
+
+}
 
 void free_multi_string(MultiString* ms) {
 
@@ -228,6 +226,24 @@ void add_pattern(PatternMatcher* pattern_matcher, char* new_pattern, int id) {
 
 }
 
+void print_pattern_matcher(PatternMatcher* pattern_matcher) {
+
+    printf("Patern matcher: \t\t------------------------------------\n"); 
+
+    printf("Number of patterns: %d\n\n", pattern_matcher->num_patterns); 
+
+    for(int i = 0; i < pattern_matcher->num_patterns; i++){
+
+        Pattern* curr_pat = pattern_matcher->patterns[i]; 
+        printf("%d: \t|%s| \n\t\t >> ID: %d \t(%d chars, %d of them currenly matched)\n\n", i, curr_pat->str_pattern, curr_pat->ID, curr_pat->len, curr_pat->current_matches)
+
+    }
+
+
+    printf("-----------------------------------------------------------------------\n\n"); 
+
+
+}
 
 void free_pattern_matcher(PatternMatcher* pattern_matcher){
 
@@ -241,6 +257,7 @@ void free_pattern_matcher(PatternMatcher* pattern_matcher){
     free(pattern_matcher->patterns); 
 
 }
+
 
 
 

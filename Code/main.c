@@ -33,6 +33,7 @@
 
 #define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
 
+#define NO_PATTERN_DETECTED 0
 #define DEFINE_ID 1 
 #define IFDEF_ID 2
 #define INCLUDE_COMP_ID 3 
@@ -253,7 +254,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
         switch (pattern_return)
         {
-        case 0: // NO PATTERN
+        case NO_PATTERN_DETECTED: 
             writing_buffer[writing_index] = current_char; 
             //coninue writting normally
 
@@ -439,8 +440,8 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
 
     writing_buffer[writing_index] = '\0'; 
-    //set final char to /0, this can be done because we chave space
-    //(see realloc in switch(pattern_return) case 0)
+    //set final char to /0, this can be done because we have space
+    //(see realloc in switch(pattern_return) case NO_PATTERN_DETECTED)
 
     *_len = writting_buffer_len; //return new length
     return writing_buffer; 
@@ -500,13 +501,13 @@ int write_new_file(char* content_buffer, size_t len, char* filename) {
 
     //I think this function ended up being a bit short... 
     FILE* preprocessed_file = fopen(filename, "wb"); //create/overwrite new file
-    if(preprocessed_file == NULL) return 1; 
+    if(preprocessed_file == NULL) return 1; //error
 
     
     size_t fwrite_ret = fwrite(content_buffer, (size_t)1, len, preprocessed_file); //write everything
     if(fwrite_ret != len) {
         //not all characters successfully writed
-        return 2; 
+        return 2; //error
     }
 
     fclose(preprocessed_file); 

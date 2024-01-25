@@ -6,7 +6,8 @@
 #include <stdbool.h> 
 #include "utils.h"
 
-#define BASIC_CAPACITY 5
+#define BASIC_CAPACITY 5 
+// basic capacity for vector<T>-like structures
 
 
 /*
@@ -57,6 +58,10 @@ typedef struct struct_patten_matcher {
 
 } PatternMatcher; 
 
+
+//      Pattern matcher: --------------------------------------------------------------------
+
+
 /*
     initializes the pattern matcher empty (lenght = 0) with capacity BASIC_CAPACITY. 
 */
@@ -79,6 +84,12 @@ int pattern_scan(PatternMatcher* pattern_matcher, char c);
 void add_pattern(PatternMatcher* pattern_matcher, char* new_pattern, int id); 
 
 /*
+    prints information of pattern matcher. (use for debugging proposes only)
+    pattern_matcher must be initialized and valid. 
+*/
+void print_pattern_matcher(PatternMatcher* pattern_matcher); 
+
+/*
     frees the contents of the patter matcher structure. If pattern_matcher is heap-allocated, 
     must later call free on it. This function frees everything inside it. 
 */
@@ -86,17 +97,18 @@ void free_pattern_matcher(PatternMatcher* pattern_matcher);
 
 
 
+//      MultiString: ----------------------------------------------------------------
+
+
 /*
     initializes the pattern matcher empty (lenght = 0) with capacity BASIC_CAPACITY. 
 */
 void multistring_initialize(MultiString* multi_string); 
 
-
 /*
     tiString structure. Used only for debugging. 
 */
 void print_multistring(MultiString* ms); 
-
 
 /*
     adds a new string to the multi_string structure
@@ -111,12 +123,6 @@ void add_string(MultiString* ms, char* new_str);
 */
 bool multistring_contains(MultiString* ms, char* element); 
 
-/*
-    frees the contents of the MultiString structure. If ms is heap-allocated, 
-    must later call free on it. This function frees everything inside it. 
-*/
-void free_multi_string(MultiString* ms); 
-
 /* 
     Divides the source_str into multiple strings. The source string is divided where 
     element appears. (element itself is removed). str_len is the length of source_str. 
@@ -127,6 +133,18 @@ void free_multi_string(MultiString* ms);
 
 */
 MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, int element_len); 
+
+/*
+    frees the contents of the MultiString structure. If ms is heap-allocated, 
+    must later call free on it. This function frees everything inside it. 
+*/
+void free_multi_string(MultiString* ms); 
+
+
+
+
+
+
 
 
 
