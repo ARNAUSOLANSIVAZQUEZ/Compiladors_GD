@@ -20,7 +20,8 @@ preprocessed.
 If there is an error, NULL will be returned instead. 
 */
 //char* handle_include_program_files(char* source_code, size_t* size_source_code); 
-char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
+//char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
+char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_base); 
 
 
 /*

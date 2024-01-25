@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define INCLUDE_FILE_PATTERN_DETECTION_LEN 9
+
 
 // This header exists because we need to call preprocess recursively from handle_include
 
@@ -23,8 +25,9 @@ void PrintHelp();
 /*
     does everything needed to call handle_include_file() and handles its outputs
 */
-void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
+void pre_handle_compile_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
 
+void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
 
 
 

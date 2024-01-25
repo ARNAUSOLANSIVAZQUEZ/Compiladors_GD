@@ -26,70 +26,32 @@
 #define PATH2 "/lib/gcc/include/"
 
 
-char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
+//char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
+char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_base) {
+    
+    //char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_base
     // TODO: implement handle_include_program_files()
 
 
-    char include_str[MAX_LENGTH_INCUDE] = NULL; 
+    char include_dir[MAX_LENGTH_INCUDE] = NULL; 
 
-    sscanf("#include \"%s\"", &source_code[index], include_str); 
-
-    if(multistring_contains(includes, include_str)) {
-        return NULL; //already added, add nothing to the file
-    }
-
-    // add new include to ms 
-    char new_include_str = (char*)malloc(strlen(include_str) * sizeof(char)); 
-    strcpy(new_include_str, include_str); 
-    add_string(includes, new_include_str); 
-
-    // get of header
-    int base_dir_len = strlen(base_directory); 
-    char* directory = malloc((base_dir_len + strlen(include_str)) * sizeof(char)); 
-    if(directory == NULL) return NULL; 
-
-    strcpy(directory, base_directory); 
-
-    {
-        // asume base directory has the form "[...]/somefolder/mymain.c"
-        //we need to delete everything after the second to last dot and append include_str
-        bool seen_delimiter = false; 
-        int i = base_dir_len - 1; 
-        char delimiter = '/'; 
-        while(0 <= i) { // cond should always be true
-
-            if(directory[i] == delimiter) {
-                if(seen_delimiter) {
-                    break; 
-                }
-                seen_delimiter = true; 
-            }
-            directory[i] = '\0'; 
-            i += -1; 
-        }
-
-    }
-
-    strcat(directory, new_include_str); 
-    // directory should now be complete
+    sscanf("%s\"", reading_buffer, include_str); 
 
 
     // get file contents, preprocess (, free) and return 
 
     size_t size_include = -1; 
 
-    char* raw_include = GetFileContents(directory, &size_include, false); 
+    char* raw_include = GetFileContents(include_dir, &size_include, false); 
     if(raw_include == NULL) return NULL; 
 
-    char* ret = preprocess(raw_include, &size_include, includes); 
+    char* ret = preprocess(raw_include, &size_include, pattern_match_base); 
 
     // TODO: free       free       free       free       free       free       free       
 
-    free(directory); 
-    //NOT free new_include_str
     free(raw_include); 
 
-    /* We do not have ownership over source_code, includes or base_directory; therefore we must 
+    /* We do not have ownership over reading_buffer, _len, pattern_match_base; therefore we must 
     NOT free them. */
 
     return ret; 
