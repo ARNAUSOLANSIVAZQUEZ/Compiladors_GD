@@ -9,11 +9,11 @@
 
 /*
 preprocesses the given reading_buffer and returns a new str with the preprocessed file. 
-includes is a multistring (see utils.h) that contains all the currenly added includes. 
+pattern_match_base is the pattern matcher with the base cases
 _len points to the original size og reading buffer and will be overwritten to the final 
 size of the output
 */
-char* preprocess(char* reading_buffer, size_t* _len, MultiString* includes); 
+char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_base); 
 
 /*Prints help for the user in the console*/
 void PrintHelp(); 
@@ -25,6 +25,18 @@ void PrintHelp();
 */
 void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
 
+
+
+
+/*
+    writes the content buffer in a new file (with filename as name). 
+    If the file already exists, it will be overwritten with the new file. 
+    content_buffer is the contents of the new file. len is the length of the 
+    content buffer. write_new_file() does NOT take ownership of any parameter. 
+
+    returns 0 on succes, otherwise returns any other number
+*/
+int write_new_file(char* content_buffer, size_t len, char* filename); 
 
 
 #endif

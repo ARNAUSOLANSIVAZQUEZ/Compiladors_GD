@@ -149,158 +149,6 @@ int main(int argc, char** argv) {
 
 
 
-    /*
-    size_t file_length_bytes = -1; 
-
-
-    
-    FILE* source_file = fopen(argv[argc - 1], "rb"); // r because we cannot modify original file
-
-    if(source_file == NULL) {
-        printf("ERROR: Could not open file: %s", argv[argc - 1]); 
-        return 1; 
-    }
-
-
-
-    { // find size of file
-        int fseek_return = fseek(source_file, 0L, SEEK_END); 
-        if(fseek_return != 0) { //error
-            printf("ERROR: error while reading file. fseek return: %d", fseek_return); 
-            fclose(source_file); 
-            return 1; 
-        }
-
-        long int ftell_return = ftell(source_file); 
-
-        if(ftell_return == -1L) { //error
-            printf("ERROR: error while reading file. ftell return: %d", ftell_return); 
-            fclose(source_file); 
-            return 1; 
-        }
-
-        file_length_bytes = (size_t) ftell_return; 
-        fseek_return = fseek(source_file, 0L, SEEK_SET); 
-
-        if(fseek_return != 0) { //error
-            printf("ERROR: error while reading file. fseek return: %d", fseek_return); 
-            fclose(source_file); 
-            return 1; 
-        }
-    }
-
-    char* file_contents = (char*)calloc(file_length_bytes, 1); 
-
-
-    if(file_contents == NULL) { // error requesting memory
-        printf("ERROR: error while requesting memory. \nMemory asked: %d Bytes\t = %d MB", file_length_bytes, (int) file_length_bytes * BYTES_TO_MB_CONVERSION_FACTOR); 
-        fclose(source_file); 
-        return 1; 
-    }
-
-    { // copy contents
-        size_t fread_return = fread(file_contents, 1, file_length_bytes, source_file); 
-
-        if(fread_return != file_length_bytes && feof(source_file) == 0) { // handle error
-            printf("ERROR: error while reading file. fread return: %d\tfile length: %d bytes\n", fread_return, file_length_bytes); 
-            printf("feof(file) = %d\n", feof(source_file)); 
-            fclose(source_file); 
-            return 1; 
-        }
-    }
-    fclose(source_file); // no need to keep file open
-    
-
-    char* file_contents = NULL; 
-
-    {
-
-        int directory_len = strlen(argv[argc - 1]); //copy directoty to another string
-        char* directory_copy = calloc(directory_len, 1); 
-        int memcpy_ret = memcpy_s(directory_copy, directory_len, argv[argc - 1], directory_len); 
-        if(memcpy_ret != 0) {
-            printf("There has been an error wile attempting to move data. err num: %d\n\n", memcpy_ret); 
-            return 1; 
-        }
-        
-        bool debug_error_messages = true; 
-        file_contents = GetFileContents(directory_copy, &file_length_bytes, debug_error_messages); 
-
-        if(file_contents == NULL) {
-            printf("There has been an error while accessing the contents of the file. "); 
-            return 1; 
-        }
-        
-    }
-
-
-    printf("Readed file: \n\n%s\n\n", file_contents); 
-
-    //call every function to preprocess: 
-
-    if(false) { // debbuging, TODO: remove later
-
-        if(replace_all_directives) {
-            file_contents = handle_include_program_files(file_contents, &file_length_bytes); 
-            file_contents = handle_include_compiler_files(file_contents, &file_length_bytes); 
-            file_contents = handle_ifdef_endif(file_contents, &file_length_bytes);
-        }
-
-        file_contents = handle_backslash(file_contents, &file_length_bytes); 
-        file_contents = handle_constants(file_contents, &file_length_bytes); 
-        file_contents = handle_macros(file_contents, &file_length_bytes); 
-
-
-        if(eliminate_comments_flag) {
-            file_contents = remove_single_line_comments(file_contents, &file_length_bytes); 
-            file_contents = remove_multi_line_comments(file_contents, &file_length_bytes); 
-        }
-
-    }    
-
-
-
-    // printf("Final pre-processing: \n\n%s\n\n", file_contents); 
-
-    int original_file_len = strlen(argv[argc - 1]) + 1; // +\0
-    int preprocessed_file_name_length = original_file_len + 3;  // + "_pp"
-
-    char* preprocessed_file_name = calloc(preprocessed_file_name_length, 1); 
-
-    {
-        // NOTE: this code assumes only 1 letter is used as extension (prm.c, file.h, smtng.p, but NOT inc.asd)
-
-        int error_ret = (int)memcpy_s(preprocessed_file_name, preprocessed_file_name_length, argv[argc - 1], original_file_len - 3); 
-
-        if(error_ret != 0) {
-            printf("ERROR: error while moving data (memcpy_s). \n"); 
-            return 1; 
-        }
-
-        int bytes_to_copy = preprocessed_file_name_length - (original_file_len - 3); 
-
-        error_ret = (int)memcpy_s(&preprocessed_file_name[original_file_len - 3], bytes_to_copy, "_pp.c\0", bytes_to_copy); 
-
-        if(error_ret != 0) {
-            printf("ERROR: error while moving data (memcpy_s 2). %d\n", error_ret); 
-            return 1; 
-        }
-
-        printf("New file name: \n\t%s\n", preprocessed_file_name); 
-    }
-
-    FILE* preprocessed_file = fopen(preprocessed_file_name, "wb"); //create new file
-
-    
-    fwrite(file_contents, 1, file_length_bytes, preprocessed_file); //write everything
-
-    free(preprocessed_file_name); 
-    free(file_contents); 
-
-    fclose(preprocessed_file); 
-    */
-
-
     size_t original_file_length = 0; //NOT including /0 
     char* reading_buffer = GetFileContents(argv[argc - 1], &original_file_length, true); 
     //^read gile contents and store them in the reading buffer. the reading buffer 
@@ -354,6 +202,17 @@ int main(int argc, char** argv) {
     //TODO: put everything in new file
 
     //reuse code in 1st big comment (?)
+
+
+    int writting_file_error_return = write_new_file(preprocessed_file, writting_buffer_len, char* filename); 
+    if(writting_file_error_return != 0){
+        printf("There has been an error while writing into the new file. \n"); 
+    }
+
+
+
+
+
 
     free_pattern_matcher(&pattern_match_base); 
 
@@ -637,6 +496,23 @@ void PrintHelp() {
 }
 
 
+int write_new_file(char* content_buffer, size_t len, char* filename) {
+
+    //I think this function ended up being a bit short... 
+    FILE* preprocessed_file = fopen(filename, "wb"); //create/overwrite new file
+    if(preprocessed_file == NULL) return 1; 
+
+    
+    size_t fwrite_ret = fwrite(content_buffer, (size_t)1, len, preprocessed_file); //write everything
+    if(fwrite_ret != len) {
+        //not all characters successfully writed
+        return 2; 
+    }
+
+    fclose(preprocessed_file); 
+    return 0; //success
+
+}
 
 
 

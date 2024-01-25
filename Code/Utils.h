@@ -35,6 +35,17 @@ int count_ocurrences(char* source_str, size_t str_len, char* element, int elemen
 
 
 
+/*
+    gets the new filename (adding the "_pp") and returns it. 
+    ("my_program.c" -> "my_program_pp.c", "nasa_code.k" -> "nasa_code.k")
+    if terminate_with_c == true, then the termination of the file will be ".c"
+    (i.e. "my_program.ftw" -> "my_program.c"). Assumes old_name contains a '.' 
+    (for the file type)
+
+    get_new_filename() does not take ownership of old_name. Reutrns NULL on error
+*/
+char* get_new_filename(char* old_name, bool terminate_with_c); 
+
 
 
 #endif

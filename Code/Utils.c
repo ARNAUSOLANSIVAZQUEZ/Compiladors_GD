@@ -105,3 +105,69 @@ int count_ocurrences(char* source_str, size_t str_len, char* element, int elemen
 
 }
 
+
+char* get_new_filename(char* old_name, bool terminate_with_c){
+
+    int old_name_len = strlen(old_name); 
+    char* suffix = "_pp"; 
+    char* ret = (char*)malloc(old_name_len + strlen(suffix) + 1); 
+    strcpy(ret, old_name); 
+    char* extension = (char*)calloc(old_name_len, sizeof(char)); //use more memory than needed but its ok
+    int e = 0; // e is extension index
+
+    int i = old_name_len - 1; 
+    while(0 <= i) { // should always be true
+
+        if(ret[i] == '.') {
+
+            ret[i] = '\0'; 
+            strcat(ret, suffix); //add sufix
+            i += strlen(suffix); 
+
+            strcat(ret, '.'); //add .
+            i += 1; 
+
+
+            //add extension accordingly
+            if(terminate_with_c) {
+
+                ret[i] = 'c'; 
+                ret[i + 1] = '\0'; 
+
+            } else {
+                //use old extension
+                while(0 <= e) { 
+                    ret[i] = extension[e]; 
+                    i++; 
+                    e--; 
+                }
+                ret[i] = '\0'; 
+
+            }
+
+            break; 
+
+        }
+
+        extension[e] = ret[i]; // store the old extension (in reverse)
+        e++; 
+
+        ret[i] = '\0'; //set current position empty
+        i--; 
+
+    }
+
+    free(extension); 
+
+    if( !(0 <= i) ) { //unexpected error
+
+        
+        free(ret); //avoid memory leak
+        return NULL; 
+
+    }
+
+    return ret; 
+
+}
+
