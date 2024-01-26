@@ -16,6 +16,7 @@
 // 1.5 is a "simple" value that is less than phi, thats why its choosen
 
 #define MAX_LENGTH_INCUDE 100 //the max length of #incude<{HERE}>
+#define MIN_ARGUMENTS 2 // Minimum arguments to properly execute the preprocessor
 
 
 

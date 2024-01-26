@@ -7,7 +7,11 @@
 #elif __linux__
     #define SYSTEM_PATH "x86_64-linux-gnu/"
 #endif
-#if (__STDC_VERSION__ == 201112L)
+#define COMPILER_VERSION __GNUC__
+/*#if defined(__GNUC__)
+    #define COMPILER_VERSION "11/"
+#endif
+#if (__STDC_VERSION__ == 201710L)
     #define COMPILER_VERSION "11/"
 #elif (__STDC_VERSION__ == 199901L)
     #define COMPILER_VERSION "99/"
@@ -15,6 +19,7 @@
     #define COMPILER_VERSION "90/"
     #define COMPILER_VERSION_2 "89/"
 #endif
+ */
 #define PATH1 "/usr/include/"
 #define PATH2 "/lib/gcc/include/"
 
@@ -28,7 +33,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
 
     char include_dir[MAX_LENGTH_INCUDE] = ""; 
 
-    sscanf("%s\"", reading_buffer, include_str); 
+    sscanf("%s\"", reading_buffer, include_dir);
 
 
     // get file contents, preprocess (, free) and return 
