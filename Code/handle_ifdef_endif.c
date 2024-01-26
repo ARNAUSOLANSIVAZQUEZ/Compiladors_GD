@@ -23,9 +23,9 @@ char* handle_ifdef_endif(char* source_code, int index, int* len) {
 
     // Find the start of the #define block
     char* define_start = strstr(source_code, "#define");
-    if (!define_start) {
+    if (!define_start || define_start > ifdef_start) {
         *len = 0;
-        return NULL;  // No #define found
+        return NULL;  // No #define found or inside #ifdef-#endif
     }
 
     // Find the end of the #define line
@@ -34,9 +34,11 @@ char* handle_ifdef_endif(char* source_code, int index, int* len) {
         *len = 0;
         return NULL;  // Malformed #define
     }
+
     char ifdef_str[MAX_LINE_LENGTH];
     sscanf(ifdef_start, "#ifdef %s", ifdef_str);
-    while(1){
+
+    while (1) {
         // Extract the strings after #ifdef and #define
         char define_str[MAX_LINE_LENGTH];
         sscanf(define_start, "#define %s", define_str);
@@ -66,11 +68,12 @@ char* handle_ifdef_endif(char* source_code, int index, int* len) {
 
             return result;
         }
-        // Find the start of the #define block
+
+        // Find the start of the next #define block
         define_start = strstr(define_line_end, "#define");
-        if (!define_start) {
+        if (!define_start || define_start > ifdef_start) {
             *len = 0;
-            return NULL;  // No #define found
+            return NULL;  // No more #define found or inside #ifdef-#endif
         }
 
         // Find the end of the #define line
