@@ -1,13 +1,8 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h> 
-#include <string.h>
-#include <memory.h>
+
 
 #include "Utils.h"
 
-#define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
-#define BASIC_PATTERN_STR_LEN 20
+
 
 
 
@@ -124,7 +119,8 @@ char* get_new_filename(char* old_name, bool terminate_with_c){
             strcat(ret, suffix); //add sufix
             i += strlen(suffix); 
 
-            strcat(ret, '.'); //add .
+            char* dot = "."; 
+            strcat(ret, dot); //add .
             i += 1; 
 
 

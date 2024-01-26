@@ -1,18 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h> 
-#include <string.h>
-#include <memory.h>
 
-#include "handle_backslash.h"
-#include "handle_comments.h"
-#include "handle_constants.h"
-#include "handle_includes.h"
-#include "handle_macros.h"
-#include "handle_ifdef_endif.h"
-
-#include "Utils.h"
-#include "datastructure.h"
 #include "main.h"
 
 
@@ -31,7 +17,8 @@
 
 */
 
-#define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
+//#define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
+// ^defined in Utils.h
 
 #define NO_PATTERN_DETECTED 0
 #define DEFINE_ID 1 
@@ -200,17 +187,17 @@ int main(int argc, char** argv) {
 
     free(reading_buffer); 
 
-    //TODO: put everything in new file
 
-    //reuse code in 1st big comment (?)
+    char* filename = get_new_filename(argv[argc - 1], false); 
 
 
-    int writting_file_error_return = write_new_file(preprocessed_file, writting_buffer_len, char* filename); 
+
+    int writting_file_error_return = write_new_file(preprocessed_file, writting_buffer_len, filename); 
     if(writting_file_error_return != 0){
         printf("There has been an error while writing into the new file. \n"); 
     }
 
-
+    free(filename); 
 
 
 
@@ -218,7 +205,7 @@ int main(int argc, char** argv) {
     free_pattern_matcher(&pattern_match_base); 
 
     free(preprocessed_file); 
-    free_multi_string(&includes); 
+    //free_multi_string(&includes); 
 
     return 0; 
 
@@ -339,7 +326,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
         case INCLUDE_LOC_ID: 
             //patter: "#include \""
 
-            pre_handle_include_file(reading_buffer, &i, char* writing_buffer, 
+            pre_handle_include_file(reading_buffer, &i, writing_buffer, 
                 &writting_buffer_len, &writing_index, pattern_match_base); 
 
 
@@ -484,7 +471,7 @@ void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, ch
     */
 
 
-    include_text = handle_include_program_files(reading_buffer, pattern_match_base); 
+    char* include_text = handle_include_program_files(reading_buffer, pattern_match_base); 
     //^should return direcly what needs to be inserted in the writing buffer
 
     int len = strlen(include_text); 

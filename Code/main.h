@@ -1,7 +1,21 @@
 #ifndef HEADER_MAIN
 #define HEADER_MAIN
 
+#include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h> 
+#include <string.h>
+#include <memory.h>
+
+#include "handle_backslash.h"
+#include "handle_comments.h"
+#include "handle_constants.h"
+#include "handle_includes.h"
+#include "handle_macros.h"
+#include "handle_ifdef_endif.h"
+
+#include "Utils.h"
+#include "datastructures.h"
 
 #define INCLUDE_FILE_PATTERN_DETECTION_LEN 9
 
@@ -27,7 +41,8 @@ void PrintHelp();
 */
 void pre_handle_compile_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
 
-void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
+//void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index); 
+void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char* writing_buffer, size_t* writting_buffer_len, int* writing_index, PatternMatcher* pattern_match_base); 
 
 
 

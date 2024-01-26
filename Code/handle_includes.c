@@ -1,13 +1,6 @@
-#include <stdlib.h>
-#include <string.h>
-#include <memory.h>
-/*
-#include <stdio.h>
-#include <stdbool.h> 
 
-*/
-#include "Utils.h" 
-#include "main.h"
+#include "handle_includes.h" 
+
 
 #if defined(__WIN32__)
     #define SYSTEM_PATH ""
@@ -33,7 +26,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     // TODO: implement handle_include_program_files()
 
 
-    char include_dir[MAX_LENGTH_INCUDE] = NULL; 
+    char include_dir[MAX_LENGTH_INCUDE] = ""; 
 
     sscanf("%s\"", reading_buffer, include_str); 
 

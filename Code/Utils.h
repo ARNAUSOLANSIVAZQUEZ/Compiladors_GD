@@ -1,8 +1,14 @@
 #ifndef UTILS
 #define UTILS
 
+
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h> 
+#include <string.h>
+#include <memory.h>
+#define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
+#define BASIC_PATTERN_STR_LEN 20
 
 #define ARRAY_GROWTH_FACTOR 3/2 
 // 1.5 ~= phi = (1+sqrt(5))/2
