@@ -6,10 +6,10 @@
 
 
 void multistring_initialize(MultiString* multi_string){
-    multi_string.capacity = BASIC_CAPACITY; 
-    multi_string.string_arr = (char**)calloc(BASIC_CAPACITY, sizeof(char*)); 
-    multi_string.string_len = (int*)calloc(BASIC_CAPACITY, sizeof(int)); 
-    multi_string.length = 0; //no str currenly stored
+    multi_string->capacity = BASIC_CAPACITY; 
+    multi_string->string_arr = (char**)calloc(BASIC_CAPACITY, sizeof(char*)); 
+    multi_string->string_len = (int*)calloc(BASIC_CAPACITY, sizeof(int)); 
+    multi_string->length = 0; //no str currenly stored
 }
 
 void add_string(MultiString* ms, char* new_str) {
@@ -34,7 +34,7 @@ bool multistring_contains(MultiString* ms, char* element) {
     int ms_len = ms->length; 
 
     for(int i = 0; i < ms_len; i++){
-        if(strcmp(ms->string_arr[i], elemnet) == 0){
+        if(strcmp(ms->string_arr[i], element) == 0){
             return true; 
         }
     }
@@ -171,10 +171,9 @@ void free_multi_string(MultiString* ms) {
 
 void pattern_matcher_initialize(PatternMatcher* pattern_matcher) {
 
-    pattern_matcher.capacity = BASIC_CAPACITY; 
-    pattern_matcher.string_arr = (char**)calloc(BASIC_CAPACITY, sizeof(char*)); 
-    pattern_matcher.string_len = (int*)calloc(BASIC_CAPACITY, sizeof(int)); 
-    pattern_matcher.length = 0; //no str currenly stored
+    pattern_matcher->capacity = BASIC_CAPACITY; 
+    pattern_matcher->patterns = (Pattern**)calloc(BASIC_CAPACITY, sizeof(Pattern*)); 
+    pattern_matcher->num_patterns = 0; //no str currenly stored
 
 }
 
@@ -235,7 +234,7 @@ void print_pattern_matcher(PatternMatcher* pattern_matcher) {
     for(int i = 0; i < pattern_matcher->num_patterns; i++){
 
         Pattern* curr_pat = pattern_matcher->patterns[i]; 
-        printf("%d: \t|%s| \n\t\t >> ID: %d \t(%d chars, %d of them currenly matched)\n\n", i, curr_pat->str_pattern, curr_pat->ID, curr_pat->len, curr_pat->current_matches)
+        printf("%d: \t|%s| \n\t\t >> ID: %d \t(%d chars, %d of them currenly matched)\n\n", i, curr_pat->str_pattern, curr_pat->ID, curr_pat->len, curr_pat->current_matches); 
 
     }
 
