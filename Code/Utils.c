@@ -167,3 +167,76 @@ char* get_new_filename(char* old_name, bool terminate_with_c){
 
 }
 
+// Function to handle the input when executing the program.
+int processFlags(int argc, char** argv, bool* process_comments, bool* process_directives){
+    if(argc <= MIN_ARGUMENTS) {
+        if(!strcmp(argv[1], "-help")){
+            PrintHelp();
+            return 0;
+        }
+        else {
+            printf("ERROR: To few arguments. (include file to preprocess)\n");
+            printf("Usage: %s {flags} {name of the program to pre-process} \n", argv[0]);
+            printf("Use the flag \"-help\" to get help. \n");
+        }
+        return 1; // return error
+    } else if(MIN_ARGUMENTS < argc) {
+        // handle flags
+        /*Note: if the same valid flag is used more than once, the other
+        instances will be effectively ignored (according to instructions)*/
+        *process_comments = false;
+        *process_directives = false;
+        int c_flag;
+        int d_flag;
+        int all_flag;
+        int help_flag;
+        for (int i = 1; i < argc - 1; i++) {
+            //handle flags
+            c_flag = strcmp(argv[i], "-c");
+            d_flag = strcmp(argv[i], "-d");
+            all_flag = strcmp(argv[i], "-all");
+            help_flag = strcmp(argv[i], "-help");
+            if(!c_flag) {
+                *process_comments = true;
+            }
+            if(!d_flag) {
+                *process_directives = true;
+            }
+            if(!help_flag) {
+                PrintHelp();
+                return 0;
+            }
+            if(!all_flag) {
+                *process_comments = true;
+                *process_directives = true;
+            }
+            if(c_flag && d_flag && all_flag && help_flag){
+                // unexpected flag
+                printf("ERROR: unknown flag: \"%s\" \n", argv[i]);
+                printf("Use flag -help for additional information.\n");
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+// Function to print help for the user
+void PrintHelp() {
+    printf("\n\n\nUsage: ./preprocessor {flags} {name of the program to pre-process} \n");
+    printf("Behaviour of the flags: \n\n");
+    printf("\t-c: deletes all comments (// comment and /*comment*/). \n\n");
+    printf("\t-d: Replaces all directives starting with # (#define, #include, etc. ). \n\n");
+    printf("\t-all: shortcut for \"-c -d\" (uses both flags). \n\n");
+    printf("\t-help: display this message. \n\n");
+
+    printf("Using no flags is equivalent to using only the \"-c\" flag. The order of the flags or amount used is irrelevant. using an invalid flag will abort the process. ");
+    printf("Keep in mind that the file to preprocess needs to be in the last position. \n\n");
+
+    printf("Note that this preprocessor only supports properly files with .c extension (or other extensions with just 1 letter). Otherwise, the name of the new file may not be properly generated. ");
+    printf("After executing the preprocessor, a new file should appear in the same directory as the old one. ");
+    printf("If the old file was named \"my_program.c\" then the new file will be named \"my_program_pp.c\". ");
+
+    printf("\n\nIMPORTANT: if there already was a file with the same name, it will be overwritten. Be careful with the files you wish to keep. \n\n");
+}
+
