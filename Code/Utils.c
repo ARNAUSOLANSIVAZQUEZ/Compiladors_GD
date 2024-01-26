@@ -16,7 +16,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
         return NULL; 
     }
 
-    free(directory); 
+    //free(directory); //We dont own directory
 
     { // find size of file
         int fseek_return = fseek(source_file, 0L, SEEK_END); 
