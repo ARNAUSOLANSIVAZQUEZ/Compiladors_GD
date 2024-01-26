@@ -41,6 +41,10 @@ int main(int argc, char** argv) {
     processFlags(argc, argv, &process_comments, &process_directives);
 
 
+    char* filename = get_new_filename(argv[argc - 1], false); 
+
+    printf("\nOld filename: %s\n\n", argv[argc-1]); //TODO: might want to remove this
+    printf("New filename: %s\n\n", filename); 
 
     size_t original_file_length = 0; //NOT including /0 
     char* reading_buffer = GetFileContents(argv[argc - 1], &original_file_length, true); 
@@ -93,7 +97,7 @@ int main(int argc, char** argv) {
     free(reading_buffer); 
 
 
-    char* filename = get_new_filename(argv[argc - 1], false); 
+    //char* filename = get_new_filename(argv[argc - 1], false); //moved up
 
 
 

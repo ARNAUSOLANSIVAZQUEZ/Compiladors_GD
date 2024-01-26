@@ -119,19 +119,26 @@ char* get_new_filename(char* old_name, bool terminate_with_c){
             strcat(ret, suffix); //add sufix
             i += strlen(suffix); 
 
+            /*
             char* dot = "."; 
             strcat(ret, dot); //add .
             i += 1; 
-
+            */
 
             //add extension accordingly
             if(terminate_with_c) {
 
-                ret[i] = 'c'; 
-                ret[i + 1] = '\0'; 
+                char* dot_c_extension = ".c\0"; 
+                strcat(ret, dot_c_extension); //add .
+                //go exit
 
             } else {
                 //use old extension
+                char* dot = "."; 
+                strcat(ret, dot); //add .
+                i += 1; 
+                e--; //move from the position to write to the position of the last char
+
                 while(0 <= e) { 
                     ret[i] = extension[e]; 
                     i++; 
@@ -167,8 +174,10 @@ char* get_new_filename(char* old_name, bool terminate_with_c){
 
 }
 
+
 // Function to handle the input when executing the program.
-int processFlags(int argc, char** argv, bool* process_comments, bool* process_directives){
+int processFlags(int argc, char** argv, bool* process_comments, bool* process_directives) { 
+
     if(argc <= MIN_ARGUMENTS) {
         if(!strcmp(argv[1], "-help")){
             PrintHelp();
@@ -180,7 +189,8 @@ int processFlags(int argc, char** argv, bool* process_comments, bool* process_di
             printf("Use the flag \"-help\" to get help. \n");
         }
         return 1; // return error
-    } else if(MIN_ARGUMENTS < argc) {
+    } 
+    if(MIN_ARGUMENTS < argc) {
         // handle flags
         /*Note: if the same valid flag is used more than once, the other
         instances will be effectively ignored (according to instructions)*/
@@ -199,18 +209,19 @@ int processFlags(int argc, char** argv, bool* process_comments, bool* process_di
             if(!c_flag) {
                 *process_comments = true;
             }
-            if(!d_flag) {
+            else if(!d_flag) {
                 *process_directives = true;
             }
-            if(!help_flag) {
-                PrintHelp();
+            else if(!help_flag) {
+                PrintHelp(); //TODO: fix this (help will be printed multiple times if flag is added more than once)
                 return 0;
             }
-            if(!all_flag) {
+            else if(!all_flag) {
                 *process_comments = true;
                 *process_directives = true;
             }
-            if(c_flag && d_flag && all_flag && help_flag){
+            else {
+                //if(c_flag && d_flag && all_flag && help_flag)
                 // unexpected flag
                 printf("ERROR: unknown flag: \"%s\" \n", argv[i]);
                 printf("Use flag -help for additional information.\n");
@@ -218,6 +229,9 @@ int processFlags(int argc, char** argv, bool* process_comments, bool* process_di
             }
         }
     }
+
+    //TODO: if no flags are provided, comments flag should be on by deafult
+
     return 0;
 }
 
