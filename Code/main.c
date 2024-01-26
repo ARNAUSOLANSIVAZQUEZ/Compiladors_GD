@@ -11,7 +11,7 @@
     Arnau Solans, U161668, NIA: 216530
     David Garcia Lozano, U198629, NIA: 251587
     Ariadna Prat, , NIA: 251281
-    Clàudia Quera, , NIA: 231197
+    Clàudia Quera, U172781, NIA: 231197
     Jorge Villarino, , NIA: 231351
 
 
