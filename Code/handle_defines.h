@@ -16,7 +16,7 @@ struct DefineInfo {
 struct DefineInfo create_error_result();
 
 // Function to handle #define lines and return a DefineInfo structure
-struct DefineInfo* handle_define(char* source_code, int index, int* len);
+struct DefineInfo handle_define(char* source_code, int index, int* len);
 
 // Function to handle the result of a #define line and return a DefineInfo structure
 struct DefineInfo defineResult(int id, char* source_code);
