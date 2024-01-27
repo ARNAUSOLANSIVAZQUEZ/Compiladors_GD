@@ -45,7 +45,8 @@ void pre_handle_compile_file(char* reading_buffer, char* writing_buffer, size_t*
 void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char* writing_buffer, size_t* writting_buffer_len, int* writing_index, PatternMatcher* pattern_match_base); 
 
 
-
+void pre_handle_ifdef_endif(char* source_code, int i, size_t* size_source_code, char* reading_buffer, char* writting_buffer,
+                 int writting_buffer_len, int writting_index, int count_struct);
 /*
     writes the content buffer in a new file (with filename as name). 
     If the file already exists, it will be overwritten with the new file. 
