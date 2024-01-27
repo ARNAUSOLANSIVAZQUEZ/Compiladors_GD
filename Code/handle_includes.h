@@ -41,7 +41,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     Returns a (possibly new) string and size_source_code is updated to the new size. 
 
 */
-char* handle_include_compiler_files(char* source_code, int index, int* substitution_length);
+char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_base);
 
 
 
