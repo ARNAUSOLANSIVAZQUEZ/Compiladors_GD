@@ -11,7 +11,7 @@
 #include "handle_comments.h"
 #include "handle_constants.h"
 #include "handle_includes.h"
-#include "handle_macros.h"
+#include "handle_defines.h"
 #include "handle_ifdef_endif.h"
 
 #include "Utils.h"
