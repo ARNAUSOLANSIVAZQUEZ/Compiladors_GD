@@ -1,6 +1,6 @@
 #include "handle_defines.h"
 
- * Example main to demonstrate calling handle_define with a predefined #define line
+ /* Example main to demonstrate calling handle_define with a predefined #define line
  * and adding the result to the table which will contain defines relations to substitute
  * the values when a pattern matcher of a define variable is encountered.
  */
