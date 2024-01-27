@@ -18,7 +18,7 @@
 #include "datastructures.h"
 
 #define INCLUDE_FILE_PATTERN_DETECTION_LEN 9
-
+#define TABLE_ROWS 5
 
 // This header exists because we need to call preprocess recursively from handle_include
 
