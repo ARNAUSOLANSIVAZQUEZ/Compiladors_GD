@@ -1,5 +1,37 @@
 #include "handle_defines.h"
 
+ * Example main to demonstrate calling handle_define with a predefined #define line
+ * and adding the result to the table which will contain defines relations to substitute
+ * the values when a pattern matcher of a define variable is encountered.
+ */
+int main()
+{
+    // Define the number of rows in your table
+    int num_rows = TABLE_ROWS;
+    // Allocate memory for an array of struct DefineInfo
+    struct DefineInfo* table = (struct DefineInfo*)malloc(num_rows * sizeof(struct DefineInfo));
+    
+    // Create an error result structure
+    struct DefineInfo error_result = create_error_result();
+    
+    // Example: Call handle_define with a predefined #define line
+    struct DefineInfo result = handle_define("#define max(x,y) (x>y?x:y)\n");
+    
+    // Check if the result is not an error
+    if (result.id != error_result.id) {
+        // Check if an entry with the same ID and identifier already exists
+        if (entryExists(table, num_rows, result.id, result.identifier)) {
+            // If exists, update the table entry
+            updateTable(table, num_rows, result);
+        } else {
+            // If not exists, add a new entry to the table
+            addToTable(table, num_rows, result);
+        }
+    }
+    
+    printTable(table, num_rows);
+    return 0;
+}
 
 /**
 * Handles the processing of a #define line in the source code and returns
@@ -156,4 +188,113 @@ struct DefineInfo create_error_result() {
     error_result.content = NULL;
 
     return error_result;
+}
+
+
+/**
+ * Check if an entry with the same ID and identifier already exists in the table.
+ *
+ * @param table The table of DefineInfo structures.
+ * @param num_rows The number of rows in the table.
+ * @param id The ID to check for.
+ * @param identifier The identifier to check for.
+ * @return true if an entry with the same ID and identifier exists, false otherwise.
+ */
+bool entryExists(struct DefineInfo* table, int num_rows, int id, const char* identifier) {
+    for (int i = 0; i < num_rows; ++i) {
+        if (table[i].id == id && strcmp(table[i].identifier, identifier) == 0) {
+            return true;  // Entry already exists
+        }
+    }
+    return false;  // Entry not found
+}
+
+/**
+ * Add entries to the table.
+ *
+ * @param table The table of DefineInfo structures.
+ * @param num_rows The number of rows in the table.
+ * @param result The DefineInfo structure to add to the table.
+ */
+void addToTable(struct DefineInfo* table, int num_rows, struct DefineInfo result) {
+    for (int i = 0; i < num_rows; ++i) {
+        if (table[i].id == 0 && table[i].identifier == NULL) {
+            // Empty slot, add the result
+            table[i].id = result.id;
+
+            // Allocate memory for the identifier and copy the value
+            table[i].identifier = strdup(result.identifier);
+            if (!table[i].identifier) {
+                // Handle memory allocation failure
+                return;
+            }
+
+            // Allocate memory for the content and copy the value
+            table[i].content = strdup(result.content);
+            if (!table[i].content) {
+                // Handle memory allocation failure
+                free(table[i].identifier);  // Free the allocated memory for identifier
+                return;
+            }
+
+            return;  // Entry added, exit the function
+        }
+    }
+    // If the table is full, allocate more space (+TABLE_ROWS)
+    int new_size = num_rows + TABLE_ROWS;
+    table = (struct DefineInfo*)realloc(table, new_size * sizeof(struct DefineInfo));
+    if (!table) {
+        // Handle memory allocation failure
+        return;
+    }
+
+    // Initialize the new entries in the added space
+    for (int i = num_rows; i < new_size; ++i) {
+        table[i].id = 0;
+        table[i].identifier = NULL;
+        table[i].content = NULL;
+    }
+
+    // Update the num_rows variable to reflect the new size
+    num_rows = new_size;
+
+    // Add the result to the newly allocated space
+    addToTable(table, num_rows, result);
+}
+
+
+/**
+ * Update an entry in the table.
+ *
+ * @param table The table of DefineInfo structures.
+ * @param num_rows The number of rows in the table.
+ * @param result The DefineInfo structure containing the update information.
+ */
+void updateTable(struct DefineInfo* table, int num_rows, struct DefineInfo result) {
+    for (int i = 0; i < num_rows; ++i) {
+        if (table[i].id == result.id && strcmp(table[i].identifier, result.identifier) == 0){
+            // Entry with the same ID and identifier found, update the content
+            free(table[i].content);  // Free the existing content
+            table[i].content = result.content;
+            return;  // Entry updated, exit the function
+        }
+    }
+}
+
+/**
+ * Print the contents of the table.
+ *
+ * @param table The table of DefineInfo structures.
+ * @param num_rows The number of rows in the table.
+ */
+void printTable(struct DefineInfo* table, int num_rows) {
+    printf("Table Contents:\n");
+    printf("| %-5s | %-15s | %-30s |\n", "ID", "Identifier", "Content");
+    printf("|-------|-----------------|--------------------------------|\n");
+
+    for (int i = 0; i < num_rows; ++i) {
+        if (table[i].id != 0 && table[i].identifier != NULL) {
+            printf("| %-5d | %-15s | %-30s |\n", table[i].id, table[i].identifier, table[i].content);
+        }
+    }
 }
