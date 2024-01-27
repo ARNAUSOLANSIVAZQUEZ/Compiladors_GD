@@ -424,8 +424,8 @@ void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, ch
     */
 
 }
-void pre_handle_ifdef_endif(char* source_code, int i, size_t* size_source_code, char* reading_buffer, char* writting_buffer,
-                 int writting_buffer_len, int writting_index, int count_struct){
+void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
+                 size_t* writting_buffer_len, size_t* writting_index, int count_struct){
     ; // <- empty statement DO NOT REMOVE
     char* e=eliminar(reading_buffer);
     char* d=eliminar_comentarios_bloque(e);
