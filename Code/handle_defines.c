@@ -1,5 +1,6 @@
 #include "handle_defines.h"
 
+
 /**
 * Handles the processing of a #define line in the source code and returns
  * a DefineInfo structure representing the result.
@@ -15,7 +16,7 @@
  *         If there is an error in processing the #define line, an error
  *         DefineInfo structure is returned with the id field set to -1.
  */
-struct DefineInfo handle_define(char* source_code, int index, int* len) {
+struct DefineInfo handle_define(char* source_code) {
 
     struct DefineInfo result;
     struct DefineInfo error_result = create_error_result();
@@ -23,7 +24,7 @@ struct DefineInfo handle_define(char* source_code, int index, int* len) {
     // Find the start of the #define block
     char* define_start = strstr(source_code, "#define");
     if (!define_start) {
-        *len = 0;
+        printf("define block not found");
         return error_result;  // No #define found
     }
 
@@ -32,14 +33,14 @@ struct DefineInfo handle_define(char* source_code, int index, int* len) {
 
     //If '#define' is not followed by a " " then it ain't valid
     if (*define_start != ' ') {
-        *len = 0;
+        printf("define not followed by a space");
         return error_result;  // Invalid #define, missing space
     }
 
     // Find the end of the #define line
     char* define_line_end = strchr(define_start, '\n');
     if (!define_line_end) {
-        *len = 0;
+        printf("define block end not found");
         return error_result;  // Malformed #define
     }
 
@@ -49,7 +50,7 @@ struct DefineInfo handle_define(char* source_code, int index, int* len) {
     // Allocate memory for the content and copy it
     char* define_content = (char*)malloc(content_len + 1);
     if (!define_content) {
-        *len = 0;
+        printf("could not allocate memory");
         return error_result;  // Memory allocation error
     }
     memcpy(define_content, define_start, content_len);
@@ -58,15 +59,11 @@ struct DefineInfo handle_define(char* source_code, int index, int* len) {
     // Check if the content contains parentheses, indicating a macro
     if (strchr(define_content, '(') && strchr(define_content, ')')) {
         // It's a macro
-        struct DefineInfo result = defineResult(9, define_content);
+        result = defineResult(9, define_content);
 
     } else {
         // It's a constant
-        struct DefineInfo result = defineResult(8, define_content);
-
-        //AddPattern
-
-        //Case per quan troba el patro
+        result = defineResult(8, define_content);
     }
 
     // Free the allocated memory for define_content
@@ -88,7 +85,7 @@ struct DefineInfo handle_define(char* source_code, int index, int* len) {
  *         If there is an error in creating the structure, an error DefineInfo
  *         structure is returned with the id field set to -1.
  */
-struct DefineInfo defineResult(int id, char* source_code){
+struct DefineInfo defineResult(int id, char* source_code) {
     struct DefineInfo result;
     struct DefineInfo error_result = create_error_result();
 
@@ -103,11 +100,16 @@ struct DefineInfo defineResult(int id, char* source_code){
     }
 
     // Find the first letter corresponding to the macro name (identifier)
-    if (*source_code && ((*source_code >= 'A' && *source_code <= 'Z') || (*source_code >= 'a' && *source_code <= 'z') || *source_code == '_')) {
+    if (*source_code && ((*source_code >= 'A' && *source_code <= 'Z') ||
+                         (*source_code >= 'a' && *source_code <= 'z') ||
+                         *source_code == '_')) {
         char* identifier_start = source_code;
 
-        //Macro names in C can contain uppercases, lowercases, numbers and underscores
-        while (*source_code && ((*source_code >= 'A' && *source_code <= 'Z') || (*source_code >= 'a' && *source_code <= 'z') || (*source_code >= '0' && *source_code <= '9') || *source_code == '_')) {
+        // Macro names in C can contain uppercases, lowercases, numbers, and underscores
+        while (*source_code && ((*source_code >= 'A' && *source_code <= 'Z') ||
+                                (*source_code >= 'a' && *source_code <= 'z') ||
+                                (*source_code >= '0' && *source_code <= '9') ||
+                                *source_code == '_')) {
             source_code++;
         }
 
@@ -119,10 +121,7 @@ struct DefineInfo defineResult(int id, char* source_code){
             return error_result;
         }
         strncpy(result.identifier, identifier_start, identifier_len);
-
-        //Necessari?
-        /*result[0][identifier_len] = '\0';  // Null-terminate the identifier */
-
+        result.identifier[identifier_len] = '\0';  // Null-terminate the identifier
 
         // Skip leading spaces after the identifier
         while (*source_code && (*source_code == ' ' || *source_code == '\t')) {
@@ -133,13 +132,14 @@ struct DefineInfo defineResult(int id, char* source_code){
         result.content = strdup(source_code);
         if (!result.content) {
             // Handle memory allocation failure
+            free(result.identifier);  // Free the allocated memory for identifier
             return error_result;
-
         }
     }
 
     return result;
 }
+
 
 /**
  * Creates and returns a special DefineInfo structure indicating an error condition.
