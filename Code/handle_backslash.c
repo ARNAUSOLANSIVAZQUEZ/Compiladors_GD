@@ -10,35 +10,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #define MAX_LINE_LENGTH 256
-char* handle_backslash(char* source_code, size_t* size_source_code) {
+#include "backslash.h"
+
+char* handle_backslash(char* source_code, size_t* size_source_code, int i) {
     char *result = (char*)malloc(MAX_LINE_LENGTH * sizeof(char));
     if (result == NULL) {
         fprintf(stderr, "Error: Memory allocation failed.\n");
         exit(EXIT_FAILURE);
     }
     
-    // Copy input to result
-    strcpy(result, source_code);
-    
-    // Find the slash character
-    char *slash = strrchr(result, '/');
-    
-    // If slash is found, remove it and concatenate the next line
-    if (slash != NULL) {
-        *slash = '\0'; // Replace slash with null terminator
-        char nextLine[MAX_LINE_LENGTH];
-        printf("Enter continuation line: ");
-        fgets(nextLine, sizeof(nextLine), stdin); // Read next line
-        strcat(result, nextLine); // Concatenate next line
-        // Recursively process the next line
-        char *processed = handle_backslash(result, size_source_code);
-        free(result);
-        *size_source_code = strlen(processed); // Calculate length
-        return processed;
-    } else {
-        *size_source_code = strlen(result); // Calculate length
-        return result; // Return the processed line if no slash found
-    } 
+    size_t source_length = strlen(source_code);
+    size_t result_length = 0;
+
+    // Iterate through each character of the source code starting from position i
+    for (int j = i; j < source_length; j++) {
+        // Check for backslash at the end of the line
+        if (source_code[j] == '\\' && j < source_length - 1 && source_code[j + 1] == '\n') {
+            // Skip the backslash and the newline character
+            j += 1;
+            continue;
+        }
+
+        // Copy characters to result
+        result[result_length++] = source_code[j];
+    }
+
+    // Null-terminate the result
+    result[result_length] = '\0';
+
+    *size_source_code = result_length; // Update the size of the processed code
+    return result;
 }
+
