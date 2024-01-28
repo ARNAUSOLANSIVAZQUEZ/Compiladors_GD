@@ -7,11 +7,7 @@
 *
 * Responsible: Ariadna Prat
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "handle_ifdef_endif.h"
-#include "multistring.h"
 
 char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms) {
     // Initialize result
