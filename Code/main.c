@@ -15,8 +15,6 @@
 * Responsible: Marcel Aranich, Arnau Solans
 */
 
-
-
 int main(int argc, char** argv) {
     // Initialize flags to specify preprocessor behaviour
     bool process_comments;
@@ -135,46 +133,6 @@ void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
     memcpy(&writing_buffer[*writing_index - 5], if_def_text, (size_t)len);
     writing_index += -5 + len - 1;
 }
-int write_new_file(char* content_buffer, size_t len, char* filename) {
-
-    //I think this function ended up being a bit short... 
-    FILE* preprocessed_file = fopen(filename, "wb"); //create/overwrite new file
-    if(preprocessed_file == NULL) return 1; //error
-
-    
-    size_t fwrite_ret = fwrite(content_buffer, (size_t)1, len, preprocessed_file); //write everything
-    if(fwrite_ret != len) {
-        //not all characters successfully writed
-        return 2; //error
-    }
-
-    fclose(preprocessed_file); 
-    return 0; //success
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 ./preprocessor SampleText_00.txt
 

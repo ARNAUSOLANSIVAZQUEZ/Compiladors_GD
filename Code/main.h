@@ -49,15 +49,6 @@ void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, ch
 
 void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
                  size_t* writing_buffer_len, int* writing_index, int count_struct);
-/*
-    writes the content buffer in a new file (with filename as name). 
-    If the file already exists, it will be overwritten with the new file. 
-    content_buffer is the contents of the new file. len is the length of the 
-    content buffer. write_new_file() does NOT take ownership of any parameter. 
-
-    returns 0 on succes, otherwise returns any other number
-*/
-int write_new_file(char* content_buffer, size_t len, char* filename); 
 
 int main(int argc, char** argv);
 #endif

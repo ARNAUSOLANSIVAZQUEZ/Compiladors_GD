@@ -203,4 +203,17 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     *_len = writing_index; //return new length
     return writing_buffer;
 }
-#include "preprocessor.h"
+
+
+int write_new_file(char* content_buffer, size_t len, char* filename) {
+    FILE* preprocessed_file = fopen(filename, "wb"); // Create or overwrite preprocessed file
+    if(preprocessed_file == NULL) return 1; // Error opening the write file
+    size_t fwrite_ret = fwrite(content_buffer, (size_t)1, len, preprocessed_file); //write everything
+    if(fwrite_ret != len) { // Error while writing some of the characters
+        return 2; //error
+    }
+    fclose(preprocessed_file);
+    return 0; //success
+
+}
+
