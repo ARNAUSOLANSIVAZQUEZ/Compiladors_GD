@@ -30,11 +30,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     for(int i = 0; i < *_len; i++){
         current_char = reading_buffer[i];
         pattern_return = pattern_scan(pattern_match_static, current_char);
-        if(!process_comments){
-            if(pattern_return == 4 || pattern_return == 5){
-                pattern_return = 0;
-            }
-        }
+
         if(!process_directives){
             if(pattern_return == 1 || pattern_return == 2 || pattern_return == 3 || pattern_return == 6 ){
                 pattern_return = 0;
