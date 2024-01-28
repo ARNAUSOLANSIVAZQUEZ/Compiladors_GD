@@ -13,7 +13,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
-
+#include "multistring.h"
 #include "patternmatcher.h"
 #include "utils.h"
 #include "handle_ifdef_endif.h"
