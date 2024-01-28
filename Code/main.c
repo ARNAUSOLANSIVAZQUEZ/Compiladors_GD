@@ -19,6 +19,8 @@ int main(int argc, char** argv) {
     // Initialize flags to specify preprocessor behaviour
     bool process_comments;
     bool process_directives;
+    MultiString ms;
+    multistring_initialize(&ms);
     processFlags(argc, argv, &process_comments, &process_directives); // Process input arguments to update flags
     char* filename = get_new_filename(argv[argc - 1], false); // Compute new filename
     printf("\nOld filename: %s\n\n", argv[argc-1]); //TODO: might want to remove this
@@ -30,7 +32,7 @@ int main(int argc, char** argv) {
     PatternMatcher pattern_match_static;
     pattern_matcher_initialize(&pattern_match_static);
     add_static_patterns(&pattern_match_static);
-    char* preprocessed_file = preprocess(reading_buffer, &writing_buffer_len, &pattern_match_static); // Call preprocessing with static patterns
+    char* preprocessed_file = preprocess(reading_buffer, &writing_buffer_len, &pattern_match_static, &ms); // Call preprocessing with static patterns
     free(reading_buffer); // free reading buffer memory
     // Write the preprocessed file and check for errors
     int writing_file_error_return = write_new_file(preprocessed_file, writing_buffer_len, filename);
@@ -41,6 +43,7 @@ int main(int argc, char** argv) {
     free(filename);
     free_pattern_matcher(&pattern_match_static);
     free(preprocessed_file);
+    free_multi_string(&ms);
 
     return 0; 
 
