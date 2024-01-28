@@ -7,7 +7,7 @@
 #include <string.h>
 #include <memory.h>
 #include <stddef.h>
-
+#include "multistring.h"
 #include "preprocessor.h"
 
 
