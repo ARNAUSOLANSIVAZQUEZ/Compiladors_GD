@@ -9,7 +9,11 @@
 */
 #ifndef HEADER_HANDLE_IFDEF_ENDIF
 #define HEADER_HANDLE_IFDEF_ENDIF
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "handle_ifdef_endif.h"
+#include "multistring.h"
 #define ARRAY_GROWTH_FACTOR 3/2
 
 /*
