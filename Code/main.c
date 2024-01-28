@@ -27,7 +27,7 @@
 #define INCLUDE_LOC_ID 6 //unsorted
 #define COMMENT_ID 4
 #define MULTI_COMMENT_ID 5
-
+int count_struct=0; //case #ifdef_endif
 
 
 
@@ -40,7 +40,6 @@ int main(int argc, char** argv) {
     bool process_directives;
     processFlags(argc, argv, &process_comments, &process_directives);
 
-
     char* filename = get_new_filename(argv[argc - 1], false); 
 
     printf("\nOld filename: %s\n\n", argv[argc-1]); //TODO: might want to remove this
@@ -52,9 +51,7 @@ int main(int argc, char** argv) {
     // should not be altered
 
 
-
     size_t writting_buffer_len = original_file_length; //copy contents
-
 
     /*
         This pattern matcher detects the things that our code needs to detect
@@ -96,10 +93,7 @@ int main(int argc, char** argv) {
 
     free(reading_buffer); 
 
-
     //char* filename = get_new_filename(argv[argc - 1], false); //moved up
-
-
 
     int writting_file_error_return = write_new_file(preprocessed_file, writting_buffer_len, filename); 
     if(writting_file_error_return != 0){
@@ -107,9 +101,6 @@ int main(int argc, char** argv) {
     }
 
     free(filename); 
-
-
-
 
     free_pattern_matcher(&pattern_match_base); 
 
@@ -128,19 +119,23 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     char* writing_buffer = (char*)malloc(writting_buffer_len * sizeof(char)); // will probably be increased in size
     
 
-
     /*This pattern matcher detects the things that can be found again in the code 
     i.e. defines*/
     PatternMatcher pattern_match_dyn; // see Utils.c
     pattern_matcher_initialize(&pattern_match_dyn); 
     
-
     //auxiliar variables
     int writing_index = 0; 
     int len = -1; 
     int new_index = 0; 
     char* include_text = NULL; 
 
+    //Define the table for storing the defines information
+    //Define the number of rows in your table
+    int num_rows = TABLE_ROWS;
+
+    // Allocate memory for an array of struct DefineInfo
+    struct DefineInfo* table = (struct DefineInfo*)malloc(num_rows * sizeof(struct DefineInfo));
 
     for(int i = 0; i < *_len; i++){
 
@@ -163,17 +158,41 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             break;
         case DEFINE_ID: //#define
 
+            ; // <- empty statement DO NOT REMOVE
+
+            char* define_text = handle_define(reading_buffer);
+
+            // We use pattern_match_dyn to store the identifier
+            char* identifier = get_identifier_from_define(define_text);
+            add_pattern(&pattern_match_dyn, identifier, pattern_match_dyn.num_patterns);
+
+            // Create an error result structure
+            struct DefineInfo error_result = create_error_result();
+    
+            // Example: Call handle_define with a predefined #define line
+            struct DefineInfo result = handle_define("#define max(x,y) (x>y?x:y)\n");
+
+            // Check if the result is not an error
+            if (result.id != error_result.id) {
+                // Check if an entry with the same ID and identifier already exists
+                if (entryExists(table, num_rows, result.id, result.identifier)) {
+                    // If exists, update the table entry
+                    updateTable(table, num_rows, result);
+                } else {
+                    // If not exists, add a new entry to the table
+                    addToTable(table, num_rows, result);
+                }
+            }
+
+            //printTable(table, num_rows);
+
             /*TODO: store all the information needed in a corresponding data structure
             
             Also use pattern_match_dyn to store the identifier of the constant/macro. 
             When the pattern is detected bellow this switch, use he handle_macro() or 
             handle_constant() accordingly. You may want to delete one of the 2 functions. 
-
-
-            */
-
+            
             ; // <- empty statement DO NOT REMOVE
-
 
             //get the following using the reading buffer
             char patten_definition[500] = "#define this_cool_stuff_i_found(x) (x + 3) "; 
@@ -187,7 +206,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             //TODO: store the information as you can
 
             writing_index += - 1; //update accordingly
-
+            */
 
             break;        
         case IFDEF_ID: 
@@ -195,7 +214,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
             ; // <- empty statement DO NOT REMOVE
 
-            len = -1; 
+            /*len = -1; 
             char* if_def_text = handle_ifdef_endif(reading_buffer, i - 5, &len); 
             //^should return direcly what needs to be inserted in the writing buffer
 
@@ -207,7 +226,8 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
             memcpy(&writing_buffer[writing_index - 5], if_def_text, (size_t)len); 
             writing_index += -5 + len - 1; 
-
+            */
+            pre_handle_ifdef_endif(reading_buffer, writing_buffer, &writting_buffer_len, &writting_index, count_struct);
 
             break;        
         case INCLUDE_COMP_ID: 
@@ -331,17 +351,12 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
         }
 
-
-
-
-
         ///////////////////////////////////////////////
         writing_index++; // go to new index
 
     }
 
     free_pattern_matcher(&pattern_match_dyn); 
-
 
 
     writing_buffer[writing_index] = '\0'; 
@@ -351,7 +366,6 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     //*_len = writting_buffer_len; 
     *_len = writing_index; //return new length, not capacity :P
     return writing_buffer; 
-
 }
 
 void pre_handle_compile_file(char* reading_buffer, char* writing_buffer, size_t* writting_buffer_len, int* writing_index) {
@@ -429,7 +443,24 @@ void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, ch
     */
 
 }
+void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
+                 size_t* writting_buffer_len, int* writting_index, int count_struct){
+    ; // <- empty statement DO NOT REMOVE
+    char* e=eliminar(reading_buffer);
+    char* d=eliminar_comentarios_bloque(e);
+    int len = -1;
+    char *if_def_text = handle_ifdef_endif (d, count_struct, &len);
+    //^should return direcly what needs to be inserted in the writing buffer
+    count_struct+=1;
+    if(writting_buffer_len <= writting_index + len + 1 ) { // +1 for /0
+        // get more space
+        writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR;
+        writting_buffer = realloc(writting_buffer, writting_buffer_len);
+    }
 
+    memcpy(&writting_buffer[writting_index - 5], if_def_text, (size_t)len);
+    writting_index += -5 + len - 1;
+}
 int write_new_file(char* content_buffer, size_t len, char* filename) {
 
     //I think this function ended up being a bit short... 
