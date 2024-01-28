@@ -185,15 +185,16 @@ void pattern_matcher_initialize(PatternMatcher* pattern_matcher) {
 
 
 int pattern_scan(PatternMatcher* pattern_matcher, char c){
-    //int x = 0; 
 
-    for(int i = 0 ; i < pattern_matcher->num_patterns; i++) { 
+    for(int i = 0; i < pattern_matcher->num_patterns; i++) { 
 
         Pattern* pattern = pattern_matcher->patterns[i]; 
 
-        if(pattern->str_pattern[pattern->current_matches] == c) {
-            pattern->current_matches++; 
-            if(pattern->len >= pattern->current_matches) {
+        if(pattern->str_pattern[pattern->current_matches] == c) { 
+            //printf("1 char matched: %c (p: %s)\n", c, pattern->str_pattern); 
+            //print_pattern(pattern); 
+            pattern->current_matches += 1; 
+            if(pattern->len <= pattern->current_matches) {
                 //PATTERN! 
                 pattern->current_matches = 0; 
                 return pattern->ID; 
@@ -204,7 +205,6 @@ int pattern_scan(PatternMatcher* pattern_matcher, char c){
     }
     return 0; 
 }
-
 
 void add_pattern(PatternMatcher* pattern_matcher, char* new_pattern, int id) {
 
@@ -242,7 +242,7 @@ void print_pattern_matcher(PatternMatcher* pattern_matcher) {
         Pattern* curr_pat = pattern_matcher->patterns[i]; 
         //printf("%d: \t|%s| \n\t\t >> ID: %d \t(%d chars, %d of them currenly matched)\n\n", i, curr_pat->str_pattern, curr_pat->ID, curr_pat->len, curr_pat->current_matches); 
         print_pattern(curr_pat); 
-        
+
     }
 
 
