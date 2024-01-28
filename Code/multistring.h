@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: multistring.h
+* Multistring structure functions.
+*
+*
+* Responsible: Marcel Aranich
+*/
 #ifndef HEADER_DATASTRUCTURES
 #define HEADER_DATASTRUCTURES
 

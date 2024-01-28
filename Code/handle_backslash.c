@@ -1,4 +1,12 @@
-
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_backslash.c
+* Backslash directive handler.
+*
+*
+* Responsible: Ariadna Prat
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

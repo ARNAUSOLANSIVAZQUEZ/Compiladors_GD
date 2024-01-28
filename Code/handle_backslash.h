@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_backslash.h
+* Backslash directive handler.
+*
+*
+* Responsible: Ariadna Prat
+*/
 #ifndef HEADER_HANDLE_BACKSLASH
 #define HEADER_HANDLE_BACKSLASH
 

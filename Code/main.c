@@ -3,7 +3,7 @@
 *    Marcel Aranich, U185166, NIA: 251453
 *    Arnau Solans, U161668, NIA: 216530
 *    David Garcia Lozano, U198629, NIA: 251587
-*    Ariadna Prat, , NIA: 251281
+*    Ariadna Prat, U185150, NIA: 251281
 *    Clàudia Quera, U172781, NIA: 231197
 *    Jorge Villarino, , NIA: 231351
 * Compilers
@@ -47,20 +47,8 @@ int main(int argc, char** argv) {
 }
 
 /*
-./preprocessor SampleText_00.txt
 
-
-
-cd .\Code\
-// ^enter the Code sub-folder
-
-gcc main.c -o preprocessor
-// ^just compile the main file
-
-gcc main.c Utils.c -o preprocessor
-// ^also compile the utils.c file
-
-gcc main.c Utils.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_macros.c -o preprocessor
+gcc main.c multistring.c patternmatcher.c preprocessor.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_defines.c -o preprocessor
 // ^compile using everything
 
 ./preprocessor -all ./../SampleText_00.c

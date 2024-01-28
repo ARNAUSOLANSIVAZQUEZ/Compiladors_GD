@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_defines.c
+* Define directive handler.
+*
+*
+* Responsible: Claudia Quera
+*/
 #include "handle_defines.h"
 
  /* Example main to demonstrate calling handle_define with a predefined #define line

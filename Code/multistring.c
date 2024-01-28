@@ -1,4 +1,12 @@
-
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: multistring.c
+* Multistring structure functions.
+*
+*
+* Responsible: Marcel Aranich
+*/
 #include "multistring.h"
 
 

@@ -1,10 +1,17 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_constants.h
+* Constant directive handler.
+*
+*
+* Responsible: David Garcia
+*/
 #ifndef HEADER_HANDLE_CONSTANTS
 #define HEADER_HANDLE_CONSTANTS
 
 
 #include <stdio.h>
-
-// David Garcia, NIA: 251587
 
 /*
 The is_constant_valid function is an auxiliar function that checks, for each character of a string, if they are valid

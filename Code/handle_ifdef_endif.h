@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_ifdef_endif.h
+* Ifdef directive handler.
+*
+*
+* Responsible: Ariadna Prat
+*/
 #ifndef HEADER_HANDLE_IFDEF_ENDIF
 #define HEADER_HANDLE_IFDEF_ENDIF
 

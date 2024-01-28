@@ -1,7 +1,7 @@
 /*
 * Compilers
 * Practice 1: c pre-processor
-* File name: patternmatcher.c
+* File name: patternmatcher.h
 * Pattern Matcher structure file.
 * Stores and recognizes different patterns to handle while reading the file.
 *

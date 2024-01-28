@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: utils.h
+* Multiple functions to retrieve information or process input.
+*
+*
+* Responsible: Marcel Aranich, Arnau Solans
+*/
 #ifndef UTILS
 #define UTILS
 

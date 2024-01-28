@@ -1,10 +1,18 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_constants.c
+* Constant directive handler.
+*
+*
+* Responsible: David Garcia
+*/
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include "handle_constants.h"
 
-// David Garcia, NIA: 251587
 
 int is_constant_valid(const char* string) {
     for (size_t i = 0; i < strlen(string); i++) {

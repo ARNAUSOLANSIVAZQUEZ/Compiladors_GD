@@ -1,7 +1,7 @@
 /*
 * Compilers
 * Practice 1: c pre-processor
-* File name: main.c
+* File name: preprocessor.c
 * Recursive preprocessing function.
 *
 *

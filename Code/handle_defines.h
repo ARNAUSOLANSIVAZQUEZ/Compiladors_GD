@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_defines.h
+* Defines directive handler.
+*
+*
+* Responsible: Claudia Quera
+*/
 #ifndef HANDLE_DEFINES_H
 #define HANDLE_DEFINES_H
 

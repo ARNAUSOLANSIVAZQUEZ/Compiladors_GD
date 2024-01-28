@@ -1,8 +1,16 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_ifdef_endif.c
+* Ifdef directive handler.
+*
+*
+* Responsible: Ariadna Prat
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "handle_ifdef_endif.h"
-// Ariadna Prat U185150, NIA:251281
 
 char* delete_small_comment(char* texto) {
     static char texto_sin_comentarios[1000]; // Variable to store text without comments

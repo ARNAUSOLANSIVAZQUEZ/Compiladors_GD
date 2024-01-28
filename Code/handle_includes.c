@@ -1,4 +1,12 @@
-
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_includes.c
+* Include directive handler.
+*
+*
+* Responsible: Marcel Aranich, Arnau Solans
+*/
 #include "handle_includes.h" 
 
 #ifdef __MINGW64__

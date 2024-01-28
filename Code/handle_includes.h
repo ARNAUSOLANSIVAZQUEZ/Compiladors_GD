@@ -1,3 +1,12 @@
+/*
+* Compilers
+* Practice 1: c pre-processor
+* File name: handle_includes.h
+* Include directive handler.
+*
+*
+* Responsible: Marcel Aranich, Arnau Solans
+*/
 #ifndef HEADER_HANDLE_INCLUDES
 #define HEADER_HANDLE_INCLUDES
 
