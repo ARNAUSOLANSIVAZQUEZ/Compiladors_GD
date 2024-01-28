@@ -46,7 +46,37 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
             }
             content_start++; // Move past the newline character
 
-            // Calculate the length of the content inside #ifdef
+            // Find the string associated with #ifdef
+            char ifdef_str[256];
+            if (sscanf(ifdef_start, "#ifdef %s", ifdef_str) != 1) {
+                // Failed to read name after #ifdef
+                return NULL;
+            }
+
+            // Check if the string associated with #ifdef is already present in MultiString
+            if (!multistring_contains(ms, ifdef_str)) {
+                // Add the string associated with #ifdef to MultiString
+                add_string(ms, strdup(ifdef_str));
+            } else {
+                // String already present, return NULL
+                return NULL;
+            }
+
+            // Find the string associated with #define
+            char define_str[256];
+            char *define_start = content_start;
+            while (define_start && define_start < ifdef_end) {
+                if (sscanf(define_start, "#define %s", define_str) == 1 && strcmp(ifdef_str, define_str) == 0) {
+                    break;
+                }
+                define_start = strstr(define_start + 1, "#define");
+            }
+            if (!define_start || define_start >= ifdef_end) {
+                // Corresponding #define not found
+                return NULL;
+            }
+
+            // Calculate the length of content inside #ifdef
             int content_len = ifdef_end - content_start;
 
             // Reallocate memory for result
