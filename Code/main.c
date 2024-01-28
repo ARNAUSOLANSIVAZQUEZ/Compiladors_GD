@@ -49,32 +49,31 @@ int main(int argc, char** argv) {
 }
 
 
-void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char* writing_buffer,
+void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
                              size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
-
-
-    char* include_text = handle_include_compiler_files(reading_buffer, pattern_match_static);
+    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index + 1], pattern_match_static);
     //^should return direcly what needs to be inserted in the writing buffer
-
+    if(include_text == NULL){
+        printf("Error while handling include program files. \n");
+        return;
+    }
     int len = strlen(include_text);
-
-
-
     if(*writing_buffer_len <= *writing_index + len + 1 ) { // +1 for /0
         // get more space
         *writing_buffer_len = *writing_buffer_len * ARRAY_GROWTH_FACTOR;
-        writing_buffer = realloc(writing_buffer, *writing_buffer_len);
+        *writing_buffer = realloc(*writing_buffer, *writing_buffer_len);
     }
-
-    memcpy(&writing_buffer[*writing_index - INCLUDE_FILE_PATTERN_DETECTION_LEN], include_text, (size_t)len);
-    *writing_index += len;
+    //printf("pre memcpy: |%s|\n", writing_buffer);
+    memcpy(&(*writing_buffer)[*writing_index - INCLUDE_FILE_PATTERN_DETECTION_LEN], include_text, (size_t)len);
+    *writing_index = strlen(*writing_buffer) - 1;
     //^ -1 is correct (???) <- check
+    printf("len: %d || writing idx: %d\n", len, *writing_index - len +1);
+    //printf("includetext %d: |%s|\n", strlen(include_text), include_text);
+    //printf("post memcpy writing_buffer: |%s|\n", *writing_buffer);
     free(include_text);
-
-
     // update reading index
-
-    while(reading_buffer[*reading_buffer_index] != '\"'){
+    *reading_buffer_index += 1; //ignore current |"|
+    while(reading_buffer[*reading_buffer_index] != '>'){
         *reading_buffer_index += 1;
     }
     /*
@@ -84,51 +83,30 @@ void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, ch
 }
 
 
-void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, 
-        size_t* writting_buffer_len, int* writing_index, PatternMatcher* pattern_match_base) {
+void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
+                             size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
 
-
-
-    /*This hideous function only exists for the grade. 
-    "because each switch statement case has only a function"
-    */
-
-
-    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index + 1], pattern_match_base); 
+    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index + 1], pattern_match_static);
     //^should return direcly what needs to be inserted in the writing buffer
-
     if(include_text == NULL){
         printf("Error while handling include program files. \n"); 
         return; 
     }
-
-    int len = strlen(include_text); 
-
-
-
+    int len = strlen(include_text);
     if(*writing_buffer_len <= *writing_index + len + 1 ) { // +1 for /0
         // get more space
-        *writting_buffer_len = *writting_buffer_len * ARRAY_GROWTH_FACTOR; 
-        *writing_buffer = realloc(*writing_buffer, *writting_buffer_len); 
+        *writing_buffer_len = *writing_buffer_len * ARRAY_GROWTH_FACTOR;
+        *writing_buffer = realloc(*writing_buffer, *writing_buffer_len);
     }
-
-    //printf("pre memcpy: |%s|\n", writing_buffer); 
-
-
+    //printf("pre memcpy: |%s|\n", writing_buffer);
     memcpy(&(*writing_buffer)[*writing_index - INCLUDE_FILE_PATTERN_DETECTION_LEN], include_text, (size_t)len); 
     *writing_index = strlen(*writing_buffer) - 1; 
     //^ -1 is correct (???) <- check
-
     printf("len: %d || writing idx: %d\n", len, *writing_index - len +1); 
     //printf("includetext %d: |%s|\n", strlen(include_text), include_text); 
-    //printf("post memcpy writing_buffer: |%s|\n", *writing_buffer); 
-
-
-    free(include_text); 
-    
-    
+    //printf("post memcpy writing_buffer: |%s|\n", *writing_buffer);
+    free(include_text);
     // update reading index
-
     *reading_buffer_index += 1; //ignore current |"|
     while(reading_buffer[*reading_buffer_index] != '\"'){
         *reading_buffer_index += 1; 

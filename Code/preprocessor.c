@@ -200,7 +200,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     //set final char to /0, this can be done because we have space
     //(see realloc in switch(pattern_return) case NO_PATTERN_DETECTED)
 
-    *_len = writing_buffer_len; //return new length
+    *_len = writing_index; //return new length
     return writing_buffer;
 }
 #include "preprocessor.h"

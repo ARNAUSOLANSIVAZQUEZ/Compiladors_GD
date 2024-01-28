@@ -43,11 +43,9 @@ void PrintHelp();
 /*
     does everything needed to call handle_include_file() and handles its outputs
 */
-void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char* writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
+void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
 
-//void pre_handle_include_file(char* reading_buffer, char* writing_buffer, size_t* writing_buffer_len, int* writing_index);
-void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char* writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
-
+void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
 
 void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
                  size_t* writing_buffer_len, int* writing_index, int count_struct);
