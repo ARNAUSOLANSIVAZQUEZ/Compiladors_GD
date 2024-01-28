@@ -255,10 +255,13 @@ void PrintHelp() {
     printf("Using no flags is equivalent to using only the \"-c\" flag. The order of the flags or amount used is irrelevant. using an invalid flag will abort the process. ");
     printf("Keep in mind that the file to preprocess needs to be in the last position. \n\n");
 
-    printf("Note that this preprocessor only supports properly files with .c extension (or other extensions with just 1 letter). Otherwise, the name of the new file may not be properly generated. ");
+    //printf("Note that this preprocessor only supports properly files with .c extension (or other extensions with just 1 letter). Otherwise, the name of the new file may not be properly generated. ");
     printf("After executing the preprocessor, a new file should appear in the same directory as the old one. ");
     printf("If the old file was named \"my_program.c\" then the new file will be named \"my_program_pp.c\". ");
 
     printf("\n\nIMPORTANT: if there already was a file with the same name, it will be overwritten. Be careful with the files you wish to keep. \n\n");
+    printf("Also note that if the file to preprocess contains “#include \"MyHeader.h\" instructions, they also need to be in the same folder. "); 
+
 }
+
 
