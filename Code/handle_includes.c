@@ -30,11 +30,20 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     //char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_base
     // TODO: implement handle_include_program_files()
 
+    printf("hipf: |%s|\n", reading_buffer); 
 
     char include_dir[MAX_LENGTH_INCUDE] = ""; 
 
-    sscanf("%s\"", reading_buffer, include_dir);
+    int scan_ret = sscanf(reading_buffer, "%s\"", include_dir); 
+    if(scan_ret == 0) {
+        printf("error while parsing include. (%s)\n", include_dir); 
+        return NULL; 
+    } else {
 
+        include_dir[strlen(include_dir) - 1] = '\0'; // erase last |"|
+        //printf("Parsing succesfull. |%s|\n", include_dir); 
+
+    }
 
     // get file contents, preprocess (, free) and return 
 
@@ -42,8 +51,13 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
 
     char* raw_include = GetFileContents(include_dir, &size_include, false); 
     if(raw_include == NULL) return NULL; 
+    //printf("hipf file contents: |%s|\n", raw_include); 
+
 
     char* ret = preprocess(raw_include, &size_include, pattern_match_base); 
+
+    //printf("hipf preprocessed: |%s|\n", ret); 
+
 
     // TODO: free       free       free       free       free       free       free       
 

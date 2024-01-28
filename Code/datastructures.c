@@ -169,6 +169,12 @@ void free_multi_string(MultiString* ms) {
 
 //      Pattern matcher: --------------------------------------------------------------------
 
+void print_pattern(Pattern* pattern) {
+
+    printf("Pattern |%s| (len: %d)\n\t>>ID: %d   (%d chars currently matched) \n\n", pattern->str_pattern, pattern->len, pattern->ID, pattern->current_matches); 
+
+}
+
 void pattern_matcher_initialize(PatternMatcher* pattern_matcher) {
 
     pattern_matcher->capacity = BASIC_CAPACITY; 
@@ -234,8 +240,9 @@ void print_pattern_matcher(PatternMatcher* pattern_matcher) {
     for(int i = 0; i < pattern_matcher->num_patterns; i++){
 
         Pattern* curr_pat = pattern_matcher->patterns[i]; 
-        printf("%d: \t|%s| \n\t\t >> ID: %d \t(%d chars, %d of them currenly matched)\n\n", i, curr_pat->str_pattern, curr_pat->ID, curr_pat->len, curr_pat->current_matches); 
-
+        //printf("%d: \t|%s| \n\t\t >> ID: %d \t(%d chars, %d of them currenly matched)\n\n", i, curr_pat->str_pattern, curr_pat->ID, curr_pat->len, curr_pat->current_matches); 
+        print_pattern(curr_pat); 
+        
     }
 
 

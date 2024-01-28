@@ -63,6 +63,11 @@ typedef struct struct_patten_matcher {
 
 
 /*
+    prints a pattern (for debugging pruposes)
+*/
+void print_pattern(Pattern* pattern); 
+
+/*
     initializes the pattern matcher empty (lenght = 0) with capacity BASIC_CAPACITY. 
 */
 void pattern_matcher_initialize(PatternMatcher* pattern_matcher); 
