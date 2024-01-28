@@ -145,7 +145,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 break;
             case BACKSLASH_ID:
                 ;
-                pre_handle_backslash(reading_buffer, int i, writing_buffer, writing_buffer_len, writing_index);
+                pre_handle_backslash(reading_buffer, i, writing_buffer, writing_buffer_len, writing_index);
                 break;
             default:
                 // help, this should not happen
