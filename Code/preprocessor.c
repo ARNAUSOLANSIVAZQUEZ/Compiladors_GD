@@ -151,7 +151,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             case INCLUDE_LOC_ID:
                 //patter: "#include \""
                 pre_handle_include_file(reading_buffer, &i, &writing_buffer,
-                                        &writing_buffer_len, &writing_index, pattern_match_static);
+                                        &writing_buffer_len, &writing_index, pattern_match_static, ms);
                 break;
             case COMMENT_ID:
 

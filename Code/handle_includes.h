@@ -33,7 +33,7 @@
 */
 //char* handle_include_program_files(char* source_code, size_t* size_source_code); 
 //char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
-char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_static);
+char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_static, MultiString* ifdef_ms);
 
 
 /*
@@ -51,7 +51,7 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
 */
 void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
 
-void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
+void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static, MultiString* ifdef_ms);
 
 
 

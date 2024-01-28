@@ -35,12 +35,12 @@
 #endif
 
 //char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
-char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_base) {
+char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_base, MultiString* ifdef_ms) {
     
     //char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_base
     // TODO: implement handle_include_program_files()
 
-    printf("hipf: |%s|\n", reading_buffer); 
+    //printf("hipf: |%s|\n", reading_buffer); 
 
     char include_dir[MAX_LENGTH_INCLUDE] = "";
 
@@ -63,12 +63,10 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     //printf("hipf file contents: |%s|\n", raw_include); 
 
 
-    char* ret = preprocess(raw_include, &size_include, pattern_match_base); 
+    char* ret = preprocess(raw_include, &size_include, pattern_match_base, ifdef_ms); 
 
     //printf("hipf preprocessed: |%s|\n", ret); 
 
-
-    // TODO: free       free       free       free       free       free       free       
 
     free(raw_include); 
 
@@ -162,9 +160,9 @@ void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, ch
 
 
 void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
-                             size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
+                             size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static, MultiString* ifdef_ms) {
 
-    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index + 1], pattern_match_static);
+    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index + 1], pattern_match_static, ifdef_ms);
     //^should return direcly what needs to be inserted in the writing buffer
     if(include_text == NULL){
         printf("Error while handling include program files. \n");
