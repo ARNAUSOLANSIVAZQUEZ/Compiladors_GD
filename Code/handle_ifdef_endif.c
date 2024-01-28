@@ -90,3 +90,17 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
 
     return result;
 }
+void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, char* writing_buffer_len, char* writing_index, MultiString* ms){
+    int len = -1;
+    char *if_def_text = handle_ifdef_endif (reading_buffer, i, &len, ms);
+    //^should return directly what needs to be inserted in the writing buffer
+
+    if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+    // get more space
+    writing_buffer_len = (int)writing_buffer_len * ARRAY_GROWTH_FACTOR;
+    writing_buffer = realloc(writing_buffer, writing_buffer_len);
+    }
+
+    memcpy(&writing_buffer[(int)writing_index - 5], if_def_text, (size_t)len);
+    writing_index += -5 + len - 1;
+}
