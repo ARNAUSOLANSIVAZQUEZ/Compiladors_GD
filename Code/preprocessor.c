@@ -133,7 +133,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
                 break;
             case INCLUDE_COMP_ID:
-                pre_handle_include_file(reading_buffer, &i, &writing_buffer,
+                pre_handle_compile_file(reading_buffer, &i, &writing_buffer,
                                         &writing_buffer_len, &writing_index, pattern_match_static);
                 break;
             case INCLUDE_LOC_ID:
@@ -172,6 +172,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 break;
             default:
                 // help, this should not happen
+                printf("%d\n", pattern_return);
                 printf("Unexpected pattern at index: %d", i);
                 break;
         }

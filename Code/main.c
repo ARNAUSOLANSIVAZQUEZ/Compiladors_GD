@@ -5,7 +5,7 @@
 *    David Garcia Lozano, U198629, NIA: 251587
 *    Ariadna Prat, U185150, NIA: 251281
 *    Clàudia Quera, U172781, NIA: 231197
-*    Jorge Villarino, , NIA: 231351
+*    Jorge Villarino, U172789, NIA: 231351
 * Compilers
 * Practice 1: c pre-processor
 * File name: main.c
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 
 /*
 
-gcc main.c multistring.c patternmatcher.c preprocessor.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_defines.c -o preprocessor
+gcc main.c multistring.c patternmatcher.c utils.c preprocessor.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_defines.c -o preprocessor
 // ^compile using everything
 
 ./preprocessor -all ./../SampleText_00.c

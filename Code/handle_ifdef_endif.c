@@ -12,67 +12,6 @@
 #include <string.h>
 #include "handle_ifdef_endif.h"
 
-char* delete_small_comment(char* texto) {
-    static char texto_sin_comentarios[1000]; // Variable to store text without comments
-    char *linea = strtok(texto, "\n"); // Split text into lines
-    texto_sin_comentarios[0] = '\0'; // Initialize string without comments
-    int ifdef_encontrado = 0; // Flag to indicate if #ifdef has been found
-
-    while (linea != NULL) {
-        char *comentario_pos = strstr(linea, "//"); // Find start of comment
-        if (comentario_pos != NULL && !ifdef_encontrado) {
-            *comentario_pos = '\0'; // Terminate string at start of comment
-        }
-        if (strstr(linea, "#ifdef") != NULL) {
-            ifdef_encontrado = 1; // Mark that #ifdef has been found
-        }
-        if (!ifdef_encontrado) {
-            strcat(texto_sin_comentarios, linea); // Add line to text without comments
-            strcat(texto_sin_comentarios, "\n"); // Add a new line
-        } else {
-            strcat(texto_sin_comentarios, linea); // Add line to text without comments
-            strcat(texto_sin_comentarios, "\n"); // Add a new line
-        }
-        linea = strtok(NULL, "\n"); // Get next line
-    }
-    return texto_sin_comentarios;
-}
-char* delete_big_comment(const char *cadena) {
-    char *resultado = (char *)malloc(strlen(cadena) + 1);
-    strcpy(resultado, cadena);
-
-    // Delete comments
-    char *posicion = resultado;
-    while (1) {
-        char *inicio_comentario = strstr(posicion, "/*");
-        if (inicio_comentario == NULL)
-            break;
-
-        char *fin_comentario = strstr(inicio_comentario + 2, "*/");
-        if (fin_comentario == NULL)
-            break;
-
-        memmove(inicio_comentario, fin_comentario + 2, strlen(fin_comentario + 2) + 1);
-        posicion = inicio_comentario;
-    }
-
-    // Delete empty lines
-    char *temp = (char *)malloc(strlen(resultado) + 1);
-    posicion = resultado;
-    char *linea = strtok(posicion, "\n");
-    temp[0] = '\0';
-    while (linea != NULL) {
-        if (strspn(linea, " \t\r") != strlen(linea)) {
-            strcat(temp, linea);
-            strcat(temp, "\n");
-        }
-        linea = strtok(NULL, "\n");
-    }
-
-    free(resultado);
-    return temp;
-}
-
 char *handle_ifdef_endif(char *source_code, int index, int *len) {
     // Initialize result
     *len = 0;
@@ -146,25 +85,4 @@ char *handle_ifdef_endif(char *source_code, int index, int *len) {
     }
 
     return result;
-}
-
-
-
-void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
-                            size_t* writing_buffer_len, int* writing_index, int count_struct){
-    ; // <- empty statement DO NOT REMOVE
-    char* e=delete_small_comment(reading_buffer);
-    char* d=delete_big_comment(e);
-    int len = -1;
-    char *if_def_text = handle_ifdef_endif(d, count_struct, &len);
-    //^should return direcly what needs to be inserted in the writing buffer
-    count_struct+=1;
-    if(*writing_buffer_len <= *writing_index + len + 1 ) { // +1 for /0
-        // get more space
-        *writing_buffer_len = *writing_buffer_len * ARRAY_GROWTH_FACTOR;
-        writing_buffer = realloc(writing_buffer, *writing_buffer_len);
-    }
-
-    memcpy(&writing_buffer[*writing_index - 5], if_def_text, (size_t)len);
-    writing_index += -5 + len - 1;
 }
