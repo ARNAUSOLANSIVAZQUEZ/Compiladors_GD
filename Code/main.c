@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
     PatternMatcher pattern_match_static;
     pattern_matcher_initialize(&pattern_match_static);
     add_static_patterns(&pattern_match_static);
-    char* preprocessed_file = preprocess(reading_buffer, &writing_buffer_len, &pattern_match_static, &ms); // Call preprocessing with static patterns
+    char* preprocessed_file = preprocess(reading_buffer, &writing_buffer_len, &pattern_match_static, &ms, process_comments, process_directives); // Call preprocessing with static patterns
     free(reading_buffer); // free reading buffer memory
     // Write the preprocessed file and check for errors
     int writing_file_error_return = write_new_file(preprocessed_file, writing_buffer_len, filename);

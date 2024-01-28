@@ -9,7 +9,7 @@
 */
 #include "preprocessor.h"
 
-char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static, MultiString *ms) {
+char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static, MultiString *ms, bool process_comments, bool process_directives) {
     size_t writing_buffer_len = *_len; // Copy writing buffer length
     char* writing_buffer = (char*)malloc(writing_buffer_len * sizeof(char)); // Allocate current length memory
     // Initialize pattern matcher for defines
@@ -30,6 +30,16 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     for(int i = 0; i < *_len; i++){
         current_char = reading_buffer[i];
         pattern_return = pattern_scan(pattern_match_static, current_char);
+        if(!process_comments){
+            if(pattern_return == 4 || pattern_return == 5){
+                pattern_return = 0;
+            }
+        }
+        if(!process_directives){
+            if(pattern_return == 1 || pattern_return == 2 || pattern_return == 3 || pattern_return == 6 ){
+                pattern_return = 0;
+            }
+        }
         switch (pattern_return)
         {
             case NO_PATTERN_DETECTED:
@@ -128,16 +138,16 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 memcpy(&writing_buffer[writing_index - 5], if_def_text, (size_t)len);
                 writing_index += -5 + len - 1;
                 */
-                pre_handle_ifdef_endif(reading_buffer, i-5, writing_buffer, &writing_buffer_len, &writing_index, &ms);
+                pre_handle_ifdef_endif(reading_buffer, i-5, writing_buffer, &writing_buffer_len, &writing_index, ms, process_comments, process_directives);
 
                 break;
             case INCLUDE_COMP_ID:
-                pre_handle_compile_file(reading_buffer, &i, &writing_buffer, &writing_buffer_len, &writing_index, pattern_match_static, ms);
+                pre_handle_compile_file(reading_buffer, &i, &writing_buffer, &writing_buffer_len, &writing_index, pattern_match_static, ms, process_comments, process_directives);
                 break;
             case INCLUDE_LOC_ID:
                 //patter: "#include \""
                 pre_handle_include_file(reading_buffer, &i, &writing_buffer,
-                                        &writing_buffer_len, &writing_index, pattern_match_static, ms);
+                                        &writing_buffer_len, &writing_index, pattern_match_static, ms, process_comments, process_directives);
                 break;
             case COMMENT_ID:
 

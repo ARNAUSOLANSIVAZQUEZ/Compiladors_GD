@@ -22,7 +22,7 @@
 #include "handle_defines.h"
 
 // Recursive implementation of preprocessing function
-char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static, MultiString* ms);
+char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static, MultiString* ms, bool process_comments, bool process_directives);
 
 /*
     writes the content buffer in a new file (with filename as name).
