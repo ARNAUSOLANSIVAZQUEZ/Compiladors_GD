@@ -10,20 +10,13 @@
 #ifndef HEADER_HANDLE_INCLUDES
 #define HEADER_HANDLE_INCLUDES
 
-
-#include <stdio.h>
-#include "multistring.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <memory.h>
-/*
-#include <stdbool.h> 
-
-*/
+#include <stddef.h>
+#include <stdbool.h>
 #include "patternmatcher.h"
-#include "main.h"
-
+#include "utils.h"
+#include "preprocessor.h"
+#define INCLUDE_FILE_PATTERN_DETECTION_LEN 9
+#define MAX_LENGTH_INCLUDE 100 //the max length of #incude<{HERE}>
 
 
 /*

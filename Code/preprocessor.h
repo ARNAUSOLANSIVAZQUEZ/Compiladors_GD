@@ -8,13 +8,18 @@
 * Responsible: Marcel Aranich, Arnau Solans
 */
 
-#ifndef PREPROCESSOR
-#define PREPROCESSOR
+#ifndef PREPROCESSOR_H
+#define PREPROCESSOR_H
+
+#include <stddef.h>
+#include <stdio.h>
+
 #include "patternmatcher.h"
-#include "main.h"
-#define INCLUDE_FILE_PATTERN_DETECTION_LEN 9
-#define TABLE_ROWS 5
-#define ARRAY_GROWTH_FACTOR 3/2
+#include "utils.h"
+#include "handle_ifdef_endif.h"
+#include "handle_includes.h"
+#include "handle_comments.h"
+
 // Recursive implementation of preprocessing function
 char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static);
 

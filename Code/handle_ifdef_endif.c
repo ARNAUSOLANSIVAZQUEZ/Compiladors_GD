@@ -159,10 +159,10 @@ void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
     char *if_def_text = handle_ifdef_endif(d, count_struct, &len);
     //^should return direcly what needs to be inserted in the writing buffer
     count_struct+=1;
-    if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+    if(*writing_buffer_len <= *writing_index + len + 1 ) { // +1 for /0
         // get more space
         *writing_buffer_len = *writing_buffer_len * ARRAY_GROWTH_FACTOR;
-        writing_buffer = realloc(writing_buffer, writing_buffer_len);
+        writing_buffer = realloc(writing_buffer, *writing_buffer_len);
     }
 
     memcpy(&writing_buffer[*writing_index - 5], if_def_text, (size_t)len);

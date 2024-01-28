@@ -25,9 +25,9 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     int count_struct=0; //case #ifdef_endif
     //Define the table for storing the defines information
     //Define the number of rows in your table
-    int num_rows = TABLE_ROWS;
+    //int num_rows = TABLE_ROWS;
     // Allocate memory for an array of struct DefineInfo
-    struct DefineInfo* table = (struct DefineInfo*)malloc(num_rows * sizeof(struct DefineInfo));
+    //struct DefineInfo* table = (struct DefineInfo*)malloc(num_rows * sizeof(struct DefineInfo));
     for(int i = 0; i < *_len; i++){
         current_char = reading_buffer[i];
         pattern_return = pattern_scan(pattern_match_static, current_char);
@@ -41,6 +41,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                     writing_buffer = realloc(writing_buffer, writing_buffer_len);
                 }
                 break;
+                /*
             case DEFINE_ID: //#define
                 ; // <- empty statement DO NOT REMOVE
                 char* define_text = handle_define(reading_buffer);
@@ -88,6 +89,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 */
 
                 break;
+
             case IFDEF_ID:
 
 
@@ -110,12 +112,12 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
                 break;
             case INCLUDE_COMP_ID:
-                pre_handle_include_file(reading_buffer, &i, writing_buffer,
+                pre_handle_include_file(reading_buffer, &i, &writing_buffer,
                                         &writing_buffer_len, &writing_index, pattern_match_static);
                 break;
             case INCLUDE_LOC_ID:
                 //patter: "#include \""
-                pre_handle_include_file(reading_buffer, &i, writing_buffer,
+                pre_handle_include_file(reading_buffer, &i, &writing_buffer,
                                         &writing_buffer_len, &writing_index, pattern_match_static);
                 break;
             case COMMENT_ID:
@@ -123,7 +125,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 ; // <- empty statement DO NOT REMOVE
 
 
-                handle_comments_simple(reading_buffer, i, new_index);
+                handle_comments_simple(reading_buffer, i, &new_index);
                 //^ should return the position of the next char to write (even if its /0)
 
                 i = new_index - 1; // ignore the whole comment
@@ -137,7 +139,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 ; // <- empty statement DO NOT REMOVE
 
 
-                handle_comments_multi(reading_buffer, i, new_index);
+                handle_comments_multi(reading_buffer, i, &new_index);
                 //^ should return the position of the next char to write (even if its /0)
 
                 i = new_index - 1; // ignore the whole comment
@@ -174,7 +176,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
 
             int len = 0;
-            char* define_text = handle_define(reading_buffer, i, &data_structure, pattern_return, &len);
+           // char* define_text = handle_define(reading_buffer, i, &data_structure, pattern_return, &len);
 
             if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
                 // get more space

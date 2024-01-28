@@ -116,7 +116,7 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
 
 void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
                              size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
-    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index + 1], pattern_match_static);
+    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index], pattern_match_static);
     //^should return direcly what needs to be inserted in the writing buffer
     if(include_text == NULL){
         printf("Error while handling include program files. \n");

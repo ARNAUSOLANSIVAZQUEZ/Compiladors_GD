@@ -11,7 +11,6 @@
 #define HEADER_HANDLE_CONSTANTS
 
 
-#include <stdio.h>
 
 /*
 The is_constant_valid function is an auxiliar function that checks, for each character of a string, if they are valid

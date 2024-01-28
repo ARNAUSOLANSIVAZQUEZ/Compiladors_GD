@@ -10,7 +10,6 @@
 #ifndef HEADER_HANDLE_BACKSLASH
 #define HEADER_HANDLE_BACKSLASH
 
-#include <stdio.h>
 
 
 /*

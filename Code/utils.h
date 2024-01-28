@@ -7,8 +7,8 @@
 *
 * Responsible: Marcel Aranich, Arnau Solans
 */
-#ifndef UTILS
-#define UTILS
+#ifndef UTILS_H
+#define UTILS_H
 
 
 #include <stdlib.h>
@@ -16,10 +16,10 @@
 #include <stdbool.h> 
 #include <string.h>
 #include <memory.h>
-#define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
 
-#define MAX_LENGTH_INCLUDE 100 //the max length of #incude<{HERE}>
+#define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
 #define MIN_ARGUMENTS 2 // Minimum arguments to properly execute the preprocessor
+
 
 /*
     Returns the contents of the file located in directory. If an error happens, GetFileContents()

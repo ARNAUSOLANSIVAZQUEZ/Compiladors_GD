@@ -7,16 +7,19 @@
 *
 * Responsible: Marcel Aranich
 */
-#ifndef HEADER_DATASTRUCTURES
-#define HEADER_DATASTRUCTURES
-
-
+#ifndef HEADER_MULTISTRING
+#define HEADER_MULTISTRING
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 #include <stdio.h>
-#include <stdbool.h> 
 #include "utils.h"
 
-#define BASIC_CAPACITY 5
 #define ARRAY_GROWTH_FACTOR 3/2
+#define BASIC_CAPACITY 5
+
+
+
 // basic capacity for vector<T>-like structures
 
 

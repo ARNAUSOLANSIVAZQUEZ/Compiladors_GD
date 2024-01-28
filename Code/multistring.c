@@ -97,12 +97,13 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
                     current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
 
                     // printf("EQUALITY: %d (%d, %d)\n", curr_char - index_start + 1 == current_array_len + element_len, curr_char - index_start + 1, current_array_len + element_len); 
-
-                    int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len); 
+                    /*
+                    int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len);
                     if(mem_ret != 0) {
                         printf("memcpy_s error\n"); 
                     }
-                    
+                    */
+                    memcpy(current_str, &source_str[index_start], current_array_len);
                     current_str[current_array_len] = '\0'; 
                     index_start = curr_char; 
                     curr_char++; 
@@ -131,12 +132,13 @@ MultiString* string_tonenizer(char* source_str, size_t str_len, char* element, i
 
             current_str = (char*)malloc((current_array_len + 1) * sizeof(char)); 
 
-
+            /*
             int mem_ret = memcpy_s(current_str, (current_array_len + 1) * sizeof(char), &source_str[index_start], current_array_len); 
             if(mem_ret != 0) {
                 printf("memcpy_s error\n"); 
             }
-            
+            */
+            memcpy(current_str, &source_str[index_start], current_array_len);
             current_str[current_array_len] = '\0'; 
 
             ret->string_arr[i] = current_str; 
@@ -156,7 +158,7 @@ void print_multistring(MultiString* ms){
 
     for(int i = 0; i < ms->length; i++) {
 
-        printf("\t%d (%d = %d chars): |%s|", i, ms->string_len[i], strlen(ms->string_arr[i]), ms->string_arr[i]); 
+        printf("\t%d (%d = %ld chars): |%s|", i, ms->string_len[i], strlen(ms->string_arr[i]), ms->string_arr[i]);
         printf("\n\n"); 
     } 
 

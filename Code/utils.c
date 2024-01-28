@@ -36,7 +36,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
         long int ftell_return = ftell(source_file); 
 
         if(ftell_return == -1L) { //error
-            if(debug_error_messages) printf("ERROR: error while reading file. ftell return: %d", ftell_return); 
+            if(debug_error_messages) printf("ERROR: error while reading file. ftell return: %ld", ftell_return);
             fclose(source_file); 
             return NULL; 
         }
@@ -55,7 +55,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
 
 
     if(file_contents == NULL) { // error requesting memory
-        if(debug_error_messages) printf("ERROR: error while requesting memory. \nMemory asked: %d Bytes\t = %d MB", size_source_code, (int) *size_source_code * BYTES_TO_MB_CONVERSION_FACTOR); 
+        if(debug_error_messages) printf("ERROR: error while requesting memory. \nMemory asked: %ln Bytes\t = %d MB", size_source_code, (int) *size_source_code * BYTES_TO_MB_CONVERSION_FACTOR);
         fclose(source_file); 
         return NULL; 
     }
@@ -65,7 +65,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
 
         if(fread_return != *size_source_code && feof(source_file) == 0) { // handle error
             if(debug_error_messages) {
-                printf("ERROR: error while reading file. fread return: %d\tfile length: %d bytes\n", fread_return, size_source_code); 
+                printf("ERROR: error while reading file. fread return: %ld\tfile length: %ln bytes\n", fread_return, size_source_code);
                 printf("feof(file) = %d\n", feof(source_file)); 
             }
 

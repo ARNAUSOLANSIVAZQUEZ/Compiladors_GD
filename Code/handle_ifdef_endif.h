@@ -10,8 +10,8 @@
 #ifndef HEADER_HANDLE_IFDEF_ENDIF
 #define HEADER_HANDLE_IFDEF_ENDIF
 
-#include <stdio.h>
 #define ARRAY_GROWTH_FACTOR 3/2
+
 /*
 Handles the structure ifdef-endif in the code. handle_ifdef_endif() should return the text without structure ifdef_endif
 which doesn't have the string #define boolean.
