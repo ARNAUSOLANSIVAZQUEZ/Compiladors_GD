@@ -1,5 +1,3 @@
-
-
 #include "Utils.h"
 
 
@@ -176,7 +174,7 @@ char* get_new_filename(char* old_name, bool terminate_with_c){
 
 
 // Function to handle the input when executing the program.
-int processFlags(int argc, char** argv, bool* process_comments, bool* process_directives) { 
+int processFlags(int argc, char** argv, bool* process_comments, bool* process_directives) {
 
     if(argc <= MIN_ARGUMENTS) {
         if(!strcmp(argv[1], "-help")){

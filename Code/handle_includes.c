@@ -33,11 +33,18 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     // TODO: implement handle_include_program_files()
 
 
-    char include_dir[MAX_LENGTH_INCUDE] = ""; 
+    char include_dir[MAX_LENGTH_INCLUDE] = "";
 
-    sscanf("%s\"", reading_buffer, include_dir);
+    int scan_ret = sscanf(reading_buffer, "%s\"", include_dir);
+    if(scan_ret == 0) {
+        printf("error while parsing include. (%s)\n", include_dir);
+        return NULL;
+    } else {
 
+        include_dir[strlen(include_dir) - 1] = '\0'; // erase last |"|
+        //printf("Parsing succesfull. |%s|\n", include_dir);
 
+    }
     // get file contents, preprocess (, free) and return 
 
     size_t size_include = -1; 
@@ -58,7 +65,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
 }
 
 char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_base) {
-    char include_dir[MAX_LENGTH_INCUDE];
+    char include_dir[MAX_LENGTH_INCLUDE];
     char* raw_include;
     size_t size_include = -1;
     printf("Enter handle.\n");

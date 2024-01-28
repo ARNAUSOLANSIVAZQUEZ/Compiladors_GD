@@ -8,17 +8,9 @@
 #include <string.h>
 #include <memory.h>
 #define BYTES_TO_MB_CONVERSION_FACTOR 1/1048576  // (1/1024**2 = 2**-20)
-#define BASIC_PATTERN_STR_LEN 20
 
-#define ARRAY_GROWTH_FACTOR 3/2 
-// 1.5 ~= phi = (1+sqrt(5))/2
-// ^for mathematical reasons, the growth factor seems to be better if its lower that phi
-// 1.5 is a "simple" value that is less than phi, thats why its choosen
-
-#define MAX_LENGTH_INCUDE 100 //the max length of #incude<{HERE}>
+#define MAX_LENGTH_INCLUDE 100 //the max length of #incude<{HERE}>
 #define MIN_ARGUMENTS 2 // Minimum arguments to properly execute the preprocessor
-
-
 
 /*
     Returns the contents of the file located in directory. If an error happens, GetFileContents()
@@ -49,7 +41,7 @@ int count_ocurrences(char* source_str, size_t str_len, char* element, int elemen
     (i.e. "my_program.ftw" -> "my_program.c"). Assumes old_name contains a '.' 
     (for the file type)
 
-    get_new_filename() does not take ownership of old_name. Reutrns NULL on error
+    get_new_filename() does not take ownership of old_name. Returns NULL on error
 */
 char* get_new_filename(char* old_name, bool terminate_with_c); 
 

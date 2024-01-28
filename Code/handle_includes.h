@@ -12,8 +12,9 @@
 #include <stdbool.h> 
 
 */
-#include "Utils.h" 
+#include "patternmatcher.h"
 #include "main.h"
+
 
 
 /*
@@ -30,7 +31,7 @@
 */
 //char* handle_include_program_files(char* source_code, size_t* size_source_code); 
 //char* handle_include_program_files(char* source_code, int index, MultiString* includes, char* base_directory) {
-char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_base); 
+char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern_match_static);
 
 
 /*
@@ -41,7 +42,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     Returns a (possibly new) string and size_source_code is updated to the new size. 
 
 */
-char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_base);
+char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_static);
 
 
 
