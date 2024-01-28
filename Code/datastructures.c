@@ -164,18 +164,3 @@ void free_multi_string(MultiString* ms) {
     free(ms->string_len); 
 
 }
-
-
-
-//      Pattern matcher: --------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-

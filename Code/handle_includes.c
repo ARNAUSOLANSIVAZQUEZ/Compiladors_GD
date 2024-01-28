@@ -32,6 +32,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     //char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_base
     // TODO: implement handle_include_program_files()
 
+    printf("hipf: |%s|\n", reading_buffer); 
 
     char include_dir[MAX_LENGTH_INCLUDE] = "";
 
@@ -51,8 +52,13 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
 
     char* raw_include = GetFileContents(include_dir, &size_include, false); 
     if(raw_include == NULL) return NULL; 
+    //printf("hipf file contents: |%s|\n", raw_include); 
+
 
     char* ret = preprocess(raw_include, &size_include, pattern_match_base); 
+
+    //printf("hipf preprocessed: |%s|\n", ret); 
+
 
     // TODO: free       free       free       free       free       free       free       
 
