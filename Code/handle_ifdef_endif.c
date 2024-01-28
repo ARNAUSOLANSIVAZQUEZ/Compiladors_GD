@@ -106,6 +106,6 @@ void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, s
         *writing_buffer = realloc(*writing_buffer, *writing_buffer_len);
     }
 
-    memcpy(&writing_buffer[(int)writing_index - 5], if_def_text, (size_t)len);
+    memcpy(&writing_buffer[*writing_index - 5], if_def_text, (size_t)len);
     writing_index += -5 + len - 1;
 }
