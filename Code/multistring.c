@@ -1,5 +1,5 @@
 
-#include "datastructures.h"
+#include "multistring.h"
 
 
 //      MultiString: ----------------------------------------------------------------

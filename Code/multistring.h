@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdbool.h> 
-#include "Utils.h"
+#include "utils.h"
 
 #define BASIC_CAPACITY 5
 #define ARRAY_GROWTH_FACTOR 3/2

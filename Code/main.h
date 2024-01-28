@@ -17,8 +17,8 @@
 
 #include "preprocessor.h"
 #include "patternmatcher.h"
-#include "Utils.h"
-#include "datastructures.h"
+#include "utils.h"
+#include "multistring.h"
 
 
 
