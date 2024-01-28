@@ -132,14 +132,14 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 int len = -1;
                 char *if_def_text = handle_ifdef_endif (reading_buffer, i-5, &len,&ms);
                 //^should return direcly what needs to be inserted in the writing buffer
-                count_struct+=1;
-                if(writting_buffer_len <= writting_index + len + 1 ) { // +1 for /0
+                
+                if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
                     // get more space
                     writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR;
-                    writting_buffer = realloc(writting_buffer, writting_buffer_len);
+                    writing_buffer = realloc(writing_buffer, writting_buffer_len);
                 }
             
-                memcpy(&writting_buffer[writting_index - 5], if_def_text, (size_t)len);
+                memcpy(&writing_buffer[writing_index - 5], if_def_text, (size_t)len);
                 writting_index += -5 + len - 1;
                 //pre_handle_ifdef_endif(reading_buffer, writing_buffer, &writing_buffer_len, &writing_index, &ms);
 
