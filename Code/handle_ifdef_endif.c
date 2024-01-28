@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "handle_ifdef_endif.h"
 // Ariadna Prat U185150, NIA:251281
 
 char* delete_small_comment(char* texto) {
@@ -137,4 +138,25 @@ char *handle_ifdef_endif(char *source_code, int index, int *len) {
     }
 
     return result;
+}
+
+
+
+void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
+                            size_t* writing_buffer_len, int* writing_index, int count_struct){
+    ; // <- empty statement DO NOT REMOVE
+    char* e=delete_small_comment(reading_buffer);
+    char* d=delete_big_comment(e);
+    int len = -1;
+    char *if_def_text = handle_ifdef_endif(d, count_struct, &len);
+    //^should return direcly what needs to be inserted in the writing buffer
+    count_struct+=1;
+    if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
+        // get more space
+        *writing_buffer_len = *writing_buffer_len * ARRAY_GROWTH_FACTOR;
+        writing_buffer = realloc(writing_buffer, writing_buffer_len);
+    }
+
+    memcpy(&writing_buffer[*writing_index - 5], if_def_text, (size_t)len);
+    writing_index += -5 + len - 1;
 }

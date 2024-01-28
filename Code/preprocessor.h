@@ -12,7 +12,9 @@
 #define PREPROCESSOR
 #include "patternmatcher.h"
 #include "main.h"
-
+#define INCLUDE_FILE_PATTERN_DETECTION_LEN 9
+#define TABLE_ROWS 5
+#define ARRAY_GROWTH_FACTOR 3/2
 // Recursive implementation of preprocessing function
 char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static);
 
