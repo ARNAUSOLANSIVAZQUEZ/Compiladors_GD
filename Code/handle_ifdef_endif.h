@@ -13,7 +13,7 @@ Returns a (possibly new) text and size_source_code is updated to the new size.
 
 */
 char* handle_ifdef_endif(char *source_code, int index, int *len);
-char* delete_first_comment(char* texto);
-char* delete_multiple_comment(const char *cadena);
+char* delete_small_comment(char* texto);
+char* delete_big_comment(const char *cadena);
 
 #endif
