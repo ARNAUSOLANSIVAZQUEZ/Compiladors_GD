@@ -9,7 +9,7 @@
 */
 #include "preprocessor.h"
 
-char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static) {
+char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static, MultiString *ms) {
     size_t writing_buffer_len = *_len; // Copy writing buffer length
     char* writing_buffer = (char*)malloc(writing_buffer_len * sizeof(char)); // Allocate current length memory
     // Initialize pattern matcher for defines
@@ -22,7 +22,6 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     char* include_text = NULL;
     char current_char;
     int pattern_return;
-    int count_struct=0; //case #ifdef_endif
     //Define the table for storing the defines information
     //Define the number of rows in your table
     int num_rows = TABLE_ROWS;
@@ -129,7 +128,20 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 memcpy(&writing_buffer[writing_index - 5], if_def_text, (size_t)len);
                 writing_index += -5 + len - 1;
                 */
-                pre_handle_ifdef_endif(reading_buffer, writing_buffer, &writing_buffer_len, &writing_index, count_struct);
+                
+                int len = -1;
+                char *if_def_text = handle_ifdef_endif (reading_buffer, i-5, &len,&ms);
+                //^should return direcly what needs to be inserted in the writing buffer
+                count_struct+=1;
+                if(writting_buffer_len <= writting_index + len + 1 ) { // +1 for /0
+                    // get more space
+                    writting_buffer_len = writting_buffer_len * ARRAY_GROWTH_FACTOR;
+                    writting_buffer = realloc(writting_buffer, writting_buffer_len);
+                }
+            
+                memcpy(&writting_buffer[writting_index - 5], if_def_text, (size_t)len);
+                writting_index += -5 + len - 1;
+                //pre_handle_ifdef_endif(reading_buffer, writing_buffer, &writing_buffer_len, &writing_index, &ms);
 
                 break;
             case INCLUDE_COMP_ID:
