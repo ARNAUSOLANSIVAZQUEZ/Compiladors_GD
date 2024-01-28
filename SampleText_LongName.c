@@ -17,4 +17,7 @@ void main(){
 */
 /* simple multiline
 */
+/* large empty multiline
+*
+*/
 #endif

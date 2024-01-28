@@ -86,6 +86,11 @@ void add_static_patterns(PatternMatcher* pattern_matcher) {
     char* include_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char));
     strcpy(include_pattern, "#include <");
     add_pattern(pattern_matcher, include_pattern, INCLUDE_COMP_ID);
+    // Add \ pattern
+    char* backslash_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char));
+    strcpy(include_pattern, " \\ ");
+    add_pattern(pattern_matcher, backslash_pattern, BACKSLASH_ID);
+
 }
 
 void print_pattern_matcher(PatternMatcher* pattern_matcher) {

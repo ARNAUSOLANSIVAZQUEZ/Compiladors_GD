@@ -22,6 +22,7 @@
 #define INCLUDE_LOC_ID 6 //unsorted
 #define COMMENT_ID 4
 #define MULTI_COMMENT_ID 5
+#define BACKSLASH_ID 7
 #define ARRAY_GROWTH_FACTOR 3/2
 #define BASIC_PATTERN_STR_LEN 20
 #define BASIC_CAPACITY 5

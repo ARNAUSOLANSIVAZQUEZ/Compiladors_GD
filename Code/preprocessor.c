@@ -178,6 +178,10 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
 
                 break;
+            case BACKSLASH_ID:
+                ;
+                //TODO: BACKSLASH HERE
+                break;
             default:
                 // help, this should not happen
                 printf("%d\n", pattern_return);
