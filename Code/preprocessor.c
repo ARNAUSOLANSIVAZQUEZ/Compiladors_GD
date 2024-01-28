@@ -151,6 +151,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 break;
             default:
                 // help, this should not happen
+                printf("%d\n", pattern_return);
                 printf("Unexpected pattern at index: %d", i);
                 break;
         }

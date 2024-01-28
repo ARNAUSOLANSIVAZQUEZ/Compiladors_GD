@@ -13,7 +13,7 @@
     #define MINGW 1
     #define LINUX 0
     #define CYGWIN 0
-    #define COMPILER_PATH "MinGW/x86_64-w64-mingw32/include/"
+    #define COMPILER_PATH "/MinGW/x86_64-w64-mingw32/include/"
     #define COMPILER_PATH_1 ""
     #define COMPILER_PATH_2 ""
 #endif
@@ -22,14 +22,14 @@
     #define LINUX 1
     #define CYGWIN 0
     #define COMPILER_PATH ""
-    #define COMPILER_PATH_1 "usr/lib/gcc/x86_64-linux-gnu/11/include"
-    #define COMPILER_PATH_2 "usr/include/"
+    #define COMPILER_PATH_1 "/usr/lib/gcc/x86_64-linux-gnu/11/include"
+    #define COMPILER_PATH_2 "/usr/include/"
 #endif
 #ifdef __CYGWIN__
     #define MINGW 0
     #define LINUX 0
     #define CYGWIN 1
-    #define COMPILER_PATH "Cygwin/lib/gcc/x86_64-pc-cygwin/11/include"
+    #define COMPILER_PATH "/Cygwin/lib/gcc/x86_64-pc-cygwin/11/include"
     #define COMPILER_PATH_1 ""
     #define COMPILER_PATH_2 ""
 #endif
@@ -81,13 +81,25 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
 char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_base) {
     char include_dir[MAX_LENGTH_INCLUDE];
     char* raw_include;
+    char* strip_read = reading_buffer;
+    strip_read ++;
+    int i = 1;
+    while(i < strlen(strip_read)){
+        if(strip_read[i] == '>'){
+            strip_read[i] = 0;
+            i = strlen(strip_read);
+        }
+        i++;
+    }
     size_t size_include = -1;
     if(LINUX == 1){
         strcpy(include_dir, COMPILER_PATH_1);
-        printf("%s\n", COMPILER_PATH_1);
+        strcat(include_dir, "/");
+        strcat(include_dir, strip_read);
         raw_include = GetFileContents(include_dir, &size_include, false);
         if(raw_include == NULL){
             strcpy(include_dir, COMPILER_PATH_2);
+            strcat(include_dir, strip_read);
             raw_include = GetFileContents(include_dir, &size_include, true);
             if(raw_include == NULL){
                 printf("Cannot open target file.\n");
@@ -97,6 +109,8 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
     }
     else{
         strcpy(include_dir, COMPILER_PATH);
+        strcat(include_dir, "/");
+        strcat(include_dir, strip_read);
         raw_include = GetFileContents(include_dir, &size_include, false);
         if(raw_include == NULL){
             printf("Cannot open target file.\n");
@@ -115,7 +129,6 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
 
 void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
                              size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
-    printf("%s", &reading_buffer[*reading_buffer_index]);
     char* include_text = handle_include_compiler_files(&reading_buffer[*reading_buffer_index], pattern_match_static);
     //^should return direcly what needs to be inserted in the writing buffer
     if(include_text == NULL){
