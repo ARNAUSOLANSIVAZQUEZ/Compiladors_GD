@@ -82,14 +82,13 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
     char include_dir[MAX_LENGTH_INCLUDE];
     char* raw_include;
     size_t size_include = -1;
-    printf("Enter handle.\n");
     if(LINUX == 1){
-        printf("Enter LINUX.\n");
         strcpy(include_dir, COMPILER_PATH_1);
+        printf("%s\n", COMPILER_PATH_1);
         raw_include = GetFileContents(include_dir, &size_include, false);
         if(raw_include == NULL){
             strcpy(include_dir, COMPILER_PATH_2);
-            raw_include = GetFileContents(include_dir, &size_include, false);
+            raw_include = GetFileContents(include_dir, &size_include, true);
             if(raw_include == NULL){
                 printf("Cannot open target file.\n");
                 return NULL;
@@ -116,10 +115,11 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
 
 void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
                              size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
-    char* include_text = handle_include_program_files(&reading_buffer[*reading_buffer_index], pattern_match_static);
+    printf("%s", &reading_buffer[*reading_buffer_index]);
+    char* include_text = handle_include_compiler_files(&reading_buffer[*reading_buffer_index], pattern_match_static);
     //^should return direcly what needs to be inserted in the writing buffer
     if(include_text == NULL){
-        printf("Error while handling include program files. \n");
+        printf("Error while handling include compiler files. \n");
         return;
     }
     int len = strlen(include_text);

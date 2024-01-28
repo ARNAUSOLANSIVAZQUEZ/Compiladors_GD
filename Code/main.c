@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
 
 /*
 
-gcc main.c multistring.c patternmatcher.c preprocessor.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_defines.c -o preprocessor
+gcc main.c multistring.c patternmatcher.c utils.c preprocessor.c handle_backslash.c handle_comments.c handle_constants.c handle_ifdef_endif.c handle_includes.c handle_defines.c -o preprocessor
 // ^compile using everything
 
 ./preprocessor -all ./../SampleText_00.c

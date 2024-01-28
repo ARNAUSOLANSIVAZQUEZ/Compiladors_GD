@@ -19,7 +19,7 @@ char* GetFileContents(char* directory, size_t* size_source_code, bool debug_erro
     FILE* source_file = fopen(directory, "rb"); // r because we cannot modify original file
 
     if(source_file == NULL) {
-        if(debug_error_messages) printf("ERROR: Could not open file in directory: %s", directory); 
+        if(debug_error_messages) printf("ERROR: Could not open file in directory: %s\n", directory);
         return NULL; 
     }
 
