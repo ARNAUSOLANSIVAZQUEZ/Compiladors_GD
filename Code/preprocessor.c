@@ -25,9 +25,9 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
     int count_struct=0; //case #ifdef_endif
     //Define the table for storing the defines information
     //Define the number of rows in your table
-    //int num_rows = TABLE_ROWS;
+    int num_rows = TABLE_ROWS;
     // Allocate memory for an array of struct DefineInfo
-    //struct DefineInfo* table = (struct DefineInfo*)malloc(num_rows * sizeof(struct DefineInfo));
+    struct DefineInfo* definesTable = (struct DefineInfo*)malloc(num_rows * sizeof(struct DefineInfo));
     for(int i = 0; i < *_len; i++){
         current_char = reading_buffer[i];
         pattern_return = pattern_scan(pattern_match_static, current_char);
@@ -41,9 +41,30 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                     writing_buffer = realloc(writing_buffer, writing_buffer_len);
                 }
                 break;
-                /*
+                
             case DEFINE_ID: //#define
+            
                 ; // <- empty statement DO NOT REMOVE
+                
+                // Call the handle_define function to process the #define line
+                struct DefineInfo infoDefines = handle_define(reading_buffer, i, &len);
+
+                // Check if the handle_define function returned an error result
+                if (infoDefines.id == -1) {
+                    // Handle error, for example, print a message
+                    printf("Error processing #define at index %d\n", i);
+                } else {
+                    // Check if an entry with the same ID and identifier already exists
+                    if (entryExists(definesTable, num_rows, infoDefines.id, infoDefines.identifier)) {
+                        // If exists, update the table entry
+                        updateTable(definesTable, num_rows, infoDefines);
+                    } else {
+                        // If not exists, add a new entry to the table
+                        addToTable(definesTable, num_rows, infoDefines);
+                    }
+                }
+
+                /*
                 char* define_text = handle_define(reading_buffer);
                 // We use pattern_match_dyn to store the identifier
                 char* identifier = get_identifier_from_define(define_text);
@@ -176,7 +197,9 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
 
 
             int len = 0;
-           // char* define_text = handle_define(reading_buffer, i, &data_structure, pattern_return, &len);
+
+            struct DefineInfo definesInfo = handle_define(reading_buffer, i, &len);
+            char* define_text = definesInfo.content;
 
             if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
                 // get more space
@@ -185,7 +208,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             }
 
             memcpy(&writing_buffer[writing_index - 9], include_text, (size_t)len);
-            writing_index += 0; //update acorfingly
+            writing_index += 0; //update acordingly
 
 
         }

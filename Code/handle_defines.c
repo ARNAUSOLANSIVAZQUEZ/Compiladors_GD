@@ -5,7 +5,7 @@
 * Define directive handler.
 *
 *
-* Responsible: Claudia Quera
+* Responsible: Claudia Quera & David Garcia
 */
 #include "handle_defines.h"
 
@@ -45,72 +45,79 @@
 */
 
 /**
-* Handles the processing of a #define line in the source code and returns
+* Handles the processing of #define lines in the source code and returns
  * a DefineInfo structure representing the result.
  *
  * @param source_code The source code containing the #define line.
- * @param index The index of the #define line in the source code.
+ * @param index The index in the source code from where to start searching.
  * @param len A pointer to an integer that will be updated with the length
  *            of the processed #define line.
  *
- * @return A DefineInfo structure representing the result of the #define line.
- *         If the #define line is successfully processed, the returned
- *         structure contains information about the constant or macro.
- *         If there is an error in processing the #define line, an error
- *         DefineInfo structure is returned with the id field set to -1.
+ * @return A DefineInfo structure representing the result of the last processed
+ *         #define line. If there are no more #define lines or if there is an
+ *         error in processing a #define line, an error DefineInfo structure is
+ *         returned with the id field set to -1. If there are no errors, the id 
+           fields for the defines will be 8 (for the constants) or 9 (for the macros)
  */
-struct DefineInfo handle_define(char* source_code) {
+struct DefineInfo handle_define(char* source_code, int index, int* len) {
 
     struct DefineInfo result;
     struct DefineInfo error_result = create_error_result();
 
-    // Find the start of the #define block
-    char* define_start = strstr(source_code, "#define");
-    if (!define_start) {
-        printf("define block not found");
-        return error_result;  // No #define found
+    // Start the search from the specified index
+    while (source_code[index] != '\0') {
+        // Find the start of the #define block
+        char* define_start = strstr(source_code + index, "#define");
+
+        if (!define_start) {
+            // No more occurrences of #define
+            break;
+        }
+
+        // Move the pointer to the character after the 'e' in '#define'
+        define_start += strlen("#define");
+
+        // If '#define' is not followed by a " " then it ain't valid
+        if (*define_start != ' ') {
+            index = define_start - source_code + 1;
+            continue;  // Invalid #define, missing space
+        }
+
+        // Find the end of the #define line
+        char* define_line_end = strchr(define_start, '\n');
+        if (!define_line_end) {
+            index = define_start - source_code + 1;
+            continue;  // Malformed #define
+        }
+
+        // Calculate the length of the content
+        *len = define_line_end - (source_code + index) + 1;
+
+        // Allocate memory for the content and copy it
+        char* define_content = (char*)malloc(*len);
+        if (!define_content) {
+            printf("could not allocate memory");
+            return error_result;  // Memory allocation error
+        }
+        memcpy(define_content, source_code + index, *len - 1);  // Exclude '\n'
+        define_content[*len - 1] = '\0';  // Null-terminate the string
+
+        // Check if the content contains parentheses, indicating a macro
+        if (strchr(define_content, '(') && strchr(define_content, ')')) {
+            // It's a macro
+            result = defineResult(9, define_content);
+
+        } else {
+            // It's a constant
+            result = defineResult(8, define_content);
+        }
+
+        // Free the allocated memory for define_content
+        free(define_content);
+
+        // Update index to continue the search after the processed #define line
+        index = define_line_end - source_code + 1;
     }
-
-    // Move the pointer to the character after the 'e' in '#define'
-    define_start += strlen("#define");
-
-    //If '#define' is not followed by a " " then it ain't valid
-    if (*define_start != ' ') {
-        printf("define not followed by a space");
-        return error_result;  // Invalid #define, missing space
-    }
-
-    // Find the end of the #define line
-    char* define_line_end = strchr(define_start, '\n');
-    if (!define_line_end) {
-        printf("define block end not found");
-        return error_result;  // Malformed #define
-    }
-
-    // Calculate the length of the content
-    size_t content_len = define_line_end - define_start;
-
-    // Allocate memory for the content and copy it
-    char* define_content = (char*)malloc(content_len + 1);
-    if (!define_content) {
-        printf("could not allocate memory");
-        return error_result;  // Memory allocation error
-    }
-    memcpy(define_content, define_start, content_len);
-    define_content[content_len] = '\0';  // Null-terminate the string
-
-    // Check if the content contains parentheses, indicating a macro
-    if (strchr(define_content, '(') && strchr(define_content, ')')) {
-        // It's a macro
-        result = defineResult(9, define_content);
-
-    } else {
-        // It's a constant
-        result = defineResult(8, define_content);
-    }
-
-    // Free the allocated memory for define_content
-    free(define_content);
 
     return result;
 }

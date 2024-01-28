@@ -19,6 +19,7 @@
 #include "handle_ifdef_endif.h"
 #include "handle_includes.h"
 #include "handle_comments.h"
+#include "handle_defines.h"
 
 // Recursive implementation of preprocessing function
 char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_match_static);

@@ -26,7 +26,7 @@ struct DefineInfo {
 
 // Function prototypes
 struct DefineInfo create_error_result();
-struct DefineInfo* handle_define(char* source_code, int index, int* len);
+struct DefineInfo handle_define(char* source_code, int index, int* len);
 struct DefineInfo defineResult(int id, char* source_code);
 bool entryExists(struct DefineInfo* table, int num_rows, int id, const char* identifier);
 void updateTable(struct DefineInfo* table, int num_rows, struct DefineInfo result);
