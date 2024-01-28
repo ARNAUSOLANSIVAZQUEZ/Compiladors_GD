@@ -9,6 +9,7 @@
 */
 #include "handle_defines.h"
 
+
  /* Example main to demonstrate calling handle_define with a predefined #define line
  * and adding the result to the table which will contain defines relations to substitute
  * the values when a pattern matcher of a define variable is encountered.
@@ -45,81 +46,107 @@
 */
 
 /**
-* Handles the processing of #define lines in the source code and returns
+* Handles the processing of a #define line in the source code and returns
  * a DefineInfo structure representing the result.
  *
  * @param source_code The source code containing the #define line.
- * @param index The index in the source code from where to start searching.
+ * @param index The index of the #define line in the source code.
  * @param len A pointer to an integer that will be updated with the length
  *            of the processed #define line.
  *
- * @return A DefineInfo structure representing the result of the last processed
- *         #define line. If there are no more #define lines or if there is an
- *         error in processing a #define line, an error DefineInfo structure is
- *         returned with the id field set to -1. If there are no errors, the id 
-           fields for the defines will be 8 (for the constants) or 9 (for the macros)
+ * @return A DefineInfo structure representing the result of the #define line.
+ *         If the #define line is successfully processed, the returned
+ *         structure contains information about the constant or macro.
+ *         If there is an error in processing the #define line, an error
+ *         DefineInfo structure is returned with the id field set to -1.
  */
-struct DefineInfo handle_define(char* source_code, int index, int* len) {
+struct DefineInfo handle_define(char* source_code) {
 
     struct DefineInfo result;
     struct DefineInfo error_result = create_error_result();
 
-    // Start the search from the specified index
-    while (source_code[index] != '\0') {
-        // Find the start of the #define block
-        char* define_start = strstr(source_code + index, "#define");
-
-        if (!define_start) {
-            // No more occurrences of #define
-            break;
-        }
-
-        // Move the pointer to the character after the 'e' in '#define'
-        define_start += strlen("#define");
-
-        // If '#define' is not followed by a " " then it ain't valid
-        if (*define_start != ' ') {
-            index = define_start - source_code + 1;
-            continue;  // Invalid #define, missing space
-        }
-
-        // Find the end of the #define line
-        char* define_line_end = strchr(define_start, '\n');
-        if (!define_line_end) {
-            index = define_start - source_code + 1;
-            continue;  // Malformed #define
-        }
-
-        // Calculate the length of the content
-        *len = define_line_end - (source_code + index) + 1;
-
-        // Allocate memory for the content and copy it
-        char* define_content = (char*)malloc(*len);
-        if (!define_content) {
-            printf("could not allocate memory");
-            return error_result;  // Memory allocation error
-        }
-        memcpy(define_content, source_code + index, *len - 1);  // Exclude '\n'
-        define_content[*len - 1] = '\0';  // Null-terminate the string
-
-        // Check if the content contains parentheses, indicating a macro
-        if (strchr(define_content, '(') && strchr(define_content, ')')) {
-            // It's a macro
-            result = defineResult(9, define_content);
-
-        } else {
-            // It's a constant
-            result = defineResult(8, define_content);
-        }
-
-        // Free the allocated memory for define_content
-        free(define_content);
-
-        // Update index to continue the search after the processed #define line
-        index = define_line_end - source_code + 1;
+    
+    // Find the start of the #define block
+    char* define_start = strstr(source_code, "#define");
+    if (!define_start) {
+        printf("define block not found");
+        return error_result;  // No #define found
     }
 
+    // Move the pointer to the character after the 'e' in '#define'
+    define_start += strlen("#define");
+
+    //If '#define' is not followed by a " " then it ain't valid
+    if (*define_start != ' ') {
+        printf("define not followed by a space");
+        return error_result;  // Invalid #define, missing space
+    }
+
+    // Find the end of the #define line
+    char* define_line_end = strchr(define_start, '\n');
+    if (!define_line_end) {
+        // If newline character is not found, check for the end of the string
+        define_line_end = strchr(define_start, '\0');
+        if (!define_line_end) {
+            printf("define block end not found");
+            return error_result;  // Malformed #define
+        }
+    }
+
+    // Calculate the length of the content
+    size_t content_len = define_line_end - define_start;
+
+    // Allocate memory for the content and copy it
+    char* define_content = (char*)malloc(content_len + 1);
+    if (!define_content) {
+        printf("could not allocate memory");
+        return error_result;  // Memory allocation error
+    }
+    memcpy(define_content, define_start, content_len);
+    define_content[content_len] = '\0';  // Null-terminate the string
+
+    // Check if the content contains parentheses, indicating a macro
+    if (strchr(define_content, '(') && strchr(define_content, ')')) {
+        // It's a macro
+        result = defineResult(9, define_content);
+
+    } else {
+        // It's a constant
+        result = defineResult(8, define_content);
+    }
+
+    // Free the allocated memory for define_content
+    free(define_content);
+
     return result;
+}
+
+
+char* extractDefineLine(const char* buffer, size_t defineIndex) {
+    // Find the start of the line containing #define
+    size_t start = defineIndex;
+    while (start > 0 && buffer[start - 1] != '\n') {
+        start--;
+    }
+
+    // Find the end of the line containing #define
+    size_t end = defineIndex;
+    while (buffer[end] != '\n' && buffer[end] != '\0') {
+        end++;
+    }
+
+    // Calculate the length of the line
+    size_t lineLength = end - start;
+
+    // Allocate memory for the line
+    char* defineLine = (char*)malloc((lineLength + 1) * sizeof(char));
+
+    // Copy the line to the allocated memory
+    strncpy(defineLine, buffer + start, lineLength);
+   
+    // Null-terminate the string
+    defineLine[lineLength] = '\0';
+    return defineLine;
 }
 
 /**
@@ -234,17 +261,17 @@ bool entryExists(struct DefineInfo* table, int num_rows, int id, const char* ide
  * @param num_rows The number of rows in the table.
  * @param result The DefineInfo structure to add to the table.
  */
-void addToTable(struct DefineInfo* table, int num_rows, struct DefineInfo result) {
+struct DefineInfo* addToTable(struct DefineInfo* table, int num_rows, struct DefineInfo result, PatternMatcher* patternMatcher) {
+    //char* define_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char));
     for (int i = 0; i < num_rows; ++i) {
         if (table[i].id == 0 && table[i].identifier == NULL) {
             // Empty slot, add the result
-            table[i].id = result.id;
 
             // Allocate memory for the identifier and copy the value
             table[i].identifier = strdup(result.identifier);
             if (!table[i].identifier) {
                 // Handle memory allocation failure
-                return;
+                return table;
             }
 
             // Allocate memory for the content and copy the value
@@ -252,12 +279,17 @@ void addToTable(struct DefineInfo* table, int num_rows, struct DefineInfo result
             if (!table[i].content) {
                 // Handle memory allocation failure
                 free(table[i].identifier);  // Free the allocated memory for identifier
-                return;
+                return table;
             }
 
-            return;  // Entry added, exit the function
+            // Update the id and exit the loop
+            table[i].id = result.id;
+            //strcpy(define_pattern, table[i].identifier);
+            //add_pattern(patternMatcher, define_pattern, table[i].id);
+            return table;
         }
     }
+    return table;
     // If the table is full, allocate more space (+TABLE_ROWS)
     int new_size = num_rows + TABLE_ROWS;
     table = (struct DefineInfo*)realloc(table, new_size * sizeof(struct DefineInfo));
@@ -277,7 +309,7 @@ void addToTable(struct DefineInfo* table, int num_rows, struct DefineInfo result
     num_rows = new_size;
 
     // Add the result to the newly allocated space
-    addToTable(table, num_rows, result);
+    addToTable(table, num_rows, result, patternMatcher);
 }
 
 
@@ -288,12 +320,15 @@ void addToTable(struct DefineInfo* table, int num_rows, struct DefineInfo result
  * @param num_rows The number of rows in the table.
  * @param result The DefineInfo structure containing the update information.
  */
-void updateTable(struct DefineInfo* table, int num_rows, struct DefineInfo result) {
+void updateTable(struct DefineInfo* table, int num_rows, struct DefineInfo result, PatternMatcher* patternMatcher) {
+    //char* define_pattern = (char*)malloc(BASIC_PATTERN_STR_LEN * sizeof(char));
     for (int i = 0; i < num_rows; ++i) {
         if (table[i].id == result.id && strcmp(table[i].identifier, result.identifier) == 0){
             // Entry with the same ID and identifier found, update the content
             free(table[i].content);  // Free the existing content
             table[i].content = result.content;
+            //strcpy(define_pattern, table[i].identifier);
+            //add_pattern(patternMatcher, define_pattern, DEFINE_ID);
             return;  // Entry updated, exit the function
         }
     }
@@ -307,12 +342,11 @@ void updateTable(struct DefineInfo* table, int num_rows, struct DefineInfo resul
  */
 void printTable(struct DefineInfo* table, int num_rows) {
     printf("Table Contents:\n");
-    printf("| %-5s | %-15s | %-30s |\n", "ID", "Identifier", "Content");
-    printf("|-------|-----------------|--------------------------------|\n");
 
     for (int i = 0; i < num_rows; ++i) {
         if (table[i].id != 0 && table[i].identifier != NULL) {
-            printf("| %-5d | %-15s | %-30s |\n", table[i].id, table[i].identifier, table[i].content);
+            printf("| Id:%d | Identifier: %s | Content: %s |\n", table[i].id, table[i].identifier, table[i].content);
         }
     }
+    
 }

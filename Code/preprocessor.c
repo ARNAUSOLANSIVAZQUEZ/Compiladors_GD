@@ -5,7 +5,7 @@
 * Recursive preprocessing function.
 *
 *
-* Responsible: Marcel Aranich, Arnau Solans
+* Responsible: Marcel Aranich, Arnau Solans, David Garcia, Claudia Quera
 */
 #include "preprocessor.h"
 
@@ -55,9 +55,9 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             
                 ; // <- empty statement DO NOT REMOVE
                 
+                char* infoDefinesLine = extractDefineLine(reading_buffer, i);
                 // Call the handle_define function to process the #define line
-                struct DefineInfo infoDefines = handle_define(reading_buffer, i, &len);
-
+                struct DefineInfo infoDefines = handle_define(infoDefinesLine);
                 // Check if the handle_define function returned an error result
                 if (infoDefines.id == -1) {
                     // Handle error, for example, print a message
@@ -66,59 +66,24 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                     // Check if an entry with the same ID and identifier already exists
                     if (entryExists(definesTable, num_rows, infoDefines.id, infoDefines.identifier)) {
                         // If exists, update the table entry
-                        updateTable(definesTable, num_rows, infoDefines);
+                        updateTable(definesTable, num_rows, infoDefines, pattern_match_static);
                     } else {
                         // If not exists, add a new entry to the table
-                        addToTable(definesTable, num_rows, infoDefines);
+                        definesTable = addToTable(definesTable, num_rows, infoDefines, pattern_match_static);
+                        
                     }
                 }
 
-                /*
-                char* define_text = handle_define(reading_buffer);
-                // We use pattern_match_dyn to store the identifier
-                char* identifier = get_identifier_from_define(define_text);
-                add_pattern(&pattern_match_dyn, identifier, pattern_match_dyn.num_patterns);
-                // Create an error result structure
-                struct DefineInfo error_result = create_error_result();
-                // Example: Call handle_define with a predefined #define line
-                struct DefineInfo result = handle_define("#define max(x,y) (x>y?x:y)\n");
-                // Check if the result is not an error
-                if (result.id != error_result.id) {
-                    // Check if an entry with the same ID and identifier already exists
-                    if (entryExists(table, num_rows, result.id, result.identifier)) {
-                        // If exists, update the table entry
-                        updateTable(table, num_rows, result);
-                    } else {
-                        // If not exists, add a new entry to the table
-                        addToTable(table, num_rows, result);
-                    }
-                }
-
-                //printTable(table, num_rows);
-
-                /*TODO: store all the information needed in a corresponding data structure
-
-                Also use pattern_match_dyn to store the identifier of the constant/macro.
-                When the pattern is detected bellow this switch, use he handle_macro() or
-                handle_constant() accordingly. You may want to delete one of the 2 functions.
-
-                ; // <- empty statement DO NOT REMOVE
-
-                //get the following using the reading buffer
-                char patten_definition[500] = "#define this_cool_stuff_i_found(x) (x + 3) ";
-
-                //get somehow
-                char pattern[500] = "this_cool_stuff_i_found" ;
-
-                add_pattern(&pattern_match_dyn, pattern, pattern_match_dyn.num_patterns);
-                //^save pattern; 3rd argument should be an unique ID
-
-                //TODO: store the information as you can
-
-                writing_index += - 1; //update accordingly
-                */
+                printTable(definesTable, num_rows);
 
                 break;
+
+                /* We have been able to identify the macro and constant variables inside the input files and separate the
+                variable or macro name and print them into a table, but even though we have tried it, we could add a new
+                pattern that identifies the variables along the file and substitute it for its value. 
+                We've commented a couple of lines in the addToTable and UpdateTable functions from the handle_defines.c 
+                file with some tries of making this possible.
+                */
 
             case IFDEF_ID:
 
@@ -208,11 +173,8 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
             struct SUPER_USCEFULL_DATA_STRUCTURE data_structure;
             data_structure.x = 0;
 
-
             int len = 0;
 
-            struct DefineInfo definesInfo = handle_define(reading_buffer, i, &len);
-            char* define_text = definesInfo.content;
 
             if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0
                 // get more space
