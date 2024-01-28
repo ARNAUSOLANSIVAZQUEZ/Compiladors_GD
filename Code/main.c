@@ -5,7 +5,7 @@
 *    David Garcia Lozano, U198629, NIA: 251587
 *    Ariadna Prat, U185150, NIA: 251281
 *    Clàudia Quera, U172781, NIA: 231197
-*    Jorge Villarino, , NIA: 231351
+*    Jorge Villarino, U172789, NIA: 231351
 * Compilers
 * Practice 1: c pre-processor
 * File name: main.c
