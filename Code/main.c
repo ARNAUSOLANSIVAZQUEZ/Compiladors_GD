@@ -446,8 +446,8 @@ void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, ch
 void pre_handle_ifdef_endif(char* reading_buffer, char* writing_buffer,
                  size_t* writting_buffer_len, int* writting_index, int count_struct){
     ; // <- empty statement DO NOT REMOVE
-    char* e=eliminar(reading_buffer);
-    char* d=eliminar_comentarios_bloque(e);
+    char* e=delete_small_comment(reading_buffer);
+    char* d=delete_big_comment(e);
     int len = -1;
     char *if_def_text = handle_ifdef_endif (d, count_struct, &len);
     //^should return direcly what needs to be inserted in the writing buffer
