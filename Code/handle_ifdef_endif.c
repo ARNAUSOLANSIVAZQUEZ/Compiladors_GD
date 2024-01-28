@@ -8,7 +8,7 @@
 * Responsible: Ariadna Prat
 */
 #include "handle_ifdef_endif.h"
-char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms, bool process_comments, bool process_directives) {
+char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms) {
     // Initialize result
     *len = 0;
     char *result = NULL;
@@ -90,9 +90,9 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
 
     return result;
 }
-void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, size_t* writing_buffer_len, int* writing_index, MultiString* ms, bool process_comments, bool process_directives){
+void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, size_t* writing_buffer_len, int* writing_index, MultiString* ms){
     int len = -1;
-    char *if_def_text = handle_ifdef_endif (reading_buffer, i, &len, ms, process_comments, process_directives);
+    char *if_def_text = handle_ifdef_endif (reading_buffer, i, &len, ms);
     //^should return directly what needs to be inserted in the writing buffer
 
     if(writing_buffer_len <= writing_index + len + 1 ) { // +1 for /0

@@ -138,7 +138,7 @@ char* preprocess(char* reading_buffer, size_t* _len, PatternMatcher* pattern_mat
                 memcpy(&writing_buffer[writing_index - 5], if_def_text, (size_t)len);
                 writing_index += -5 + len - 1;
                 */
-                pre_handle_ifdef_endif(reading_buffer, i-5, writing_buffer, &writing_buffer_len, &writing_index, ms, process_comments, process_directives);
+                pre_handle_ifdef_endif(reading_buffer, i-5, writing_buffer, &writing_buffer_len, &writing_index, ms);
 
                 break;
             case INCLUDE_COMP_ID:

@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define MAX_LINE_LENGTH 256
-#include "backslash.h"
+#include "handle_backslash.h"
 
 char* handle_backslash(char* source_code, size_t* size_source_code, int i) {
     char *result = (char*)malloc(MAX_LINE_LENGTH * sizeof(char));

@@ -26,6 +26,6 @@ length of source_code. handle_macros() is now the owner (and responsible) of sou
 Returns a (possibly new) text and size_source_code is updated to the new size. 
 
 */
-char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms, bool process_comments, bool process_directives);
-void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, size_t* writing_buffer_len, in* writing_index, MultiString* ms, bool process_comments, bool process_directives);
+char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms);
+void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, size_t* writing_buffer_len, int* writing_index, MultiString* ms);
 #endif
