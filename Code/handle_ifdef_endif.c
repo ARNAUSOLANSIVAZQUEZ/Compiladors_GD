@@ -90,7 +90,7 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
 
     return result;
 }
-void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, char* writing_buffer_len, char* writing_index, MultiString* ms, bool process_comments, bool process_directives){
+void pre_handle_ifdef_endif(char* reading_buffer, int i, char* writing_buffer, size_t* writing_buffer_len, int* writing_index, MultiString* ms, bool process_comments, bool process_directives){
     int len = -1;
     char *if_def_text = handle_ifdef_endif (reading_buffer, i, &len, ms, process_comments, process_directives);
     //^should return directly what needs to be inserted in the writing buffer
