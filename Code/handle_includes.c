@@ -76,7 +76,7 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     return ret; 
 }
 
-char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_base) {
+char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_base, MultiString* ifdef_ms) {
     char include_dir[MAX_LENGTH_INCLUDE];
     char* raw_include;
     char* strip_read = reading_buffer;
@@ -115,7 +115,7 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
             return NULL;
         }
     }
-    char* ret = preprocess(raw_include, &size_include, pattern_match_base);
+    char* ret = preprocess(raw_include, &size_include, pattern_match_base, ifdef_ms);
     free(raw_include);
 
     /* We do not have ownership over reading_buffer, _len, pattern_match_base; therefore we must
@@ -126,8 +126,8 @@ char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* patter
 
 
 void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer,
-                             size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static) {
-    char* include_text = handle_include_compiler_files(&reading_buffer[*reading_buffer_index], pattern_match_static);
+                             size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static, MultiString* ifdef_ms) {
+    char* include_text = handle_include_compiler_files(&reading_buffer[*reading_buffer_index], pattern_match_static, ifdef_ms);
     //^should return direcly what needs to be inserted in the writing buffer
     if(include_text == NULL){
         printf("Error while handling include compiler files. \n");

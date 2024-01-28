@@ -44,12 +44,12 @@ char* handle_include_program_files(char* reading_buffer, PatternMatcher* pattern
     Returns a (possibly new) string and size_source_code is updated to the new size. 
 
 */
-char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_static);
+char* handle_include_compiler_files(char* reading_buffer, PatternMatcher* pattern_match_static, MultiString* ifdef_ms);
 
 /*
     does everything needed to call handle_include_file() and handles its outputs
 */
-void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static);
+void pre_handle_compile_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static, MultiString* ifdef_ms);
 
 void pre_handle_include_file(char* reading_buffer, int* reading_buffer_index, char** writing_buffer, size_t* writing_buffer_len, int* writing_index, PatternMatcher* pattern_match_static, MultiString* ifdef_ms);
 
