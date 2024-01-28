@@ -11,8 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "handle_ifdef_endif.h"
+#include "multistring.h"
 
-char *handle_ifdef_endif(char *source_code, int index, int *len) {
+char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms) {
     // Initialize result
     *len = 0;
     char *result = NULL;
@@ -20,8 +21,9 @@ char *handle_ifdef_endif(char *source_code, int index, int *len) {
     // Counter to track #ifdef structures index
     int ifdef_index = 0;
 
-    // Find the first occurrence of #ifdef
-    char *ifdef_start = strstr(source_code, "#ifdef");
+    // Find the first occurrence of #ifdef starting from the given index
+    char *search_start = source_code + index;
+    char *ifdef_start = strstr(search_start, "#ifdef");
     if (!ifdef_start) {
         return NULL; // No #ifdef-#endif structure found
     }
@@ -37,40 +39,26 @@ char *handle_ifdef_endif(char *source_code, int index, int *len) {
                 return NULL;
             }
 
-            // Find the string associated with #ifdef
-            char ifdef_str[256];
-            if (sscanf(ifdef_start, "#ifdef %s", ifdef_str) != 1) {
-                // Failed to read name after #ifdef
-                return NULL;
+            // Find the beginning of the content inside #ifdef
+            char *content_start = ifdef_start;
+            while (*content_start != '\n' && content_start < ifdef_end) {
+                content_start++;
             }
+            content_start++; // Move past the newline character
 
-            // Find the string associated with #define
-            char define_str[256];
-            char *define_start = strstr(source_code, "#define");
-            while (define_start && define_start < ifdef_end) {
-                if (sscanf(define_start, "#define %s", define_str) == 1 && strcmp(ifdef_str, define_str) == 0) {
-                    break;
-                }
-                define_start = strstr(define_start + 1, "#define");
-            }
-            if (!define_start || define_start >= ifdef_end) {
-                // Corresponding #define not found
-                return NULL;
-            }
-
-            // Calculate the length of current structure
-            int block_len = ifdef_end - ifdef_start + strlen("#endif");
+            // Calculate the length of the content inside #ifdef
+            int content_len = ifdef_end - content_start;
 
             // Reallocate memory for result
-            result = (char *)realloc(result, *len + block_len + 1); // +1 for null terminator
+            result = (char *)realloc(result, *len + content_len + 1); // +1 for null terminator
             if (!result) {
                 perror("Memory allocation error");
                 exit(EXIT_FAILURE);
             }
 
-            // Copy current structure to result
-            strncpy(result + *len, ifdef_start, block_len);
-            *len += block_len;
+            // Copy content inside #ifdef to result
+            strncpy(result + *len, content_start, content_len);
+            *len += content_len;
             result[*len] = '\0'; // Add null terminator
 
             // Structure found and processed, exit loop
