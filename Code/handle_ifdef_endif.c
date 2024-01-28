@@ -8,7 +8,6 @@
 * Responsible: Ariadna Prat
 */
 #include "handle_ifdef_endif.h"
-
 char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms) {
     // Initialize result
     *len = 0;
@@ -21,18 +20,20 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
     char *search_start = source_code + index;
     char *ifdef_start = strstr(search_start, "#ifdef");
     if (!ifdef_start) {
+        printf("No se encontró ningún bloque #ifdef-#endif.\n");
         return NULL; // No #ifdef-#endif structure found
     }
 
     // Loop to process each #ifdef-#endif structure
-    while (ifdef_start) {
         // If index matches the index of current #ifdef structure, proceed
         if (ifdef_index == index) {
+            //printf("Encontrado bloque #ifdef-#endif en el índice %d.\n", index);
+
             // Find the end of current #ifdef structure
             char *ifdef_end = strstr(ifdef_start, "#endif");
             if (!ifdef_end) {
-                // Current #ifdef-#endif structure is incomplete
-                return NULL;
+                printf("Bloque #ifdef-#endif incompleto.\n");
+                return NULL; // Current #ifdef-#endif structure is incomplete
             }
 
             // Find the beginning of the content inside #ifdef
@@ -45,9 +46,10 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
             // Find the string associated with #ifdef
             char ifdef_str[256];
             if (sscanf(ifdef_start, "#ifdef %s", ifdef_str) != 1) {
-                // Failed to read name after #ifdef
-                return NULL;
+                printf("Error al leer el nombre después de #ifdef.\n");
+                return NULL; // Failed to read name after #ifdef
             }
+            //printf("Nombre después de #ifdef: %s\n", ifdef_str);
 
             // Check if the string associated with #ifdef is already present in MultiString
             if (!multistring_contains(ms, ifdef_str)) {
@@ -55,41 +57,29 @@ char *handle_ifdef_endif(char *source_code, int index, int *len, MultiString *ms
                 add_string(ms, strdup(ifdef_str));
             } else {
                 // String already present, return NULL
-                return NULL;
-            }
-
-            // Find the string associated with #define
-            char define_str[256];
-            char *define_start = content_start;
-            while (define_start && define_start < ifdef_end) {
-                if (sscanf(define_start, "#define %s", define_str) == 1 && strcmp(ifdef_str, define_str) == 0) {
-                    break;
-                }
-                define_start = strstr(define_start + 1, "#define");
-            }
-            if (!define_start || define_start >= ifdef_end) {
-                // Corresponding #define not found
+                printf("La cadena asociada con #ifdef ya está presente.\n");
                 return NULL;
             }
 
             // Calculate the length of content inside #ifdef
             int content_len = ifdef_end - content_start;
 
-            // Reallocate memory for result
-            result = (char *)realloc(result, *len + content_len + 1); // +1 for null terminator
+            // Allocate memory for result
+            result = (char *)malloc((content_len + 1) * sizeof(char)); // +1 for null terminator
             if (!result) {
-                perror("Memory allocation error");
+                perror("Error de asignación de memoria");
                 exit(EXIT_FAILURE);
             }
 
             // Copy content inside #ifdef to result
-            strncpy(result + *len, content_start, content_len);
-            *len += content_len;
-            result[*len] = '\0'; // Add null terminator
+            strncpy(result, content_start, content_len);
+            result[content_len] = '\0'; // Add null terminator
+            //printf("Contenido dentro del bloque #ifdef-#endif [PRIMERO]: %s\n", result);
+
+            // Update length
+            *len = content_len;
 
             // Structure found and processed, exit loop
-            break;
-        }
 
         // Increment #ifdef structures index
         ifdef_index++;
